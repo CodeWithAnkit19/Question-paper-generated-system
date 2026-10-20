@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management | PaperForge</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5fb;
+            color: #1f2937;
+        }
+        header {
+            background: #172554;
+            color: white;
+            padding: 22px;
+        }
+        header h1 { margin: 0 0 6px; font-size: 25px; }
+        header p { margin: 0; color: #dbeafe; }
+        main { max-width: 1050px; margin: 28px auto; padding: 0 16px; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 14px #0000000d;
+        }
+        h2 { margin-top: 0; font-size: 20px; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        label { display: block; font-weight: 600; margin-bottom: 6px; }
+        input, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font: inherit;
+        }
+        textarea { resize: vertical; min-height: 75px; }
+        .full { grid-column: 1 / -1; }
+        button {
+            border: 0;
+            padding: 10px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 3px;
+        }
+        .primary { background: #2563eb; color: white; }
+        .secondary { background: #e2e8f0; color: #1e293b; }
+        .danger { background: #fee2e2; color: #991b1b; }
+        #message { margin-top: 14px; font-weight: 600; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 650px; }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th { background: #f8fafc; }
+        .status {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .active { background: #dcfce7; color: #166534; }
+        .inactive { background: #fee2e2; color: #991b1b; }
+        #loading { color: #64748b; }
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full { grid-column: auto; }
+            .card { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>PaperForge — Course Management</h1>
+        <p>Add, edit and manage academic courses.</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2 id="formTitle">Add New Course</h2>
+            <form id="courseForm">
+                <div class="form-grid">
+                    <div>
+                        <label for="courseCode">Course Code *</label>
+                        <input id="courseCode" maxlength="20"
+                               placeholder="e.g. BCA" required>
+                    </div>
+                    <div>
+                        <label for="courseName">Course Name *</label>
+                        <input id="courseName" maxlength="100"
+                               placeholder="e.g. Bachelor of Computer Applications"
+                               required>
+                    </div>
+                    <div class="full">
+                        <label for="courseDescription">Description</label>
+                        <textarea id="courseDescription"
+                                  maxlength="500"
+                                  placeholder="Optional course description"></textarea>
+                    </div>
+                </div>
+                <p>
+                    <button class="primary" type="submit" id="saveButton">
+                        Add Course
+                    </button>
+                    <button class="secondary" type="button"
+                            id="cancelButton" hidden>
+                        Cancel Edit
+                    </button>
+                    <button class="secondary" type="button"
+                            id="refreshButton">
+                        Refresh List
+                    </button>
+                </p>
+                <div id="message" role="status" aria-live="polite"></div>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>All Courses</h2>
+            <p id="loading">Loading courses...</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Course Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courseTable"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById("courseForm");
+        const codeInput = document.getElementById("courseCode");
+        const nameInput = document.getElementById("courseName");
+        const descriptionInput = document.getElementById("courseDescription");
+        const tableBody = document.getElementById("courseTable");
+        const message = document.getElementById("message");
+        const loading = document.getElementById("loading");
+        const saveButton = document.getElementById("saveButton");
+        const cancelButton = document.getElementById("cancelButton");
+        const formTitle = document.getElementById("formTitle");
+
+        let courses = [];
+        let editingId = null;
+
+        function showMessage(text, isError = false) {
+            message.textContent = text;
+            message.style.color = isError ? "#b91c1c" : "#166534";
+        }
+
+        async function apiRequest(url, options = {}) {
+            const response = await fetch(url, {
+                credentials: "same-origin",
+                ...options,
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(options.headers || {})
+                }
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.status === 401) {
+                throw new Error("Please log in before managing courses.");
+            }
+            if (response.status === 403) {
+                throw new Error("Admin access required for course management.");
+            }
+            if (!response.ok || data.success === false) {
+               throw new Error(
+    data.message || ("Request failed (HTTP " + response.status + ").")
+);
+            }
+
+            return data;
+        }
+
+        async function loadCourses() {
+            loading.textContent = "Loading courses...";
+            try {
+                const data = await apiRequest("/api/admin/courses");
+                courses = data.courses || [];
+                renderCourses();
+                loading.textContent = courses.length
+                    ? ""
+                    : "No courses added yet. Add your first course above.";
+            } catch (error) {
+                loading.textContent = error.message;
+            }
+        }
+
+        function renderCourses() {
+            tableBody.replaceChildren();
+
+            courses.forEach(course => {
+                const row = document.createElement("tr");
+
+                const codeCell = document.createElement("td");
+                codeCell.textContent = course.code || "";
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = course.name || "";
+
+                const statusCell = document.createElement("td");
+                const status = document.createElement("span");
+                status.className = "status " +
+                    (course.isActive ? "active" : "inactive");
+                status.textContent = course.isActive ? "Active" : "Inactive";
+                statusCell.appendChild(status);
+
+                const actionsCell = document.createElement("td");
+
+                const editButton = document.createElement("button");
+                editButton.className = "secondary";
+                editButton.textContent = "Edit";
+                editButton.addEventListener("click", () => startEdit(course));
+
+                const toggleButton = document.createElement("button");
+                toggleButton.className = course.isActive ? "danger" : "primary";
+                toggleButton.textContent = course.isActive
+                    ? "Deactivate" : "Activate";
+                toggleButton.addEventListener("click", () => toggleCourse(course));
+
+                actionsCell.append(editButton, toggleButton);
+                row.append(codeCell, nameCell, statusCell, actionsCell);
+                tableBody.appendChild(row);
+            });
+        }
+
+        function startEdit(course) {
+            editingId = String(course._id);
+            codeInput.value = course.code || "";
+            nameInput.value = course.name || "";
+            descriptionInput.value = course.description || "";
+            formTitle.textContent = "Edit Course";
+            saveButton.textContent = "Save Changes";
+            cancelButton.hidden = false;
+            showMessage("Editing " + course.name);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function resetForm() {
+            editingId = null;
+            form.reset();
+            formTitle.textContent = "Add New Course";
+            saveButton.textContent = "Add Course";
+            cancelButton.hidden = true;
+        }
+
+        form.addEventListener("submit", async event => {
+            event.preventDefault();
+            saveButton.disabled = true;
+
+            const course = {
+                code: codeInput.value.trim(),
+                name: nameInput.value.trim(),
+                description: descriptionInput.value.trim()
+            };
+
+            try {
+                if (editingId) {
+                    await apiRequest(
+                        "/api/admin/courses/" + encodeURIComponent(editingId),
+                        {
+                            method: "PUT",
+                            body: JSON.stringify(course)
+                        }
+                    );
+                    showMessage("Course updated successfully.");
+                } else {
+                    await apiRequest("/api/admin/courses", {
+                        method: "POST",
+                        body: JSON.stringify(course)
+                    });
+                    showMessage("Course added successfully.");
+                }
+
+                resetForm();
+                await loadCourses();
+            } catch (error) {
+                showMessage(error.message, true);
+            } finally {
+                saveButton.disabled = false;
+            }
+        });
+
+        async function toggleCourse(course) {
+            const nextStatus = !course.isActive;
+            const action = nextStatus ? "activate" : "deactivate";
+
+            if (!window.confirm("Do you want to " + action + " " + course.name + "?")) {
+                return;
+            }
+
+            try {
+                const result = await apiRequest(
+                    "/api/admin/courses/" +
+                    encodeURIComponent(String(course._id)) + "/status",
+                    {
+                        method: "PATCH",
+                        body: JSON.stringify({ isActive: nextStatus })
+                    }
+                );
+                showMessage(result.message || "Course status updated.");
+                await loadCourses();
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        }
+
+        cancelButton.addEventListener("click", () => {
+            resetForm();
+            showMessage("");
+        });
+
+        document.getElementById("refreshButton")
+            .addEventListener("click", loadCourses);
+
+        loadCourses();
+    </script>
+</body>
+</html>

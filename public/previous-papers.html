@@ -1,2258 +1,1356 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Previous Papers | Question Paper Generator</title>
-
-<link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
->
-
-<link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
->
-
-<style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-
-    font-family:
-        "Inter",
-        Arial,
-        sans-serif;
-
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at top left,
-            #dbeafe 0,
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at top right,
-            #ede9fe 0,
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #f8fbff,
-            #eef4ff
-        );
-
-    color: #1f2937;
-
-}
-
-
-/* =====================================================
-   PAGE
-===================================================== */
-
-.page {
-
-    min-height: 100vh;
-
-    display: flex;
-
-    flex-direction: column;
-
-}
-
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-.top-header {
-
-    width: 100%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5,
-            #7c3aed
-        );
-
-    color: white;
-
-    padding:
-        18px 35px;
-
-    box-shadow:
-        0 8px 28px
-        rgba(
-            37,
-            99,
-            235,
-            0.25
-        );
-
-}
-
-
-.header-inner {
-
-    width: 100%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-}
-
-
-.brand {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-}
-
-
-.brand-icon {
-
-    width: 52px;
-
-    height: 52px;
-
-    border-radius: 15px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 26px;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.17
-        );
-
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            0.25
-        );
-
-}
-
-
-.brand h1 {
-
-    font-size: 22px;
-
-    font-weight: 800;
-
-}
-
-
-.brand p {
-
-    margin-top: 4px;
-
-    font-size: 12px;
-
-    opacity: 0.88;
-
-}
-
-
-.header-buttons {
-
-    display: flex;
-
-    gap: 10px;
-
-}
-
-
-.header-btn {
-
-    border: none;
-
-    padding:
-        11px 17px;
-
-    border-radius: 10px;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.16
-        );
-
-    color: white;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-}
-
-
-.header-btn:hover {
-
-    background: white;
-
-    color: #3730a3;
-
-    transform:
-        translateY(-2px);
-
-}
-
-
-/* =====================================================
-   MAIN
-===================================================== */
-
-.main-content {
-
-    width: 100%;
-
-    flex: 1;
-
-    padding:
-        30px 35px 45px;
-
-}
-
-
-.page-title {
-
-    margin-bottom: 24px;
-
-}
-
-
-.page-title h2 {
-
-    font-size: 30px;
-
-    font-weight: 800;
-
-    color: #172554;
-
-}
-
-
-.page-title p {
-
-    margin-top: 7px;
-
-    color: #64748b;
-
-    font-size: 14px;
-
-}
-
-
-/* =====================================================
-   MAIN CARD
-===================================================== */
-
-.papers-card {
-
-    width: 100%;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.96
-        );
-
-    border:
-        1px solid
-        #dbeafe;
-
-    border-radius: 20px;
-
-    padding: 27px;
-
-    box-shadow:
-        0 12px 35px
-        rgba(
-            30,
-            64,
-            175,
-            0.08
-        );
-
-}
-
-
-.card-header {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 13px;
-
-    padding-bottom: 18px;
-
-    border-bottom:
-        1px solid
-        #e5e7eb;
-
-}
-
-
-.card-icon {
-
-    width: 45px;
-
-    height: 45px;
-
-    border-radius: 13px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 22px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #dbeafe,
-            #ede9fe
-        );
-
-}
-
-
-.card-header h3 {
-
-    color: #1e3a8a;
-
-    font-size: 19px;
-
-}
-
-
-.card-header p {
-
-    margin-top: 4px;
-
-    font-size: 12px;
-
-    color: #64748b;
-
-}
-
-
-/* =====================================================
-   FILTER
-===================================================== */
-
-.filter-card {
-
-    margin-top: 22px;
-
-    padding: 22px;
-
-    border-radius: 15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f8fafc,
-            #eef2ff
-        );
-
-    border:
-        1px solid
-        #dbeafe;
-
-}
-
-
-.filter-title {
-
-    font-size: 15px;
-
-    font-weight: 800;
-
-    color: #334155;
-
-    margin-bottom: 17px;
-
-}
-
-
-.filter-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            4,
-            minmax(
-                0,
-                1fr
-            )
-        );
-
-    gap: 17px;
-
-}
-
-
-.filter-group {
-
-    display: flex;
-
-    flex-direction: column;
-
-}
-
-
-.filter-group label {
-
-    margin-bottom: 7px;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    color: #475569;
-
-}
-
-
-.filter-group input,
-.filter-group select {
-
-    width: 100%;
-
-    padding:
-        12px 13px;
-
-    border:
-        1px solid
-        #cbd5e1;
-
-    border-radius: 10px;
-
-    background: white;
-
-    color: #1f2937;
-
-    font-family: inherit;
-
-    font-size: 13px;
-
-    outline: none;
-
-    transition: 0.2s;
-
-}
-
-
-.filter-group input:focus,
-.filter-group select:focus {
-
-    border-color:
-        #6366f1;
-
-    box-shadow:
-        0 0 0 4px
-        rgba(
-            99,
-            102,
-            241,
-            0.10
-        );
-
-}
-
-
-/* =====================================================
-   FILTER BUTTONS
-===================================================== */
-
-.filter-buttons {
-
-    display: flex;
-
-    gap: 10px;
-
-    flex-wrap: wrap;
-
-    margin-top: 18px;
-
-}
-
-
-.btn {
-
-    border: none;
-
-    padding:
-        11px 18px;
-
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    font-family: inherit;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    transition: 0.2s;
-
-}
-
-
-.btn:hover {
-
-    transform:
-        translateY(-2px);
-
-}
-
-
-.btn-primary {
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5
-        );
-
-    color: white;
-
-    box-shadow:
-        0 6px 15px
-        rgba(
-            79,
-            70,
-            229,
-            0.18
-        );
-
-}
-
-
-.btn-secondary {
-
-    background: #eef2ff;
-
-    color: #3730a3;
-
-}
-
-
-.btn-success {
-
-    background:
-        linear-gradient(
-            135deg,
-            #059669,
-            #10b981
-        );
-
-    color: white;
-
-}
-
-
-/* =====================================================
-   STATUS
-===================================================== */
-
-.message {
-
-    margin-top: 18px;
-
-    padding:
-        13px 15px;
-
-    border-radius: 10px;
-
-    background: #f8fafc;
-
-    color: #475569;
-
-    font-size: 13px;
-
-    font-weight: 600;
-
-}
-
-
-.message.error {
-
-    background: #fee2e2;
-
-    color: #991b1b;
-
-}
-
-
-/* =====================================================
-   TABLE
-===================================================== */
-
-.table-section {
-
-    margin-top: 24px;
-
-}
-
-
-.table-title {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 13px;
-
-}
-
-
-.table-title h3 {
-
-    font-size: 16px;
-
-    color: #334155;
-
-}
-
-
-.table-title span {
-
-    padding:
-        6px 10px;
-
-    border-radius: 8px;
-
-    background: #ede9fe;
-
-    color: #6d28d9;
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-}
-
-
-.table-wrapper {
-
-    width: 100%;
-
-    overflow-x: auto;
-
-    border-radius: 13px;
-
-    border:
-        1px solid
-        #e2e8f0;
-
-}
-
-
-.papers-table {
-
-    width: 100%;
-
-    min-width: 1100px;
-
-    border-collapse:
-        separate;
-
-    border-spacing: 0;
-
-}
-
-
-.papers-table th {
-
-    padding:
-        14px 12px;
-
-    text-align: left;
-
-    white-space: nowrap;
-
-    background:
-        linear-gradient(
-            135deg,
-            #eef2ff,
-            #e0e7ff
-        );
-
-    color: #312e81;
-
-    font-size: 11px;
-
-    font-weight: 800;
-
-    border-bottom:
-        1px solid
-        #c7d2fe;
-
-}
-
-
-.papers-table td {
-
-    padding:
-        13px 12px;
-
-    background: white;
-
-    color: #475569;
-
-    font-size: 12px;
-
-    border-bottom:
-        1px solid
-        #e5e7eb;
-
-}
-
-
-.papers-table tbody tr {
-
-    transition: 0.2s;
-
-}
-
-
-.papers-table tbody tr:hover td {
-
-    background:
-        #f8faff;
-
-}
-
-
-.paper-number {
-
-    color: #4338ca !important;
-
-    font-weight: 800;
-
-    white-space: nowrap;
-
-}
-
-
-/* =====================================================
-   ACTION BUTTONS
-===================================================== */
-
-.action-btn {
-
-    border: none;
-
-    padding:
-        8px 11px;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    margin: 2px;
-
-    font-family: inherit;
-
-    font-size: 11px;
-
-    font-weight: 700;
-
-    color: white;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #4f46e5
-        );
-
-    transition: 0.2s;
-
-}
-
-
-.action-btn:hover {
-
-    transform:
-        translateY(-2px);
-
-}
-
-
-.delete-btn {
-
-    background:
-        linear-gradient(
-            135deg,
-            #ef4444,
-            #b91c1c
-        );
-
-}
-
-
-/* =====================================================
-   EMPTY
-===================================================== */
-
-.empty-message {
-
-    text-align: center;
-
-    padding:
-        55px 20px;
-
-    margin-top: 20px;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f8fafc,
-            #f1f5f9
-        );
-
-    color: #64748b;
-
-}
-
-
-.empty-icon {
-
-    font-size: 45px;
-
-    margin-bottom: 10px;
-
-}
-
-
-.empty-message h3 {
-
-    color: #475569;
-
-    font-size: 17px;
-
-}
-
-
-.empty-message p {
-
-    margin-top: 6px;
-
-    font-size: 12px;
-
-}
-
-
-/* =====================================================
-   BOTTOM ACTIONS
-===================================================== */
-
-.bottom-actions {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            1fr
-        );
-
-    gap: 15px;
-
-    margin-top: 24px;
-
-}
-
-
-.bottom-btn {
-
-    border: none;
-
-    padding:
-        15px;
-
-    border-radius: 12px;
-
-    cursor: pointer;
-
-    color: white;
-
-    font-family: inherit;
-
-    font-size: 13px;
-
-    font-weight: 800;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #7c3aed
-        );
-
-    box-shadow:
-        0 7px 18px
-        rgba(
-            79,
-            70,
-            229,
-            0.15
-        );
-
-    transition: 0.2s;
-
-}
-
-
-.bottom-btn:hover {
-
-    transform:
-        translateY(-3px);
-
-}
-
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-footer {
-
-    text-align: center;
-
-    padding:
-        18px;
-
-    color: #64748b;
-
-    font-size: 11px;
-
-}
-
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media (
-    max-width: 1050px
-) {
-
-    .filter-grid {
-
-        grid-template-columns:
-            repeat(
-                2,
-                minmax(
-                    0,
-                    1fr
-                )
-            );
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Previous Papers | PaperForge</title>
+
+  <style>
+    :root {
+      --bg: #080d19;
+      --panel: #111a2b;
+      --panel2: #172238;
+      --border: #26334b;
+      --text: #edf2ff;
+      --muted: #8e9bb5;
+      --accent: #8b7cff;
+      --teal: #36d9c4;
+      --danger: #ff7385;
     }
 
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-
-@media (
-    max-width: 700px
-) {
-
-    .top-header {
-
-        padding:
-            15px 18px;
-
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 80% 0%, #28205b40, transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
     }
 
+    button, input, select { font: inherit; }
 
-    .header-inner {
-
-        flex-direction: column;
-
-        align-items: flex-start;
-
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
     }
 
-
-    .main-content {
-
-        padding:
-            22px 15px 35px;
-
+    .sidebar {
+      background: #0c1322;
+      border-right: 1px solid var(--border);
+      padding: 25px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
     }
 
-
-    .page-title h2 {
-
-        font-size: 25px;
-
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
     }
 
-
-    .papers-card {
-
-        padding: 18px;
-
+    .brand-logo {
+      height: 43px;
+      width: 43px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      font-size: 23px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #8b7cff, #38d9c4);
+      color: #08101d;
     }
 
+    .brand h2 { font-size: 18px; }
+    .brand p { color: var(--muted); font-size: 11px; margin-top: 4px; }
 
-    .filter-card {
-
-        padding: 17px;
-
+    .nav-label {
+      color: #697995;
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      padding: 0 12px;
+      margin-bottom: 10px;
     }
 
+    .nav { display: grid; gap: 7px; }
 
-    .filter-grid {
-
-        grid-template-columns: 1fr;
-
+    .nav a {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      text-decoration: none;
+      color: #aab6cd;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      transition: .2s;
     }
 
+    .nav a:hover { background: var(--panel2); color: white; }
 
-    .bottom-actions {
-
-        grid-template-columns: 1fr;
-
+    .nav a.active {
+      background: linear-gradient(100deg, #7564e82b, #7564e810);
+      border: 1px solid #8274ff42;
+      color: #c7c0ff;
     }
 
-}
+    .nav-icon { width: 20px; text-align: center; font-size: 17px; }
 
-</style>
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, #171f38, #101827);
+      border-radius: 14px;
+    }
 
+    .sidebar-bottom strong { font-size: 12px; }
+
+    .sidebar-bottom p {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .online {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--teal);
+      margin-top: 13px;
+    }
+
+    .online::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    main {
+      min-width: 0;
+      padding: 25px clamp(16px, 3vw, 38px) 40px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 28px;
+    }
+
+    .breadcrumb { color: var(--muted); font-size: 12px; margin-bottom: 7px; }
+    .breadcrumb span { color: var(--accent); }
+    .topbar h1 { font-size: clamp(22px, 3vw, 29px); }
+
+    .top-actions { display: flex; gap: 9px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 9px;
+      padding: 10px 13px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      border: 0;
+      background: linear-gradient(110deg, #8b7cff, #7060e8);
+      color: white;
+    }
+
+    .btn-danger {
+      color: #ff9baa;
+      border-color: #ff73854a;
+      background: #ff73850c;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 25px;
+      border-radius: 18px;
+      border: 1px solid #8576ff35;
+      background:
+        radial-gradient(circle at 90% 15%, #7463e830, transparent 30%),
+        linear-gradient(115deg, #171d39, #101a2c 70%);
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: #bcb3ff;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .hero h2 { font-size: clamp(20px, 3vw, 27px); margin-bottom: 10px; }
+
+    .hero p {
+      color: #a9b5ce;
+      max-width: 700px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .hero-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 18px;
+    }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .badge {
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: #ffffff08;
+      border: 1px solid #ffffff12;
+      font-size: 10px;
+      color: #c8d2e6;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: linear-gradient(145deg, #121c2e, #0f1726);
+      min-width: 0;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-label { color: var(--muted); font-size: 11px; }
+    .stat-icon { font-size: 19px; color: #b8afff; }
+    .stat-value { font-size: 27px; font-weight: 700; margin-top: 12px; }
+    .stat-note { color: #7f8da5; font-size: 10px; margin-top: 6px; }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: linear-gradient(145deg, #121c2e, #0f1726);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h3 { font-size: 15px; }
+    .panel-header p { color: var(--muted); font-size: 11px; margin-top: 6px; }
+
+    .filters {
+      padding: 17px 20px;
+      display: grid;
+      grid-template-columns: minmax(180px, 1.6fr) repeat(3, minmax(125px, 1fr));
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    input, select {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #2a3851;
+      background: #0b1322;
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 9px;
+      outline: none;
+      font-size: 12px;
+    }
+
+    input::placeholder { color: #64738c; }
+    input:focus, select:focus { border-color: var(--accent); }
+    select option { background: #111a2b; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+    }
+
+    th {
+      padding: 14px 16px;
+      background: #0c1423;
+      color: #8e9bb5;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-align: left;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 15px 16px;
+      border-top: 1px solid #26334b9c;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background: #ffffff04; }
+
+    .paper-title { font-weight: 650; line-height: 1.5; }
+    .paper-subtitle { color: var(--muted); font-size: 10px; margin-top: 5px; }
+
+    .pill {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 10px;
+      background: #8b7cff16;
+      border: 1px solid #8b7cff30;
+      color: #c4bbff;
+      white-space: nowrap;
+    }
+
+    .pill.green {
+      background: #36d9c411;
+      border-color: #36d9c42b;
+      color: #76e6d5;
+    }
+
+    .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .row-actions .btn { padding: 7px 9px; font-size: 10px; }
+
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .table-footer p { color: var(--muted); font-size: 11px; }
+    .pagination { display: flex; gap: 7px; }
+
+    .empty {
+      text-align: center;
+      padding: 45px 20px;
+    }
+
+    .empty-icon { font-size: 35px; margin-bottom: 12px; }
+    .empty h3 { font-size: 15px; margin-bottom: 8px; }
+    .empty p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+    .empty .btn { margin-top: 17px; }
+
+    .notice {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 16px 20px 0;
+    }
+
+    .notice.show { display: block; }
+    .notice.error { background: #ff738515; border: 1px solid #ff73854d; color: #ff9baa; }
+    .notice.success { background: #36d9c415; border: 1px solid #36d9c44d; color: #79ead9; }
+    .notice.info { background: #8b7cff15; border: 1px solid #8b7cff4d; color: #c9c1ff; }
+
+    .page-footer {
+      text-align: center;
+      color: #64738c;
+      font-size: 10px;
+      margin-top: 25px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: #030713d9;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.open { display: flex; }
+
+    .modal-box {
+      width: min(720px, 100%);
+      max-height: 85vh;
+      overflow: auto;
+      background: #111a2b;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 23px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-head h3 { font-size: 17px; }
+
+    .modal-content {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #d7e0f0;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .modal-content h4 {
+      color: #bcb3ff;
+      font-size: 12px;
+      margin: 17px 0 7px;
+    }
+
+    .modal-content p { margin-bottom: 8px; }
+
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+
+      .sidebar {
+        padding: 13px;
+        gap: 14px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar .nav-label, .sidebar-bottom { display: none; }
+
+      .nav { display: flex; overflow-x: auto; padding-bottom: 3px; }
+      .nav a { flex-shrink: 0; padding: 10px; font-size: 11px; }
+      .nav-icon { display: none; }
+
+      main { padding: 18px 13px 30px; }
+      .topbar { align-items: flex-start; }
+      .topbar h1 { font-size: 22px; }
+      .top-actions .btn { padding: 9px; font-size: 10px; }
+      .hero { padding: 19px; }
+      .stats { gap: 9px; }
+      .stat { padding: 13px; }
+      .stat-value { font-size: 23px; }
+      .filters { grid-template-columns: 1fr; padding: 14px; }
+      .panel-header { padding: 16px; }
+    }
+
+    @media print {
+      body { background: white !important; color: black !important; }
+      .sidebar, .topbar, .hero, .stats, .filters, .panel-header,
+      .table-footer, .page-footer, .row-actions, .notice, .modal {
+        display: none !important;
+      }
+      .layout { display: block; }
+      main { padding: 0; }
+      .panel { border: 0; background: white; overflow: visible; }
+      .table-wrap { overflow: visible; }
+      table { min-width: 0; }
+      th, td { color: black !important; border: 1px solid #bbb; }
+      th { background: #eee !important; }
+      .pill { color: black !important; border: 0; background: transparent; }
+      .paper-subtitle { color: #444; }
+    }
+  </style>
 </head>
 
-
 <body>
-
-<div class="page">
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<header class="top-header">
-
-    <div class="header-inner">
-
-        <div class="brand">
-
-            <div class="brand-icon">
-                📚
-            </div>
-
-            <div>
-
-                <h1>
-                    Galgotias University
-                </h1>
-
-                <p>
-                    Question Paper Generator System
-                </p>
-
-            </div>
-
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">P</div>
+        <div>
+          <h2>PaperForge</h2>
+          <p>AI Examination Workspace</p>
         </div>
+      </div>
 
+      <div>
+        <p class="nav-label">WORKSPACE</p>
+        <nav class="nav">
+          <a href="dashboard.html"><span class="nav-icon">⌂</span> Dashboard</a>
+          <a href="question-bank.html"><span class="nav-icon">▤</span> Question Bank</a>
+          <a href="create-question.html"><span class="nav-icon">＋</span> Create Question</a>
+          <a href="generate-paper.html"><span class="nav-icon">▧</span> Generate Paper</a>
+          <a href="combined-questions.html"><span class="nav-icon">▦</span> Combined Questions</a>
+          <a href="previous-papers.html" class="active"><span class="nav-icon">◷</span> Previous Papers</a>
+        </nav>
+      </div>
 
-        <div class="header-buttons">
+      <div>
+        <p class="nav-label">UNIVERSITY</p>
+        <nav class="nav">
+          <a href="university.html"><span class="nav-icon">⌂</span> Galgotias University</a>
+          <a href="settings.html"><span class="nav-icon">⚙</span> Settings</a>
+        </nav>
+      </div>
 
-            <button
-                class="header-btn"
-                onclick="
-                    window.location.href='dashboard.html'
-                "
-            >
-                🏠 Dashboard
-            </button>
+      <div class="sidebar-bottom">
+        <strong>▤ Paper Archive</strong>
+        <p>Review previously saved examination papers from your workspace.</p>
+        <span class="online">Archive workspace</span>
+      </div>
+    </aside>
 
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="breadcrumb">Workspace / <span>Previous Papers</span></p>
+          <h1>Previous Question Papers</h1>
         </div>
+        <div class="top-actions">
+          <button class="btn" id="refreshBtn">↻ Refresh</button>
+          <button class="btn" id="printListBtn">⎙ Print List</button>
+          <a href="generate-paper.html" class="btn btn-primary">＋ Generate Paper</a>
+        </div>
+      </header>
 
-    </div>
-
-</header>
-
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
-<main class="main-content">
-
-
-<div class="page-title">
-
-    <h2>
-        📄 Previous Papers
-    </h2>
-
-    <p>
-        View, search and manage your previously generated
-        question papers.
-    </p>
-
-</div>
-
-
-<!-- =====================================================
-     MAIN CARD
-===================================================== -->
-
-<section class="papers-card">
-
-
-<div class="card-header">
-
-    <div class="card-icon">
-        📚
-    </div>
-
-    <div>
-
-        <h3>
-            Saved Question Papers
-        </h3>
-
+      <section class="hero">
+        <div class="eyebrow">✦ PAPER ARCHIVE & HISTORY</div>
+        <h2>Your Examination Papers, Organized</h2>
         <p>
-            All generated papers are stored here for future use.
+          Browse saved papers, search by subject or title, inspect paper details
+          and print an individual paper when its content is available.
         </p>
+        <div class="hero-bottom">
+          <div class="badges">
+            <span class="badge">▤ Saved Papers</span>
+            <span class="badge">⌕ Search & Filter</span>
+            <span class="badge">⎙ Print Support</span>
+          </div>
+          <span class="badge" id="lastUpdated">Last refreshed: —</span>
+        </div>
+      </section>
 
+      <section class="stats">
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Total Papers</span>
+            <span class="stat-icon">▤</span>
+          </div>
+          <div class="stat-value" id="totalCount">—</div>
+          <p class="stat-note">Papers returned by the API</p>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Subjects</span>
+            <span class="stat-icon">◇</span>
+          </div>
+          <div class="stat-value" id="subjectCount">—</div>
+          <p class="stat-note">Distinct subjects in the archive</p>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Courses</span>
+            <span class="stat-icon">⌂</span>
+          </div>
+          <div class="stat-value" id="courseCount">—</div>
+          <p class="stat-note">Distinct courses represented</p>
+        </div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Current Results</span>
+            <span class="stat-icon">⌕</span>
+          </div>
+          <div class="stat-value" id="visibleCount">—</div>
+          <p class="stat-note">Matching your filters</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Saved Papers Library</h3>
+            <p id="resultDescription">Loading saved papers from the server...</p>
+          </div>
+          <button class="btn" id="clearFiltersBtn">Clear Filters</button>
+        </div>
+
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+        <div class="filters">
+          <input id="searchInput" type="search"
+            placeholder="Search title, subject, course...">
+
+          <select id="subjectFilter">
+            <option value="">All Subjects</option>
+          </select>
+
+          <select id="courseFilter">
+            <option value="">All Courses</option>
+          </select>
+
+          <select id="sortFilter">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Title A–Z</option>
+            <option value="subject">Subject A–Z</option>
+          </select>
+        </div>
+
+        <div id="tableContainer" class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Paper Details</th>
+                <th>Course / Semester</th>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Saved Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="papersTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="emptyState" class="empty" hidden>
+          <div class="empty-icon">▤</div>
+          <h3 id="emptyTitle">No Saved Papers Found</h3>
+          <p id="emptyText">
+            Generate and save a question paper to see it in this archive.
+          </p>
+          <a href="generate-paper.html" class="btn btn-primary">＋ Generate a Paper</a>
+        </div>
+
+        <div class="table-footer">
+          <p id="paginationInfo">Showing 0 papers</p>
+          <div class="pagination">
+            <button class="btn" id="prevBtn" disabled>← Previous</button>
+            <button class="btn" id="nextBtn" disabled>Next →</button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="page-footer">
+        PaperForge · Galgotias University · Previous Papers Archive
+      </footer>
+    </main>
+  </div>
+
+  <div class="modal" id="paperModal" role="dialog"
+       aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modalTitle">Paper Details</h3>
+        <button class="btn" id="closeModalBtn">✕ Close</button>
+      </div>
+      <div class="modal-content" id="modalContent"></div>
+      <div class="top-actions" style="margin-top: 20px;">
+        <button class="btn btn-primary" id="printPaperBtn">⎙ Print Paper</button>
+      </div>
     </div>
-
-</div>
-
-
-<!-- =====================================================
-     FILTER
-===================================================== -->
-
-<div class="filter-card">
-
-
-<div class="filter-title">
-    🔍 Search & Filter Papers
-</div>
-
-
-<div class="filter-grid">
-
-
-<div class="filter-group">
-
-    <label for="searchPaper">
-        Search Paper
-    </label>
-
-    <input
-        type="text"
-        id="searchPaper"
-        placeholder="Enter paper name..."
-    >
-
-</div>
-
-
-<div class="filter-group">
-
-    <label for="subjectFilter">
-        Subject
-    </label>
-
-    <select id="subjectFilter">
-
-        <option value="">
-            All Subjects
-        </option>
-
-    </select>
-
-</div>
-
-
-<div class="filter-group">
-
-    <label for="semesterFilter">
-        Semester
-    </label>
-
-    <select id="semesterFilter">
-
-        <option value="">
-            All Semesters
-        </option>
-
-        <option value="Semester 1">
-            Semester 1
-        </option>
-
-        <option value="Semester 2">
-            Semester 2
-        </option>
-
-        <option value="Semester 3">
-            Semester 3
-        </option>
-
-        <option value="Semester 4">
-            Semester 4
-        </option>
-
-        <option value="Semester 5">
-            Semester 5
-        </option>
-
-    </select>
-
-</div>
-
-
-<div class="filter-group">
-
-    <label for="sessionFilter">
-        Academic Session
-    </label>
-
-    <select id="sessionFilter">
-
-        <option value="">
-            All Sessions
-        </option>
-
-    </select>
-
-</div>
-
-
-</div>
-
-
-<div class="filter-buttons">
-
-    <button
-        class="btn btn-primary"
-        onclick="applyFilters()"
-    >
-        🔎 Search / Filter
-    </button>
-
-
-    <button
-        class="btn btn-secondary"
-        onclick="clearFilters()"
-    >
-        ↻ Clear Filters
-    </button>
-
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
-     LOADING
-===================================================== -->
-
-<div
-    id="loadingMessage"
-    class="message"
->
-    ⏳ Loading papers...
-</div>
-
-
-<!-- =====================================================
-     TABLE
-===================================================== -->
-
-<div
-    id="tableContainer"
-    class="table-section"
-    style="display:none;"
->
-
-
-<div class="table-title">
-
-    <h3>
-        📋 Saved Papers
-    </h3>
-
-    <span id="paperCount">
-        0 Papers
-    </span>
-
-</div>
-
-
-<div class="table-wrapper">
-
-<table class="papers-table">
-
-<thead>
-
-<tr>
-
-<th>
-    No.
-</th>
-
-<th>
-    Paper Number
-</th>
-
-<th>
-    Paper Name
-</th>
-
-<th>
-    Subject
-</th>
-
-<th>
-    Semester
-</th>
-
-<th>
-    Marks
-</th>
-
-<th>
-    Academic Session
-</th>
-
-<th>
-    Date
-</th>
-
-<th>
-    Action
-</th>
-
-</tr>
-
-</thead>
-
-
-<tbody
-    id="papersTableBody"
->
-</tbody>
-
-</table>
-
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
-     EMPTY
-===================================================== -->
-
-<div
-    id="emptyMessage"
-    class="empty-message"
-    style="display:none;"
->
-
-    <div class="empty-icon">
-        📭
-    </div>
-
-    <h3>
-        No Previous Papers Found
-    </h3>
-
-    <p>
-        Generate a question paper to see it here.
-    </p>
-
-</div>
-
-
-</section>
-
-
-<!-- =====================================================
-     BOTTOM ACTIONS
-===================================================== -->
-
-<div class="bottom-actions">
-
-<button
-    class="bottom-btn"
-    onclick="
-        window.location.href='generate-paper.html'
-    "
->
-    📝 Generate New Paper
-</button>
-
-
-<button
-    class="bottom-btn"
-    onclick="
-        window.location.href='dashboard.html'
-    "
->
-    🏠 Back to Dashboard
-</button>
-
-</div>
-
-
-</main>
-
-
-<footer>
-
-    Question Paper Generator System
-    • Galgotias University
-
-</footer>
-
-
-</div>
-
-
-<script>
-
-let papers = [];
-
-
-/* =====================================================
-   LOAD PREVIOUS PAPERS
-===================================================== */
-
-async function loadPreviousPapers() {
-
-    const loadingMessage =
-        document.getElementById(
-            "loadingMessage"
-        );
-
-    const tableContainer =
-        document.getElementById(
-            "tableContainer"
-        );
-
-    const emptyMessage =
-        document.getElementById(
-            "emptyMessage"
-        );
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/papers",
-                {
-                    credentials: "include"
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to load papers."
-            );
-
+  </div>
+
+  <script>
+    const API_URL = "/api/papers";
+    const PAGE_SIZE = 10;
+
+    const state = {
+      papers: [],
+      filtered: [],
+      page: 1,
+      selectedPaper: null,
+      loading: false
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const elements = {
+      body: $("papersTableBody"),
+      empty: $("emptyState"),
+      emptyTitle: $("emptyTitle"),
+      emptyText: $("emptyText"),
+      search: $("searchInput"),
+      subject: $("subjectFilter"),
+      course: $("courseFilter"),
+      sort: $("sortFilter"),
+      notice: $("notice"),
+      modal: $("paperModal"),
+      modalTitle: $("modalTitle"),
+      modalContent: $("modalContent")
+    };
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function getValue(obj, keys, fallback = "") {
+      for (const key of keys) {
+        const value = obj?.[key];
+        if (value !== undefined && value !== null && value !== "") {
+          return value;
+        }
+      }
+      return fallback;
+    }
+
+    function getTitle(paper) {
+      return String(getValue(paper, [
+        "title", "paperTitle", "name", "paperName"
+      ], "Untitled Question Paper"));
+    }
+
+    function getSubject(paper) {
+      return String(getValue(paper, [
+        "subject", "subjectName"
+      ], "—"));
+    }
+
+    function getCourse(paper) {
+      return String(getValue(paper, [
+        "course", "program", "programme"
+      ], "—"));
+    }
+
+    function getSemester(paper) {
+      const value = getValue(paper, [
+        "semester", "sem"
+      ], "");
+      return value === "" ? "—" : String(value).replace(/^semester\s*/i, "");
+    }
+
+    function getMarks(paper) {
+      const value = getValue(paper, [
+        "totalMarks", "total_marks", "maxMarks", "marks", "total"
+      ], "");
+      return value === "" ? "—" : value;
+    }
+
+    function getDateValue(paper) {
+      return getValue(paper, [
+        "createdAt", "created_at", "savedAt", "date", "generatedAt", "updatedAt"
+      ], "");
+    }
+
+    function getTimestamp(paper) {
+      const value = getDateValue(paper);
+      if (!value) return 0;
+      const timestamp = new Date(value).getTime();
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    }
+
+    function formatDate(paper) {
+      const value = getDateValue(paper);
+      if (!value) return "—";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleDateString(undefined, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function getPaperId(paper) {
+      return getValue(paper, ["_id", "id", "paperId"], "");
+    }
+
+    function showNotice(message, type = "info") {
+      elements.notice.textContent = message;
+      elements.notice.className = "notice show " + type;
+    }
+
+    function hideNotice() {
+      elements.notice.textContent = "";
+      elements.notice.className = "notice";
+    }
+
+    function normalizePapers(data) {
+      if (Array.isArray(data)) return data;
+
+      if (data && Array.isArray(data.papers)) return data.papers;
+      if (data && Array.isArray(data.data)) return data.data;
+      if (data && Array.isArray(data.results)) return data.results;
+      if (data && Array.isArray(data.items)) return data.items;
+
+      return null;
+    }
+
+    async function fetchPapers() {
+      if (state.loading) return;
+
+      state.loading = true;
+      $("refreshBtn").disabled = true;
+      $("refreshBtn").textContent = "◌ Loading...";
+      hideNotice();
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "GET",
+          headers: { "Accept": "application/json" },
+          credentials: "same-origin"
+        });
+
+        const contentType = response.headers.get("content-type") || "";
+        let data;
+
+        if (contentType.includes("application/json")) {
+          data = await response.json();
+        } else {
+          const text = await response.text();
+          throw new Error(
+            "The papers API returned a non-JSON response. Check the server route."
+          );
         }
 
+        if (!response.ok) {
+          throw new Error(
+            getValue(data, ["error", "message"], "Unable to load papers.")
+          );
+        }
 
-        papers =
-            result.papers || [];
+        const papers = normalizePapers(data);
 
+        if (!papers) {
+          throw new Error(
+            "The response format from GET /api/papers is not recognized."
+          );
+        }
 
-        loadingMessage.style.display =
-            "none";
+        state.papers = papers;
+        state.page = 1;
 
+        populateFilters();
+        applyFilters();
 
-        loadFilterOptions();
+        $("lastUpdated").textContent =
+          "Last refreshed: " + new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          });
 
+        if (papers.length === 0) {
+          showNotice(
+            "No saved papers were returned by the server yet.",
+            "info"
+          );
+        }
+      } catch (error) {
+        console.error("Previous papers loading error:", error);
+        state.papers = [];
+        state.filtered = [];
+        renderTable();
 
-        if (
-            papers.length === 0
-        ) {
+        showNotice(
+          error.message ||
+          "Unable to load saved papers. Make sure the server is running.",
+          "error"
+        );
 
-            tableContainer.style.display =
-                "none";
+        $("resultDescription").textContent =
+          "Could not load the archive from the server.";
+      } finally {
+        state.loading = false;
+        $("refreshBtn").disabled = false;
+        $("refreshBtn").textContent = "↻ Refresh";
+      }
+    }
 
-            emptyMessage.style.display =
-                "block";
+    function populateFilters() {
+      const oldSubject = elements.subject.value;
+      const oldCourse = elements.course.value;
 
+      const subjects = [...new Set(
+        state.papers.map(getSubject).filter((v) => v !== "—")
+      )].sort((a, b) => a.localeCompare(b));
+
+      const courses = [...new Set(
+        state.papers.map(getCourse).filter((v) => v !== "—")
+      )].sort((a, b) => a.localeCompare(b));
+
+      elements.subject.innerHTML =
+        '<option value="">All Subjects</option>' +
+        subjects.map((v) =>
+          `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`
+        ).join("");
+
+      elements.course.innerHTML =
+        '<option value="">All Courses</option>' +
+        courses.map((v) =>
+          `<option value="${escapeHTML(v)}">${escapeHTML(v)}</option>`
+        ).join("");
+
+      if (subjects.includes(oldSubject)) elements.subject.value = oldSubject;
+      if (courses.includes(oldCourse)) elements.course.value = oldCourse;
+    }
+
+    function applyFilters() {
+      const query = elements.search.value.trim().toLowerCase();
+      const subject = elements.subject.value;
+      const course = elements.course.value;
+      const sort = elements.sort.value;
+
+      state.filtered = state.papers.filter((paper) => {
+        const searchable = [
+          getTitle(paper),
+          getSubject(paper),
+          getCourse(paper),
+          getSemester(paper),
+          getValue(paper, ["subjectCode"], ""),
+          getValue(paper, ["_id", "id", "paperId"], "")
+        ].join(" ").toLowerCase();
+
+        return (!query || searchable.includes(query)) &&
+          (!subject || getSubject(paper) === subject) &&
+          (!course || getCourse(paper) === course);
+      });
+
+      state.filtered.sort((a, b) => {
+        if (sort === "oldest") return getTimestamp(a) - getTimestamp(b);
+        if (sort === "title") return getTitle(a).localeCompare(getTitle(b));
+        if (sort === "subject") return getSubject(a).localeCompare(getSubject(b));
+        return getTimestamp(b) - getTimestamp(a);
+      });
+
+      state.page = 1;
+      renderTable();
+    }
+
+    function renderStats() {
+      $("totalCount").textContent = state.papers.length;
+      $("subjectCount").textContent = new Set(
+        state.papers.map(getSubject).filter((v) => v !== "—")
+      ).size;
+      $("courseCount").textContent = new Set(
+        state.papers.map(getCourse).filter((v) => v !== "—")
+      ).size;
+      $("visibleCount").textContent = state.filtered.length;
+    }
+
+    function renderTable() {
+      renderStats();
+
+      const total = state.filtered.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+      if (state.page > pages) state.page = pages;
+
+      const start = (state.page - 1) * PAGE_SIZE;
+      const pageItems = state.filtered.slice(start, start + PAGE_SIZE);
+
+      elements.body.innerHTML = pageItems.map((paper, index) => {
+        const originalIndex = start + index;
+        const title = getTitle(paper);
+        const subject = getSubject(paper);
+        const course = getCourse(paper);
+        const semester = getSemester(paper);
+        const id = getPaperId(paper);
+
+        return `
+          <tr>
+            <td>
+              <div class="paper-title">${escapeHTML(title)}</div>
+              <div class="paper-subtitle">Record ${originalIndex + 1}</div>
+            </td>
+            <td>
+              <div>${escapeHTML(course)}</div>
+              <div class="paper-subtitle">
+                ${semester === "—" ? "Semester not specified" :
+                  "Semester " + escapeHTML(semester)}
+              </div>
+            </td>
+            <td>${escapeHTML(subject)}</td>
+            <td><span class="pill green">${escapeHTML(getMarks(paper))}</span></td>
+            <td>${escapeHTML(formatDate(paper))}</td>
+            <td>
+              <div class="row-actions">
+                <button class="btn btn-primary" data-action="view"
+                  data-index="${originalIndex}">View</button>
+                <button class="btn" data-action="print"
+                  data-index="${originalIndex}">Print</button>
+                <button class="btn btn-danger" data-action="delete"
+                  data-index="${originalIndex}"
+                  ${id ? "" : "disabled"}
+                  title="${id ? "Delete saved paper" : "Paper ID unavailable"}">Delete</button>
+              </div>
+            </td>
+          </tr>`;
+      }).join("");
+
+      const hasResults = total > 0;
+      elements.empty.hidden = hasResults;
+      $("tableContainer").style.display = hasResults ? "" : "none";
+      $("paginationInfo").textContent = total
+        ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total} papers`
+        : "Showing 0 papers";
+
+      $("prevBtn").disabled = state.page <= 1;
+      $("nextBtn").disabled = state.page >= pages;
+
+      if (state.papers.length === 0) {
+        elements.emptyTitle.textContent = "No Saved Papers Found";
+        elements.emptyText.textContent =
+          "Generate and save a question paper to see it in this archive.";
+      } else {
+        elements.emptyTitle.textContent = "No Matching Papers";
+        elements.emptyText.textContent =
+          "Try a different search term or clear your filters.";
+      }
+
+      $("resultDescription").textContent =
+        `${total} matching paper${total === 1 ? "" : "s"} · ${state.papers.length} total in archive`;
+    }
+
+    function getQuestionList(paper) {
+      const candidates = [
+        paper?.questions,
+        paper?.paper?.questions,
+        paper?.content?.questions,
+        paper?.sections
+      ];
+
+      return candidates.find(Array.isArray) || [];
+    }
+
+    function renderPaperDetails(paper) {
+      const questions = getQuestionList(paper);
+      const lines = [];
+
+      lines.push(`<p><strong>Title:</strong> ${escapeHTML(getTitle(paper))}</p>`);
+      lines.push(`<p><strong>Course:</strong> ${escapeHTML(getCourse(paper))}</p>`);
+      lines.push(`<p><strong>Semester:</strong> ${escapeHTML(getSemester(paper))}</p>`);
+      lines.push(`<p><strong>Subject:</strong> ${escapeHTML(getSubject(paper))}</p>`);
+      lines.push(`<p><strong>Total Marks:</strong> ${escapeHTML(getMarks(paper))}</p>`);
+      lines.push(`<p><strong>Saved Date:</strong> ${escapeHTML(formatDate(paper))}</p>`);
+
+      const instructions = getValue(paper, [
+        "instructions", "generalInstructions"
+      ], "");
+
+      if (instructions) {
+        lines.push("<h4>Instructions</h4>");
+        lines.push(`<p>${escapeHTML(instructions)}</p>`);
+      }
+
+      const content = getValue(paper, [
+        "content", "paperContent", "text", "body"
+      ], "");
+
+      if (typeof content === "string" && content.trim()) {
+        lines.push("<h4>Paper Content</h4>");
+        lines.push(`<p>${escapeHTML(content)}</p>`);
+      }
+
+      if (questions.length) {
+        lines.push("<h4>Questions</h4>");
+
+        questions.forEach((item, index) => {
+          if (typeof item === "string") {
+            lines.push(`<p>${index + 1}. ${escapeHTML(item)}</p>`);
             return;
+          }
 
-        }
+          if (Array.isArray(item.questions)) {
+            lines.push(`<h4>${escapeHTML(item.title || item.section || "Section")}</h4>`);
+            item.questions.forEach((q, i) => {
+              lines.push(`<p>${i + 1}. ${escapeHTML(
+                typeof q === "string" ? q : getValue(q, ["question", "text", "content"], JSON.stringify(q))
+              )}</p>`);
+            });
+            return;
+          }
 
+          const questionText = getValue(item, [
+            "question", "text", "content", "questionText"
+          ], "");
 
-        tableContainer.style.display =
-            "block";
+          lines.push(`<p>${index + 1}. ${escapeHTML(
+            questionText || JSON.stringify(item)
+          )}</p>`);
 
-        emptyMessage.style.display =
-            "none";
+          const options = item.options;
+          if (Array.isArray(options)) {
+            lines.push(`<p>Options: ${escapeHTML(options.join(" | "))}</p>`);
+          } else if (options && typeof options === "object") {
+            lines.push(`<p>Options: ${escapeHTML(
+              Object.entries(options).map(([key, value]) => `${key}. ${value}`).join(" | ")
+            )}</p>`);
+          }
 
+          const marks = getValue(item, ["marks", "mark"], "");
+          if (marks !== "") {
+            lines.push(`<p><em>Marks: ${escapeHTML(marks)}</em></p>`);
+          }
+        });
+      }
 
-        displayPapers(
-            papers
-        );
+      if (!questions.length && !(typeof content === "string" && content.trim())) {
+        lines.push("<h4>Stored Record</h4>");
+        lines.push("<p>The record was loaded successfully, but its question-content field could not be identified by this page.</p>");
+        lines.push(`<pre>${escapeHTML(JSON.stringify(paper, null, 2))}</pre>`);
+      }
 
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-
-        loadingMessage.textContent =
-            "⚠️ Unable to load previous papers.";
-
-
-        loadingMessage.classList.add(
-            "error"
-        );
-
-
-        loadingMessage.style.display =
-            "block";
-
+      return lines.join("");
     }
 
-}
-
-
-/* =====================================================
-   FILTER OPTIONS
-===================================================== */
-
-function loadFilterOptions() {
-
-    const subjectFilter =
-        document.getElementById(
-            "subjectFilter"
-        );
-
-    const sessionFilter =
-        document.getElementById(
-            "sessionFilter"
-        );
-
-
-    subjectFilter.innerHTML = `
-        <option value="">
-            All Subjects
-        </option>
-    `;
-
-
-    sessionFilter.innerHTML = `
-        <option value="">
-            All Sessions
-        </option>
-    `;
-
-
-    const subjects =
-        [
-            ...new Set(
-                papers
-                    .map(
-                        function(paper) {
-
-                            return paper.subject;
-
-                        }
-                    )
-                    .filter(
-                        function(subject) {
-
-                            return subject;
-
-                        }
-                    )
-            )
-        ]
-        .sort();
-
-
-    const sessions =
-        [
-            ...new Set(
-                papers
-                    .map(
-                        function(paper) {
-
-                            return paper.academicSession;
-
-                        }
-                    )
-                    .filter(
-                        function(session) {
-
-                            return session;
-
-                        }
-                    )
-            )
-        ]
-        .sort();
-
-
-    subjects.forEach(
-        function(subject) {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                subject;
-
-
-            option.textContent =
-                subject;
-
-
-            subjectFilter.appendChild(
-                option
-            );
-
-        }
-    );
-
-
-    sessions.forEach(
-        function(session) {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value =
-                session;
-
-
-            option.textContent =
-                session;
-
-
-            sessionFilter.appendChild(
-                option
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   APPLY FILTERS
-===================================================== */
-
-function applyFilters() {
-
-    const searchText =
-        document
-            .getElementById(
-                "searchPaper"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const selectedSubject =
-        document
-            .getElementById(
-                "subjectFilter"
-            )
-            .value;
-
-
-    const selectedSemester =
-        document
-            .getElementById(
-                "semesterFilter"
-            )
-            .value;
-
-
-    const selectedSession =
-        document
-            .getElementById(
-                "sessionFilter"
-            )
-            .value;
-
-
-    const filteredPapers =
-        papers.filter(
-            function(paper) {
-
-                const paperName =
-                    String(
-                        paper.paperName ||
-                        ""
-                    )
-                    .toLowerCase();
-
-
-                const subject =
-                    String(
-                        paper.subject ||
-                        ""
-                    );
-
-
-                const semester =
-                    String(
-                        paper.semester ||
-                        ""
-                    );
-
-
-                const session =
-                    String(
-                        paper.academicSession ||
-                        ""
-                    );
-
-
-                return (
-
-                    paperName.includes(
-                        searchText
-                    )
-
-                    &&
-
-                    (
-                        !selectedSubject ||
-                        subject ===
-                        selectedSubject
-                    )
-
-                    &&
-
-                    (
-                        !selectedSemester ||
-                        semester ===
-                        selectedSemester
-                    )
-
-                    &&
-
-                    (
-                        !selectedSession ||
-                        session ===
-                        selectedSession
-                    )
-
-                );
-
+    function openPaper(paper) {
+      state.selectedPaper = paper;
+      elements.modalTitle.textContent = getTitle(paper);
+      elements.modalContent.innerHTML = renderPaperDetails(paper);
+      elements.modal.classList.add("open");
+    }
+
+    function closeModal() {
+      elements.modal.classList.remove("open");
+    }
+
+    function printPaper(paper) {
+      const questions = getQuestionList(paper);
+      const title = getTitle(paper);
+      const questionMarkup = questions.length
+        ? questions.map((item, index) => {
+            if (typeof item === "string") {
+              return `<p>${index + 1}. ${escapeHTML(item)}</p>`;
             }
-        );
 
+            const text = getValue(item, [
+              "question", "text", "content", "questionText"
+            ], JSON.stringify(item));
 
-    displayPapers(
-        filteredPapers
-    );
+            const marks = getValue(item, ["marks", "mark"], "");
 
-}
+            let options = "";
+            if (Array.isArray(item.options)) {
+              options = `<p>${escapeHTML(item.options.join(" | "))}</p>`;
+            } else if (item.options && typeof item.options === "object") {
+              options = `<p>${escapeHTML(
+                Object.entries(item.options).map(([k, v]) => `${k}. ${v}`).join(" | ")
+              )}</p>`;
+            }
 
+            return `<p>${index + 1}. ${escapeHTML(text)}
+              ${marks !== "" ? `(${escapeHTML(marks)} marks)` : ""}</p>${options}`;
+          }).join("")
+        : `<p>${escapeHTML(getValue(paper, ["content", "paperContent", "text", "body"], "No question content was found in this saved record."))}</p>`;
 
-/* =====================================================
-   CLEAR FILTERS
-===================================================== */
+      const printWindow = window.open("", "_blank");
 
-function clearFilters() {
-
-    document.getElementById(
-        "searchPaper"
-    ).value = "";
-
-
-    document.getElementById(
-        "subjectFilter"
-    ).value = "";
-
-
-    document.getElementById(
-        "semesterFilter"
-    ).value = "";
-
-
-    document.getElementById(
-        "sessionFilter"
-    ).value = "";
-
-
-    displayPapers(
-        papers
-    );
-
-}
-
-
-/* =====================================================
-   DISPLAY PAPERS
-===================================================== */
-
-function displayPapers(
-    papersToDisplay
-) {
-
-    const tableBody =
-        document.getElementById(
-            "papersTableBody"
-        );
-
-
-    const tableContainer =
-        document.getElementById(
-            "tableContainer"
-        );
-
-
-    const emptyMessage =
-        document.getElementById(
-            "emptyMessage"
-        );
-
-
-    const paperCount =
-        document.getElementById(
-            "paperCount"
-        );
-
-
-    tableBody.innerHTML = "";
-
-
-    paperCount.textContent =
-        papersToDisplay.length +
-        (
-            papersToDisplay.length === 1
-                ? " Paper"
-                : " Papers"
-        );
-
-
-    if (
-        papersToDisplay.length === 0
-    ) {
-
-        tableContainer.style.display =
-            "none";
-
-
-        emptyMessage.style.display =
-            "block";
-
-
+      if (!printWindow) {
+        showNotice("The print window was blocked. Allow pop-ups and try again.", "error");
         return;
+      }
 
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <title>${escapeHTML(title)}</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #111; margin: 35px; }
+            h1 { text-align: center; font-size: 22px; }
+            .university { text-align: center; font-weight: bold; margin-bottom: 8px; }
+            .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 25px 0; }
+            .instructions { margin-bottom: 20px; }
+            p { line-height: 1.8; white-space: pre-wrap; }
+            h2 { font-size: 16px; margin-top: 25px; }
+            @media print { body { margin: 15mm; } }
+          </style>
+        </head>
+        <body>
+          <div class="university">GALGOTIAS UNIVERSITY</div>
+          <h1>${escapeHTML(title)}</h1>
+          <div class="meta">
+            <div><strong>Course:</strong> ${escapeHTML(getCourse(paper))}</div>
+            <div><strong>Semester:</strong> ${escapeHTML(getSemester(paper))}</div>
+            <div><strong>Subject:</strong> ${escapeHTML(getSubject(paper))}</div>
+            <div><strong>Maximum Marks:</strong> ${escapeHTML(getMarks(paper))}</div>
+          </div>
+          ${getValue(paper, ["instructions", "generalInstructions"], "")
+            ? `<div class="instructions"><strong>Instructions:</strong><p>${escapeHTML(getValue(paper, ["instructions", "generalInstructions"], ""))}</p></div>`
+            : ""}
+          <hr>
+          <h2>Question Paper</h2>
+          ${questionMarkup}
+          <script>
+            window.onload = () => {
+              window.focus();
+              window.print();
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+
+      printWindow.document.close();
     }
 
+    async function deletePaper(paper) {
+      const id = getPaperId(paper);
 
-    tableContainer.style.display =
-        "block";
-
-
-    emptyMessage.style.display =
-        "none";
-
-
-    papersToDisplay.forEach(
-        function(
-            paper,
-            index
-        ) {
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            const date =
-                paper.createdAt
-                    ? new Date(
-                        paper.createdAt
-                    ).toLocaleDateString(
-                        "en-IN"
-                    )
-                    : "-";
-
-
-            const paperNumber =
-                paper.paperLabel ||
-                (
-                    paper.paperNumber
-                        ? "Paper " +
-                          String(
-                              paper.paperNumber
-                          ).padStart(
-                              3,
-                              "0"
-                          )
-                        : "-"
-                );
-
-
-            row.innerHTML = `
-
-                <td>
-                    ${index + 1}
-                </td>
-
-
-                <td class="paper-number">
-                    ${escapeHtml(
-                        paperNumber
-                    )}
-                </td>
-
-
-                <td>
-                    ${escapeHtml(
-                        paper.paperName
-                    )}
-                </td>
-
-
-                <td>
-                    ${escapeHtml(
-                        paper.subject
-                    )}
-                </td>
-
-
-                <td>
-                    ${escapeHtml(
-                        paper.semester
-                    )}
-                </td>
-
-
-                <td>
-                    ${escapeHtml(
-                        paper.maximumMarks
-                    )}
-                </td>
-
-
-                <td>
-                    ${escapeHtml(
-                        paper.academicSession ||
-                        "-"
-                    )}
-                </td>
-
-
-                <td>
-                    ${date}
-                </td>
-
-
-                <td>
-
-                    <button
-                        class="action-btn"
-                        onclick="
-                            viewPaper(
-                                '${escapeHtml(
-                                    paper._id
-                                )}'
-                            )
-                        "
-                    >
-                        👁 View
-                    </button>
-
-
-                    <button
-                        class="
-                            action-btn
-                            delete-btn
-                        "
-                        onclick="
-                            deletePaper(
-                                '${escapeHtml(
-                                    paper._id
-                                )}',
-                                '${escapeHtml(
-                                    paper.paperName
-                                )}'
-                            )
-                        "
-                    >
-                        🗑 Delete
-                    </button>
-
-                </td>
-
-            `;
-
-
-            tableBody.appendChild(
-                row
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   VIEW PAPER
-===================================================== */
-
-function viewPaper(
-    paperId
-) {
-
-    window.location.href =
-        "previous-paper-view.html?id=" +
-        encodeURIComponent(
-            paperId
-        );
-
-}
-
-
-/* =====================================================
-   DELETE PAPER
-===================================================== */
-
-async function deletePaper(
-    paperId,
-    paperName
-) {
-
-    const confirmDelete =
-        confirm(
-            "Are you sure you want to delete this paper?\n\n" +
-            paperName
-        );
-
-
-    if (
-        !confirmDelete
-    ) {
-
+      if (!id) {
+        showNotice("This record has no ID, so it cannot be deleted from the API.", "error");
         return;
+      }
 
-    }
+      const confirmed = window.confirm(
+        `Delete "${getTitle(paper)}"? This action may be permanent.`
+      );
 
+      if (!confirmed) return;
 
-    try {
+      try {
+        /*
+         * This assumes the backend supports DELETE /api/papers/:id.
+         * If server.js uses another route, change this URL to that
+         * existing route. A successful HTTP response is required before
+         * the UI removes the record.
+         */
+        const response = await fetch(
+          `${API_URL}/${encodeURIComponent(id)}`,
+          {
+            method: "DELETE",
+            headers: { "Accept": "application/json" },
+            credentials: "same-origin"
+          }
+        );
 
-        const response =
-            await fetch(
-                "/api/papers/" +
-                encodeURIComponent(
-                    paperId
-                ),
-                {
-                    method:
-                        "DELETE",
-
-                    credentials:
-                        "include"
-                }
-            );
-
-
-        const result =
-            await response.json();
-
+        const contentType = response.headers.get("content-type") || "";
+        const data = contentType.includes("application/json")
+          ? await response.json()
+          : { message: await response.text() };
 
         if (!response.ok) {
-
-            throw new Error(
-                result.message ||
-                "Unable to delete paper."
-            );
-
+          throw new Error(
+            getValue(data, ["error", "message"],
+              `Delete failed (HTTP ${response.status}). The backend may not have a delete route.`)
+          );
         }
 
-
-        alert(
-            "Question paper deleted successfully."
+        showNotice("Paper deleted successfully.", "success");
+        await fetchPapers();
+      } catch (error) {
+        console.error("Delete paper error:", error);
+        showNotice(
+          error.message ||
+          "Unable to delete the paper. Check the existing delete route in server.js.",
+          "error"
         );
-
-
-        await loadPreviousPapers();
-
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-
-        alert(
-            "Failed to delete question paper."
-        );
-
+      }
     }
 
-}
+    elements.body.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
 
+      const index = Number(button.dataset.index);
+      const paper = state.filtered[index];
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+      if (!paper) return;
 
-function escapeHtml(
-    value
-) {
+      const action = button.dataset.action;
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
+      if (action === "view") openPaper(paper);
+      if (action === "print") printPaper(paper);
+      if (action === "delete") deletePaper(paper);
+    });
 
-        return "";
-    }
+    $("refreshBtn").addEventListener("click", fetchPapers);
+    $("searchInput").addEventListener("input", applyFilters);
+    $("subjectFilter").addEventListener("change", applyFilters);
+    $("courseFilter").addEventListener("change", applyFilters);
+    $("sortFilter").addEventListener("change", applyFilters);
 
+    $("clearFiltersBtn").addEventListener("click", () => {
+      elements.search.value = "";
+      elements.subject.value = "";
+      elements.course.value = "";
+      elements.sort.value = "newest";
+      applyFilters();
+      hideNotice();
+    });
 
-    return String(value)
+    $("prevBtn").addEventListener("click", () => {
+      if (state.page > 1) {
+        state.page--;
+        renderTable();
+      }
+    });
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    $("nextBtn").addEventListener("click", () => {
+      const pages = Math.max(1, Math.ceil(state.filtered.length / PAGE_SIZE));
+      if (state.page < pages) {
+        state.page++;
+        renderTable();
+      }
+    });
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+    $("printListBtn").addEventListener("click", () => window.print());
+    $("closeModalBtn").addEventListener("click", closeModal);
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+    $("paperModal").addEventListener("click", (event) => {
+      if (event.target === elements.modal) closeModal();
+    });
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModal();
+    });
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    $("printPaperBtn").addEventListener("click", () => {
+      if (state.selectedPaper) printPaper(state.selectedPaper);
+    });
 
-}
-
-
-/* =====================================================
-   LIVE SEARCH
-===================================================== */
-
-document
-    .getElementById(
-        "searchPaper"
-    )
-    .addEventListener(
-        "input",
-        applyFilters
-    );
-
-
-/* =====================================================
-   START
-===================================================== */
-
-loadPreviousPapers();
-
-</script>
-
+    fetchPapers();
+  </script>
 </body>
-
 </html>

@@ -1,21 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Secure Access - Question Paper Generator
-    </title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050b18">
+    <title>PaperForge AI | Secure Access</title>
 
     <style>
+        :root {
+            --bg: #050b18;
+            --panel: rgba(12, 24, 46, 0.88);
+            --cyan: #42e8ff;
+            --blue: #4787ff;
+            --muted: #9aabc8;
+            --white: #f4f8ff;
+        }
 
         * {
             box-sizing: border-box;
@@ -23,1293 +23,911 @@
             padding: 0;
         }
 
-
         body {
-
             min-height: 100vh;
-
-            font-family:
-                Arial,
-                sans-serif;
-
-            color: white;
-
-            overflow: hidden;
-
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--white);
             background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(61, 174, 233, 0.25),
-                    transparent 28%
-                ),
-
-                radial-gradient(
-                    circle at 85% 80%,
-                    rgba(245, 166, 35, 0.20),
-                    transparent 30%
-                ),
-
-                linear-gradient(
-                    135deg,
-                    #07152f,
-                    #0b2450,
-                    #123d78
-                );
-
+                radial-gradient(ellipse at 20% 20%, #123b7066, transparent 40%),
+                radial-gradient(ellipse at 85% 75%, #087b9860, transparent 35%),
+                linear-gradient(135deg, #030712, #07152c 55%, #061021);
+            overflow-x: hidden;
         }
 
-
-        /* =====================================
-           BACKGROUND EFFECTS
-        ===================================== */
-
-        .background-glow {
-
+        body::before {
+            content: "";
             position: fixed;
-
-            width: 420px;
-            height: 420px;
-
-            border-radius: 50%;
-
-            filter: blur(80px);
-
-            opacity: 0.35;
-
+            inset: 0;
             pointer-events: none;
-
+            opacity: 0.22;
+            background-image:
+                linear-gradient(#6acfff18 1px, transparent 1px),
+                linear-gradient(90deg, #6acfff18 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(to bottom, black, transparent 90%);
         }
 
-
-        .glow-one {
-
-            top: -180px;
-            left: -150px;
-
-            background: #168bd1;
-
+        .glow {
+            position: fixed;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.24;
+            pointer-events: none;
+            animation: glowMove 9s ease-in-out infinite alternate;
         }
 
-
-        .glow-two {
-
-            right: -180px;
-            bottom: -170px;
-
-            background: #f5a623;
-
+        .glow.one {
+            background: #147bff;
+            top: -150px;
+            left: -100px;
         }
 
+        .glow.two {
+            background: #00e5ff;
+            bottom: -180px;
+            right: -100px;
+            animation-delay: -4s;
+        }
 
-        /* =====================================
-           MAIN
-        ===================================== */
+        @keyframes glowMove {
+            from { transform: translate(0, 0); }
+            to { transform: translate(45px, 35px); }
+        }
 
-        .page {
-
-            min-height: 100vh;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 30px;
-
+        .topbar {
             position: relative;
-
+            z-index: 2;
+            width: min(1250px, 92%);
+            margin: auto;
+            padding: 25px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-bottom: 1px solid #ffffff12;
         }
 
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        .content {
-
-            width: 100%;
-
-            max-width: 1050px;
-
+        .brand-icon {
+            width: 44px;
+            height: 44px;
             display: grid;
-
-            grid-template-columns:
-                1fr 430px;
-
-            gap: 70px;
-
-            align-items: center;
-
+            place-items: center;
+            border: 1px solid #42e8ff75;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #153b67, #0b1a31);
+            box-shadow: 0 0 24px #42e8ff19;
+            font-size: 24px;
         }
 
-
-        /* =====================================
-           LEFT SIDE
-        ===================================== */
-
-        .branding {
-
-            padding: 20px;
-
+        .brand-name {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
         }
 
+        .brand-name span {
+            color: var(--cyan);
+        }
 
-        .university-badge {
+        .brand-caption {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+            letter-spacing: 1.2px;
+        }
 
-            display: inline-flex;
-
+        .secure-status {
+            display: flex;
             align-items: center;
-
-            gap: 10px;
-
-            padding:
-                9px 15px;
-
-            border:
-                1px solid
-                rgba(255,255,255,0.18);
-
-            border-radius: 30px;
-
-            background:
-                rgba(255,255,255,0.07);
-
-            backdrop-filter:
-                blur(10px);
-
+            gap: 9px;
+            color: #b9cbe4;
             font-size: 12px;
-
-            letter-spacing: 1px;
-
-            text-transform:
-                uppercase;
-
-            color: #dbeaff;
-
-            margin-bottom: 25px;
-
+            border: 1px solid #ffffff17;
+            background: #ffffff08;
+            padding: 10px 14px;
+            border-radius: 30px;
         }
 
-
-        .university-badge span {
-
+        .status-dot {
             width: 8px;
             height: 8px;
-
+            background: #4df6a5;
             border-radius: 50%;
-
-            background: #55d98a;
-
-            box-shadow:
-                0 0 12px
-                rgba(85,217,138,0.8);
-
+            box-shadow: 0 0 12px #4df6a5;
         }
 
+        .main {
+            position: relative;
+            z-index: 1;
+            width: min(1250px, 92%);
+            min-height: calc(100vh - 115px);
+            margin: auto;
+            padding: 40px 0 65px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+            align-items: center;
+            gap: 60px;
+        }
 
-        .branding h1 {
+        .hero {
+            padding: 15px 0;
+        }
 
-            font-size: 52px;
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 14px;
+            color: #9eefff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.7px;
+            border: 1px solid #42e8ff3b;
+            background: #42e8ff0b;
+            border-radius: 30px;
+        }
 
+        .eyebrow .spark {
+            color: #fff;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
+
+        h1 {
+            margin-top: 25px;
+            max-width: 700px;
+            font-size: clamp(38px, 5vw, 66px);
             line-height: 1.08;
-
-            margin-bottom: 16px;
-
-            letter-spacing: -1px;
-
+            letter-spacing: -2px;
         }
 
-
-        .branding h1 span {
-
+        h1 .gradient-text {
             display: block;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #ffffff,
-                    #74cfff,
-                    #ffd36a
-                );
-
-            -webkit-background-clip:
-                text;
-
-            background-clip:
-                text;
-
-            color:
-                transparent;
-
+            background: linear-gradient(90deg, #fff 5%, #75dcff 48%, #758dff 95%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-
-        .branding p {
-
-            max-width: 600px;
-
-            color:
-                rgba(255,255,255,0.72);
-
-            font-size: 16px;
-
-            line-height: 1.7;
-
+        .hero-description {
+            max-width: 570px;
+            margin-top: 22px;
+            color: #a6b7d1;
+            font-size: 15px;
+            line-height: 1.9;
         }
 
-
-        .feature-row {
-
+        .feature-list {
+            margin-top: 25px;
             display: flex;
-
             flex-wrap: wrap;
-
-            gap: 12px;
-
-            margin-top: 30px;
-
+            gap: 10px;
         }
-
 
         .feature {
-
-            padding:
-                10px 14px;
-
-            border-radius: 10px;
-
-            background:
-                rgba(255,255,255,0.06);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.10);
-
-            color:
-                rgba(255,255,255,0.78);
-
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            color: #d1e3fa;
             font-size: 12px;
-
+            border: 1px solid #ffffff12;
+            background: #ffffff07;
+            border-radius: 10px;
         }
 
+        .feature span {
+            color: var(--cyan);
+        }
 
-        /* =====================================
-           LOGIN CARD
-        ===================================== */
+        /* Futuristic AI robot illustration */
+
+        .robot-scene {
+            position: relative;
+            width: min(100%, 460px);
+            height: 300px;
+            margin: 28px auto 0;
+            display: grid;
+            place-items: center;
+            perspective: 800px;
+        }
+
+        .robot-aura {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #16cfff35, #315aff15 45%, transparent 72%);
+            animation: auraPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes auraPulse {
+            from { transform: scale(0.88); opacity: 0.6; }
+            to { transform: scale(1.15); opacity: 1; }
+        }
+
+        .orbit {
+            position: absolute;
+            width: 285px;
+            height: 100px;
+            border: 1px solid #42e8ff55;
+            border-radius: 50%;
+            transform: rotate(-24deg);
+            box-shadow: 0 0 15px #42e8ff12;
+        }
+
+        .orbit.orbit-two {
+            width: 315px;
+            height: 135px;
+            transform: rotate(34deg);
+            border-color: #658cff40;
+        }
+
+        .orbit-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 14px var(--cyan);
+            top: 25%;
+            left: 22%;
+        }
+
+        .orbit-dot.dot-two {
+            top: 68%;
+            left: 77%;
+            background: #8295ff;
+            box-shadow: 0 0 14px #8295ff;
+        }
+
+        .robot {
+            position: relative;
+            z-index: 1;
+            width: 190px;
+            height: 230px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            animation: robotFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 12px 22px #00cfff17);
+        }
+
+        @keyframes robotFloat {
+            0%, 100% { transform: translateY(0) rotateY(-4deg); }
+            50% { transform: translateY(-12px) rotateY(4deg); }
+        }
+
+        .antenna {
+            width: 4px;
+            height: 22px;
+            background: var(--cyan);
+            position: relative;
+            box-shadow: 0 0 12px var(--cyan);
+        }
+
+        .antenna::before {
+            content: "";
+            position: absolute;
+            top: -7px;
+            left: -5px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #b5f8ff;
+            box-shadow: 0 0 18px var(--cyan);
+        }
+
+        .robot-head {
+            width: 150px;
+            height: 112px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            border: 2px solid #53eaff;
+            border-radius: 37px 37px 28px 28px;
+            background: linear-gradient(145deg, #294a73, #101d35 65%, #091326);
+            box-shadow:
+                inset 0 0 25px #42e8ff17,
+                0 0 25px #42e8ff26;
+        }
+
+        .robot-head::before {
+            content: "";
+            position: absolute;
+            inset: 7px;
+            border: 1px solid #ffffff12;
+            border-radius: 29px 29px 21px 21px;
+        }
+
+        .robot-ear {
+            position: absolute;
+            top: 33px;
+            width: 13px;
+            height: 37px;
+            border: 1px solid #42e8ff;
+            border-radius: 6px;
+            background: #1b7595;
+            box-shadow: 0 0 13px #42e8ff30;
+        }
+
+        .robot-ear.left { left: -12px; }
+        .robot-ear.right { right: -12px; }
+
+        .robot-eye {
+            width: 25px;
+            height: 17px;
+            border-radius: 50%;
+            background: #a9faff;
+            box-shadow: 0 0 18px #42e8ff, 0 0 30px #42e8ff55;
+            animation: eyeBlink 5s infinite;
+        }
+
+        @keyframes eyeBlink {
+            0%, 45%, 49%, 100% { transform: scaleY(1); }
+            47% { transform: scaleY(0.12); }
+        }
+
+        .robot-mouth {
+            position: absolute;
+            bottom: 19px;
+            width: 40px;
+            height: 5px;
+            border-radius: 10px;
+            background: #42e8ff;
+            box-shadow: 0 0 12px #42e8ff;
+        }
+
+        .robot-neck {
+            width: 44px;
+            height: 14px;
+            background: linear-gradient(90deg, #145879, #53eaff, #145879);
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+        }
+
+        .robot-body {
+            width: 125px;
+            height: 72px;
+            border: 2px solid #42e8ff;
+            border-radius: 23px 23px 17px 17px;
+            background: linear-gradient(145deg, #27456c, #0b162a);
+            display: grid;
+            place-items: center;
+            box-shadow: inset 0 0 20px #42e8ff14, 0 0 20px #42e8ff18;
+        }
+
+        .robot-core {
+            width: 33px;
+            height: 33px;
+            border: 2px solid #a2f7ff;
+            border-radius: 50%;
+            background: radial-gradient(circle, #9ffaff, #16a6d8 45%, #102b4d 70%);
+            box-shadow: 0 0 18px #42e8ff;
+        }
+
+        .scene-label {
+            position: absolute;
+            bottom: 0;
+            color: #91dfff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 4px;
+        }
+
+        /* Login card */
 
         .login-card {
-
             position: relative;
-
-            width: 100%;
-
-            padding: 36px;
-
+            padding: 35px;
+            border: 1px solid #9bd9ff30;
             border-radius: 25px;
-
-            background:
-                rgba(255,255,255,0.96);
-
-            color: #172033;
-
-            border:
-                1px solid
-                rgba(255,255,255,0.35);
-
-            box-shadow:
-                0 30px 80px
-                rgba(0,0,0,0.30);
-
-            backdrop-filter:
-                blur(20px);
-
+            background: linear-gradient(145deg, #10213bea, #081326f5);
+            box-shadow: 0 25px 80px #00000045, inset 0 1px #ffffff0c;
+            backdrop-filter: blur(20px);
             overflow: hidden;
-
         }
-
 
         .login-card::before {
-
             content: "";
-
             position: absolute;
-
             top: 0;
             left: 0;
-
-            width: 100%;
-
-            height: 5px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #1f4fa3,
-                    #3daee9,
-                    #f5a623
-                );
-
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #42e8ff, #637cff, transparent);
         }
-
-
-        /* =====================================
-           LOCK ICON
-        ===================================== */
 
         .lock-icon {
-
-            width: 76px;
-            height: 76px;
-
-            border-radius: 22px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 38px;
-
+            width: 62px;
+            height: 62px;
+            display: grid;
+            place-items: center;
             margin-bottom: 22px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #e8f4ff,
-                    #dbeeff
-                );
-
-            box-shadow:
-                inset 0 0 0 1px
-                rgba(31,79,163,0.06);
-
+            border: 1px solid #42e8ff42;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #1d4166, #10223d);
+            box-shadow: 0 0 25px #42e8ff15;
+            font-size: 29px;
         }
-
 
         .login-card h2 {
-
-            color:
-                #173d82;
-
             font-size: 29px;
-
-            margin-bottom: 8px;
-
+            letter-spacing: -0.5px;
         }
-
 
         .login-subtitle {
-
-            color:
-                #6d7890;
-
-            font-size: 14px;
-
-            line-height: 1.6;
-
-            margin-bottom: 28px;
-
+            margin-top: 10px;
+            margin-bottom: 27px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
         }
-
-
-        /* =====================================
-           INPUT
-        ===================================== */
 
         .input-label {
-
             display: block;
-
-            color:
-                #273b60;
-
-            font-size: 13px;
-
-            font-weight: bold;
-
-            margin-bottom: 8px;
-
+            margin-bottom: 9px;
+            color: #d6e6fb;
+            font-size: 12px;
+            font-weight: 700;
         }
-
 
         .input-wrapper {
-
             position: relative;
-
-            margin-bottom: 18px;
-
+            margin-bottom: 19px;
         }
-
 
         .password-input {
-
             width: 100%;
-
-            height: 51px;
-
-            border:
-                1px solid #d6dfeb;
-
+            height: 52px;
+            padding: 0 52px 0 15px;
+            color: white;
+            background: #050d1c;
+            border: 1px solid #354967;
             border-radius: 12px;
-
-            padding:
-                0 50px 0 16px;
-
             outline: none;
-
             font-size: 14px;
-
-            color:
-                #172033;
-
-            background:
-                #f9fbfe;
-
-            transition:
-                0.2s;
-
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-
-
-        .password-input:focus {
-
-            border-color:
-                #2788cf;
-
-            background:
-                white;
-
-            box-shadow:
-                0 0 0 4px
-                rgba(39,136,207,0.10);
-
-        }
-
 
         .password-input::placeholder {
-
-            color:
-                #a0a9b8;
-
+            color: #71839f;
         }
 
+        .password-input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px #42e8ff17;
+        }
 
         .toggle-password {
-
             position: absolute;
-
-            right: 10px;
-
             top: 50%;
-
-            transform:
-                translateY(-50%);
-
+            right: 12px;
+            transform: translateY(-50%);
             border: none;
-
-            background:
-                transparent;
-
+            background: transparent;
+            color: #9cb2d2;
             cursor: pointer;
-
             font-size: 18px;
-
-            padding: 6px;
-
-            color:
-                #5d7190;
-
+            padding: 5px;
         }
-
-
-        .toggle-password:hover {
-
-            color:
-                #1f4fa3;
-
-        }
-
-
-        /* =====================================
-           LOGIN BUTTON
-        ===================================== */
 
         .login-btn {
-
             width: 100%;
-
-            height: 51px;
-
-            border: none;
-
+            min-height: 52px;
+            border: 1px solid #6af1ff65;
             border-radius: 12px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #1f4fa3,
-                    #168bd1
-                );
-
+            background: linear-gradient(110deg, #176bd4, #138cae);
             color: white;
-
             font-size: 14px;
-
-            font-weight: bold;
-
+            font-weight: 800;
             cursor: pointer;
-
-            box-shadow:
-                0 8px 20px
-                rgba(31,79,163,0.25);
-
-            transition:
-                0.25s;
-
+            box-shadow: 0 8px 25px #087cbb35;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-
 
         .login-btn:hover {
-
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 12px 25px
-                rgba(31,79,163,0.32);
-
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px #087cbb55;
         }
-
 
         .login-btn:disabled {
-
-            opacity: 0.6;
-
-            cursor:
-                not-allowed;
-
-            transform:
-                none;
-
+            opacity: 0.65;
+            cursor: wait;
+            transform: none;
         }
-
-
-        /* =====================================
-           FORGOT PASSWORD
-        ===================================== */
 
         .forgot-link {
-
-            display: block;
-
-            text-align: center;
-
-            margin-top: 18px;
-
-            color:
-                #1f67a8;
-
-            text-decoration:
-                none;
-
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 48px;
+            margin-top: 13px;
+            padding: 12px 15px;
+            border: 1px solid #3b6b9a;
+            border-radius: 12px;
+            background: #0d1c31;
+            color: #91dcff;
+            text-decoration: none;
             font-size: 13px;
-
-            font-weight: bold;
-
+            font-weight: 700;
+            transition: 0.2s;
         }
-
 
         .forgot-link:hover {
-
-            text-decoration:
-                underline;
-
+            border-color: var(--cyan);
+            background: #102a43;
+            box-shadow: 0 0 20px #42e8ff10;
         }
 
-
-        /* =====================================
-           ERROR MESSAGE
-        ===================================== */
+        .forgot-arrow {
+            margin-left: auto;
+            font-size: 19px;
+        }
 
         #message {
-
             display: none;
-
-            margin-top: 17px;
-
-            padding:
-                12px 14px;
-
+            margin-top: 16px;
+            padding: 12px;
             border-radius: 10px;
-
-            font-size: 13px;
-
-            line-height: 1.5;
-
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
         }
-
 
         #message.error {
-
             display: block;
-
-            background:
-                #fff0f0;
-
-            border:
-                1px solid #f1c7c7;
-
-            color:
-                #a52525;
-
+            color: #ffb6b6;
+            background: #9e29291c;
+            border: 1px solid #ff737340;
         }
-
 
         #message.success {
-
             display: block;
-
-            background:
-                #eaf8ef;
-
-            border:
-                1px solid #bee5cb;
-
-            color:
-                #19713a;
-
+            color: #9fffd0;
+            background: #20a76519;
+            border: 1px solid #4df6a540;
         }
-
-
-        /* =====================================
-           CARD FOOTER
-        ===================================== */
 
         .secure-note {
-
-            margin-top: 25px;
-
-            padding-top: 18px;
-
-            border-top:
-                1px solid #e7ebf2;
-
-            text-align: center;
-
-            color:
-                #8a94a6;
-
+            margin-top: 23px;
+            padding-top: 17px;
+            border-top: 1px solid #ffffff12;
+            color: #8193ae;
             font-size: 11px;
-
+            text-align: center;
         }
 
-
-        /* =====================================
-           BOTTOM BRAND
-        ===================================== */
-
-        .bottom-brand {
-
-            position: fixed;
-
-            bottom: 18px;
-
-            left: 0;
-
+        .footer {
+            position: relative;
+            z-index: 1;
             width: 100%;
-
+            padding: 0 15px 20px;
             text-align: center;
-
-            color:
-                rgba(255,255,255,0.45);
-
+            color: #6e819e;
             font-size: 11px;
-
-            pointer-events: none;
-
         }
-
-
-        /* =====================================
-           RESPONSIVE
-        ===================================== */
 
         @media (max-width: 900px) {
-
-            body {
-
-                overflow: auto;
-
+            .main {
+                grid-template-columns: 1fr;
+                max-width: 590px;
+                gap: 25px;
+                padding-top: 35px;
             }
 
-
-            .page {
-
-                padding:
-                    30px 18px 70px;
-
-            }
-
-
-            .content {
-
-                grid-template-columns:
-                    1fr;
-
-                gap: 30px;
-
-                max-width: 550px;
-
-            }
-
-
-            .branding {
-
+            .hero {
                 text-align: center;
-
-                padding: 0;
-
             }
 
-
-            .university-badge {
-
-                margin-bottom: 18px;
-
+            .hero-description {
+                margin-left: auto;
+                margin-right: auto;
             }
 
-
-            .branding h1 {
-
-                font-size: 38px;
-
+            .feature-list {
+                justify-content: center;
             }
 
-
-            .branding p {
-
-                margin:
-                    auto;
-
+            .robot-scene {
+                margin-top: 15px;
+                height: 270px;
             }
-
-
-            .feature-row {
-
-                justify-content:
-                    center;
-
-            }
-
-
-            .bottom-brand {
-
-                position: static;
-
-                margin-top: 10px;
-
-                padding-bottom: 15px;
-
-            }
-
-        }
-
-
-        @media (max-width: 500px) {
-
-            .branding h1 {
-
-                font-size: 31px;
-
-            }
-
-
-            .branding p {
-
-                font-size: 14px;
-
-            }
-
 
             .login-card {
-
-                padding:
-                    28px 22px;
-
-                border-radius:
-                    20px;
-
+                margin-bottom: 20px;
             }
-
-
-            .login-card h2 {
-
-                font-size: 25px;
-
-            }
-
         }
 
-    </style>
+        @media (max-width: 520px) {
+            .topbar {
+                padding: 18px 0;
+            }
 
+            .brand-name {
+                font-size: 16px;
+            }
+
+            .brand-caption {
+                font-size: 9px;
+            }
+
+            .secure-status {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .main {
+                padding-top: 25px;
+            }
+
+            h1 {
+                font-size: 39px;
+                letter-spacing: -1.3px;
+            }
+
+            .hero-description {
+                font-size: 13px;
+            }
+
+            .robot-scene {
+                transform: scale(0.9);
+                transform-origin: center;
+                margin-top: 0;
+                margin-bottom: -10px;
+                width: 100%;
+            }
+
+            .login-card {
+                padding: 26px 21px;
+                border-radius: 20px;
+            }
+
+            .login-card h2 {
+                font-size: 25px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
 
-
 <body>
+    <div class="glow one"></div>
+    <div class="glow two"></div>
 
-
-<!-- =====================================
-     BACKGROUND
-===================================== -->
-
-<div class="background-glow glow-one"></div>
-
-<div class="background-glow glow-two"></div>
-
-
-
-<div class="page">
-
-
-    <div class="content">
-
-
-        <!-- =================================
-             BRANDING
-        ================================== -->
-
-        <section class="branding">
-
-
-            <div class="university-badge">
-
-                <span></span>
-
-                Galgotias University
-
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">✦</div>
+            <div>
+                <div class="brand-name">PAPER<span>FORGE</span></div>
+                <div class="brand-caption">AI QUESTION PAPER GENERATOR</div>
             </div>
+        </div>
 
+        <div class="secure-status">
+            <span class="status-dot"></span>
+            SECURE ACCESS
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="eyebrow">
+                <span class="spark">✦</span>
+                INTELLIGENT ACADEMIC PLATFORM
+            </div>
 
             <h1>
-
-                Question Paper
-
-                <span>
-                    Generator System
-                </span>
-
+                The Future of
+                <span class="gradient-text">Question Papers.</span>
             </h1>
 
-
-            <p>
-
-                A secure academic platform for creating,
-                managing and generating university
-                question papers with an organized
-                digital question bank.
-
+            <p class="hero-description">
+                Welcome to PaperForge AI — your secure academic workspace
+                for organizing question banks and generating structured
+                university examination papers.
             </p>
 
-
-            <div class="feature-row">
-
-                <div class="feature">
-                    📚 Question Bank
-                </div>
-
-                <div class="feature">
-                    📝 Paper Generator
-                </div>
-
-                <div class="feature">
-                    💾 Secure Database
-                </div>
-
+            <div class="feature-list">
+                <div class="feature"><span>✦</span> AI-Powered Tools</div>
+                <div class="feature"><span>▤</span> Smart Question Bank</div>
+                <div class="feature"><span>⬡</span> Secure Access</div>
             </div>
 
+            <div class="robot-scene" aria-label="Animated futuristic AI robot illustration">
+                <div class="robot-aura"></div>
+                <div class="orbit">
+                    <span class="orbit-dot"></span>
+                </div>
+                <div class="orbit orbit-two">
+                    <span class="orbit-dot dot-two"></span>
+                </div>
 
+                <div class="robot">
+                    <div class="antenna"></div>
+
+                    <div class="robot-head">
+                        <div class="robot-ear left"></div>
+                        <div class="robot-ear right"></div>
+                        <div class="robot-eye"></div>
+                        <div class="robot-eye"></div>
+                        <div class="robot-mouth"></div>
+                    </div>
+
+                    <div class="robot-neck"></div>
+
+                    <div class="robot-body">
+                        <div class="robot-core"></div>
+                    </div>
+                </div>
+
+                <div class="scene-label">PAPERFORGE AI CORE</div>
+            </div>
         </section>
 
-
-
-        <!-- =================================
-             LOGIN
-        ================================== -->
-
         <section class="login-card">
+            <div class="lock-icon">🔐</div>
 
-
-            <div class="lock-icon">
-                🔐
-            </div>
-
-
-            <h2>
-                System Locked
-            </h2>
-
+            <h2>Welcome Back</h2>
 
             <p class="login-subtitle">
-
-                Enter your password to securely
-                access the Question Paper Generator
-                System.
-
+                Your academic workspace is locked.
+                Enter your website password to continue.
             </p>
 
-
-
-            <label
-                class="input-label"
-                for="password"
-            >
-                Website Password
+            <label class="input-label" for="password">
+                WEBSITE PASSWORD
             </label>
 
-
             <div class="input-wrapper">
-
-
                 <input
                     type="password"
                     id="password"
                     class="password-input"
                     placeholder="Enter your password"
                     autocomplete="current-password"
+                    aria-label="Website password"
                 >
-
 
                 <button
                     type="button"
                     id="togglePassword"
                     class="toggle-password"
                     title="Show password"
-                >
-                    👁
-                </button>
-
-
+                    aria-label="Show password"
+                >👁</button>
             </div>
 
-
-
-            <button
-                type="button"
-                id="loginBtn"
-                class="login-btn"
-            >
-                🔓 Unlock System
+            <button type="button" id="loginBtn" class="login-btn">
+                🔓 &nbsp; Unlock System
             </button>
 
-
-
-            <a
-                href="forgot-password.html"
-                class="forgot-link"
-            >
-                Forgot Password?
+            <a href="forgot-password.html" class="forgot-link">
+                <span>🔑</span>
+                <span>Forgot Password?</span>
+                <span class="forgot-arrow">→</span>
             </a>
 
-
-
-            <div
-                id="message"
-            ></div>
-
-
+            <div id="message" role="status" aria-live="polite"></div>
 
             <div class="secure-note">
-
-                🔒 Secure password-protected access
-
+                ◈ &nbsp; Protected academic workspace
             </div>
-
-
         </section>
+    </main>
 
+    <footer class="footer">
+        © 2026 Galgotias University · PaperForge Question Paper Generator System
+    </footer>
 
-    </div>
+    <script>
+        const passwordInput = document.getElementById("password");
+        const loginBtn = document.getElementById("loginBtn");
+        const togglePassword = document.getElementById("togglePassword");
+        const message = document.getElementById("message");
 
-</div>
-
-
-
-<div class="bottom-brand">
-
-    © 2026 Galgotias University • Question Paper Generator System
-
-</div>
-
-
-
-<script>
-
-
-// =====================================
-// ELEMENTS
-// =====================================
-
-const passwordInput =
-    document.getElementById(
-        "password"
-    );
-
-
-const loginBtn =
-    document.getElementById(
-        "loginBtn"
-    );
-
-
-const togglePassword =
-    document.getElementById(
-        "togglePassword"
-    );
-
-
-const message =
-    document.getElementById(
-        "message"
-    );
-
-
-
-// =====================================
-// SHOW MESSAGE
-// =====================================
-
-function showMessage(
-    text,
-    type
-) {
-
-    message.textContent =
-        text;
-
-    message.className =
-        type;
-
-}
-
-
-
-// =====================================
-// PASSWORD VISIBILITY
-// =====================================
-
-togglePassword.addEventListener(
-    "click",
-    function () {
-
-        if (
-            passwordInput.type ===
-            "password"
-        ) {
-
-            passwordInput.type =
-                "text";
-
-            togglePassword.textContent =
-                "🙈";
-
-            togglePassword.title =
-                "Hide password";
-
-        } else {
-
-            passwordInput.type =
-                "password";
-
-            togglePassword.textContent =
-                "👁";
-
-            togglePassword.title =
-                "Show password";
-
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = type;
         }
 
-    }
-);
+        togglePassword.addEventListener("click", function () {
+            const showing = passwordInput.type === "text";
 
-
-
-// =====================================
-// LOGIN
-// =====================================
-
-async function login() {
-
-
-    const password =
-        passwordInput.value;
-
-
-    if (!password) {
-
-        showMessage(
-            "Please enter your password.",
-            "error"
-        );
-
-        passwordInput.focus();
-
-        return;
-
-    }
-
-
-    loginBtn.disabled =
-        true;
-
-    loginBtn.textContent =
-        "🔄 Verifying...";
-
-
-    message.className =
-        "";
-
-
-    try {
-
-
-        const response =
-            await fetch(
-                "/api/auth/login",
-                {
-
-                    method:
-                        "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    credentials:
-                        "include",
-
-                    body:
-                        JSON.stringify({
-                            password:
-                                password
-                        })
-
-                }
+            passwordInput.type = showing ? "password" : "text";
+            togglePassword.textContent = showing ? "👁" : "🙈";
+            togglePassword.title = showing ? "Show password" : "Hide password";
+            togglePassword.setAttribute(
+                "aria-label",
+                showing ? "Show password" : "Hide password"
             );
+        });
 
+        async function login() {
+            const password = passwordInput.value;
 
-        const data =
-            await response
-                .json()
-                .catch(
-                    function () {
-                        return {};
-                    }
+            if (!password.trim()) {
+                showMessage("Please enter your password.", "error");
+                passwordInput.focus();
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Verifying access...";
+            message.className = "";
+
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok && data.success) {
+                    showMessage(
+                        "Access granted. Opening your dashboard...",
+                        "success"
+                    );
+
+                    window.setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 500);
+
+                    return;
+                }
+
+                showMessage(
+                    data.message || "Incorrect password. Please try again.",
+                    "error"
                 );
 
-
-        if (
-            response.ok &&
-            data.success
-        ) {
-
-            showMessage(
-                "Access granted. Opening dashboard...",
-                "success"
-            );
-
-
-            setTimeout(
-                function () {
-
-                    window.location.href =
-                        "dashboard.html";
-
-                },
-                500
-            );
-
-
-            return;
-
+                passwordInput.value = "";
+                passwordInput.focus();
+            } catch (error) {
+                console.error("Login error:", error);
+                showMessage(
+                    "Unable to connect to the server. Please make sure PaperForge is running.",
+                    "error"
+                );
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = "🔓  Unlock System";
+            }
         }
 
+        loginBtn.addEventListener("click", login);
 
-        showMessage(
-            data.message ||
-            "Incorrect password.",
-            "error"
-        );
-
-
-        passwordInput.value =
-            "";
-
-        passwordInput.focus();
-
-
-    } catch (error) {
-
-        console.error(
-            "Login Error:",
-            error
-        );
-
-
-        showMessage(
-            "Unable to connect to the server.",
-            "error"
-        );
-
-
-    } finally {
-
-        loginBtn.disabled =
-            false;
-
-        loginBtn.textContent =
-            "🔓 Unlock System";
-
-    }
-
-}
-
-
-
-// =====================================
-// BUTTON CLICK
-// =====================================
-
-loginBtn.addEventListener(
-    "click",
-    login
-);
-
-
-
-// =====================================
-// ENTER KEY
-// =====================================
-
-passwordInput.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key ===
-            "Enter"
-        ) {
-
-            event.preventDefault();
-
-            login();
-
-        }
-
-    }
-);
-
-</script>
-
-
+        passwordInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                login();
+            }
+        });
+    </script>
 </body>
-
 </html>

@@ -1,2097 +1,1422 @@
- <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Generate Question Paper | Question Paper Generator</title>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: "Inter", Arial, sans-serif;
-            background:
-                linear-gradient(135deg, #eef4ff 0%, #f8f5ff 45%, #eefcf9 100%);
-            color: #1f2937;
-            min-height: 100vh;
-        }
-
-        .page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ================= HEADER ================= */
-
-        .top-header {
-            width: 100%;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed, #2563eb);
-            color: white;
-            padding: 18px 35px;
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.25);
-        }
-
-        .header-inner {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .brand-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 27px;
-            border: 1px solid rgba(255,255,255,0.25);
-        }
-
-        .brand h1 {
-            font-size: 22px;
-            font-weight: 800;
-        }
-
-        .brand p {
-            font-size: 13px;
-            opacity: 0.88;
-            margin-top: 3px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .header-btn {
-            border: none;
-            padding: 11px 17px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.16);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .header-btn:hover {
-            background: rgba(255,255,255,0.28);
-            transform: translateY(-1px);
-        }
-
-        /* ================= MAIN ================= */
-
-        .main-content {
-            width: 100%;
-            flex: 1;
-            padding: 30px 35px 45px;
-        }
-
-        .page-title {
-            margin-bottom: 25px;
-        }
-
-        .page-title h2 {
-            font-size: 30px;
-            font-weight: 800;
-            color: #111827;
-        }
-
-        .page-title p {
-            margin-top: 7px;
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        /* ================= GRID ================= */
-
-        .content-grid {
-            width: 100%;
-            display: grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr);
-            gap: 25px;
-            align-items: start;
-        }
-
-        .left-section,
-        .right-section {
-            min-width: 0;
-        }
-
-        /* ================= CARD ================= */
-
-        .card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 35px rgba(31, 41, 55, 0.08);
-            border: 1px solid rgba(226,232,240,0.9);
-            margin-bottom: 25px;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 22px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .card-icon {
-            width: 43px;
-            height: 43px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 21px;
-            background: linear-gradient(135deg, #eef2ff, #ddd6fe);
-        }
-
-        .card-header h3 {
-            font-size: 18px;
-            color: #111827;
-        }
-
-        .card-header p {
-            color: #6b7280;
-            font-size: 12px;
-            margin-top: 3px;
-        }
-
-        /* ================= FORM ================= */
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            font-size: 13px;
-            font-weight: 700;
-            color: #374151;
-            margin-bottom: 7px;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            border: 1px solid #d1d5db;
-            border-radius: 11px;
-            padding: 12px 13px;
-            background: #fff;
-            color: #111827;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99,102,241,0.10);
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        /* ================= DIFFICULTY ================= */
-
-        .difficulty-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-        }
-
-        .difficulty-box {
-            padding: 16px;
-            border-radius: 14px;
-            background: #f8fafc;
-            border: 1px solid #e5e7eb;
-        }
-
-        .difficulty-box.easy {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
-        }
-
-        .difficulty-box.medium {
-            background: #fffbeb;
-            border-color: #fde68a;
-        }
-
-        .difficulty-box.hard {
-            background: #fef2f2;
-            border-color: #fecaca;
-        }
-
-        .difficulty-title {
-            font-size: 13px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .difficulty-box input {
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .percentage-note {
-            margin-top: 12px;
-            padding: 11px 13px;
-            border-radius: 10px;
-            background: #eef2ff;
-            color: #4338ca;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* ================= QUESTION TYPE COUNTS ================= */
-
-        .type-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 14px;
-        }
-
-        .type-box {
-            border: 1px solid #e5e7eb;
-            background: #fafafa;
-            padding: 15px;
-            border-radius: 13px;
-        }
-
-        .type-box label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-        }
-
-        .type-box input {
-            text-align: center;
-            font-weight: 700;
-        }
-
-        /* ================= RULES ================= */
-
-        .rules {
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-        }
-
-        .rule {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 11px;
-            background: #f8fafc;
-            font-size: 13px;
-            color: #4b5563;
-        }
-
-        .rule span:first-child {
-            font-size: 16px;
-        }
-
-        /* ================= BUTTONS ================= */
-
-        .action-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 22px;
-        }
-
-        button {
-            font-family: inherit;
-        }
-
-        .btn {
-            border: none;
-            border-radius: 11px;
-            padding: 12px 19px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            color: white;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            box-shadow: 0 6px 15px rgba(79,70,229,0.22);
-        }
-
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #059669, #10b981);
-            color: white;
-        }
-
-        .btn-danger {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        /* ================= STATUS ================= */
-
-        .status {
-            display: none;
-            padding: 13px 15px;
-            border-radius: 11px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .status.success {
-            display: block;
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
-        }
-
-        .status.error {
-            display: block;
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .status.info {
-            display: block;
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
-        }
-
-        /* ================= PREVIEW ================= */
-
-        .preview-box {
-            display: none;
-        }
-
-        .preview-box.active {
-            display: block;
-        }
-
-        .paper-preview {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 25px;
-            max-height: 650px;
-            overflow-y: auto;
-        }
-
-        .paper-header {
-            text-align: center;
-            border-bottom: 2px solid #111827;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .paper-header h2 {
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .paper-header p {
-            font-size: 12px;
-            color: #4b5563;
-            margin-top: 5px;
-        }
-
-        .paper-meta {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 20px;
-            font-size: 12px;
-        }
-
-        .paper-meta div {
-            padding: 7px;
-            background: #f8fafc;
-            border-radius: 7px;
-        }
-
-        .question-item {
-            margin-bottom: 17px;
-            padding-bottom: 13px;
-            border-bottom: 1px dashed #d1d5db;
-        }
-
-        .question-number {
-            font-weight: 800;
-            margin-right: 5px;
-        }
-
-        .question-text {
-            font-size: 13px;
-            line-height: 1.65;
-        }
-
-        .question-info {
-            margin-top: 5px;
-            color: #6b7280;
-            font-size: 11px;
-        }
-
-        /* ================= EMPTY ================= */
-
-        .empty-preview {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
-        }
-
-        .empty-preview .icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        /* ================= FOOTER ================= */
-
-        footer {
-            text-align: center;
-            padding: 18px;
-            color: #6b7280;
-            font-size: 12px;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media (max-width: 1100px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 700px) {
-            .top-header {
-                padding: 15px 18px;
-            }
-
-            .header-inner {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .main-content {
-                padding: 22px 16px 35px;
-            }
-
-            .form-grid,
-            .difficulty-grid,
-            .type-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .page-title h2 {
-                font-size: 24px;
-            }
-
-            .card {
-                padding: 18px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaperForge AI | Generate Question Paper</title>
+
+<style>
+:root {
+    --bg: #061126;
+    --panel: #0b1b38;
+    --panel2: #0e2345;
+    --line: #234a80;
+    --text: #eef4ff;
+    --muted: #a9bddb;
+    --blue: #4269ff;
+    --purple: #7250ff;
+    --green: #20bd8c;
+    --red: #ff6d7d;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background:
+        radial-gradient(ellipse at 15% 0%, #142b5a 0%, transparent 42%),
+        var(--bg);
+    color: var(--text);
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .6; cursor: not-allowed; }
+.topbar {
+    min-height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(5, 17, 40, .94);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-logo {
+    height: 42px; width: 42px;
+    display: grid; place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #315dff, #9255ff);
+    font-size: 23px;
+    box-shadow: 0 0 22px #5549ff55;
+}
+.brand h1 { margin: 0; font-size: 21px; }
+.brand small { color: var(--muted); font-size: 11px; }
+.nav { display: flex; flex-wrap: wrap; gap: 7px; }
+.nav a {
+    text-decoration: none; color: #d9e6ff;
+    border: 1px solid transparent;
+    padding: 10px 12px; border-radius: 9px;
+    font-size: 12px;
+}
+.nav a:hover, .nav a.active {
+    background: #263b83; border-color: #546cff;
+}
+.container {
+    max-width: 1800px;
+    margin: 22px auto;
+    padding: 0 22px;
+}
+.layout {
+    display: grid;
+    grid-template-columns: minmax(450px, 1.02fr) minmax(460px, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+.left-column { display: grid; gap: 16px; min-width: 0; }
+.card {
+    background: linear-gradient(145deg, #0d2040, #09172e);
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px #0000001c;
+}
+.card-heading {
+    padding: 19px 20px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 13px;
+}
+.heading-icon {
+    height: 42px; width: 42px; flex: 0 0 42px;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2348a7, #703eff);
+    font-size: 22px;
+}
+.card-heading h2 { margin: 0 0 5px; font-size: 17px; }
+.card-heading p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.ai-badge {
+    margin-left: auto; white-space: nowrap;
+    border: 1px solid #7161ff; border-radius: 20px;
+    padding: 8px 11px; color: #d9d5ff;
+    background: #4133a844; font-size: 11px;
+}
+.card-body { padding: 17px; }
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+.field { min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label {
+    display: block; margin-bottom: 7px;
+    font-size: 12px; color: #dbe8ff; font-weight: 600;
+}
+.required { color: #ff7e91; }
+.field input, .field select, .field textarea {
+    width: 100%; min-width: 0;
+    border: 1px solid #315483;
+    border-radius: 8px;
+    padding: 11px 10px;
+    color: #f2f6ff;
+    background: #07162e;
+    outline: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+    border-color: #6684ff;
+    box-shadow: 0 0 0 3px #526bff25;
+}
+.field select option { background: #0b1b38; }
+.field input::placeholder, .field textarea::placeholder { color: #7189ad; }
+.section-title {
+    display: flex; align-items: center; gap: 11px;
+    margin-bottom: 5px;
+}
+.section-title .heading-icon { width: 37px; height: 37px; flex-basis: 37px; }
+.section-title h2 { font-size: 16px; margin: 0; }
+.section-description { color: var(--muted); font-size: 12px; margin: 0 0 15px; }
+.pattern-wrap { overflow-x: auto; }
+.pattern-table {
+    width: 100%; border-collapse: collapse; min-width: 480px;
+}
+.pattern-table th {
+    color: #b9ccef; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .3px; text-align: left;
+    padding: 11px 7px; border-bottom: 1px solid var(--line);
+}
+.pattern-table td {
+    padding: 9px 7px; border-bottom: 1px solid #203a61;
+    font-size: 12px;
+}
+.pattern-name { display: flex; align-items: center; gap: 8px; min-width: 145px; }
+.pattern-name input { accent-color: #6381ff; }
+.type-icon {
+    display: inline-grid; place-items: center;
+    height: 27px; width: 27px; border-radius: 8px;
+    background: #3447a8; flex-shrink: 0;
+}
+.number-input {
+    width: 78px; max-width: 100%;
+    background: #07162e; color: white;
+    border: 1px solid #315483; border-radius: 7px;
+    padding: 8px;
+}
+.total-cell { font-weight: 700; color: #f1f5ff; }
+.stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-top: 15px;
+}
+.stat {
+    padding: 12px; border-radius: 10px;
+    border: 1px solid #234a80; background: #0a1a35;
+}
+.stat span { display: block; color: var(--muted); font-size: 11px; }
+.stat strong { display: block; font-size: 20px; margin-top: 5px; }
+.stat strong.small-status { font-size: 13px; }
+.valid { color: #39e4ad; }
+.invalid { color: #ff8190; }
+.actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
+.btn {
+    border: 1px solid #315b95;
+    background: #102b51; color: #eef4ff;
+    border-radius: 9px; padding: 11px 14px;
+    font-size: 12px; font-weight: 650;
+    transition: transform .15s, filter .15s;
+}
+.btn:hover { filter: brightness(1.18); transform: translateY(-1px); }
+.btn-primary {
+    border-color: #6478ff;
+    background: linear-gradient(100deg, #315ff6, #7946ee);
+    box-shadow: 0 5px 18px #4c53ff30;
+}
+.btn-ai { background: linear-gradient(100deg, #5938e7, #8d45f5); }
+.btn-green { background: #087c62; border-color: #21c99d; }
+.btn-danger { color: #ffb4bd; border-color: #7d354c; }
+.btn-light { background: #eaf0ff; color: #102247; border-color: #d7e2ff; }
+.status {
+    display: none; padding: 12px 14px; margin-top: 13px;
+    border-radius: 9px; font-size: 12px; line-height: 1.5;
+}
+.status.show { display: block; }
+.status.info { background: #15335a; border: 1px solid #3866a1; }
+.status.success { background: #073e35; border: 1px solid #178d70; }
+.status.error { background: #481e31; border: 1px solid #a53b5b; }
+.preview-card { position: sticky; top: 85px; }
+.preview-toolbar {
+    display: flex; flex-wrap: wrap; gap: 7px;
+    justify-content: flex-end;
+}
+.preview-toolbar .btn { padding: 9px 10px; font-size: 11px; }
+.preview-tools-row {
+    display: flex; flex-wrap: wrap; align-items: center;
+    justify-content: space-between; gap: 10px;
+    padding: 10px 16px; border-bottom: 1px solid var(--line);
+}
+.zoom-tools { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; }
+.zoom-tools button {
+    border: 0; background: transparent; color: white; font-size: 18px;
+}
+.paper-stage {
+    background: #dce5f2;
+    padding: 22px;
+    overflow: auto;
+    max-height: calc(100vh - 230px);
+    min-height: 760px;
+}
+.paper {
+    width: 100%; max-width: 820px; min-height: 1060px;
+    margin: 0 auto; padding: 46px 48px;
+    background: #fff; color: #171717;
+    font-family: "Times New Roman", Times, serif;
+    box-shadow: 0 8px 25px #0b1b3830;
+    font-size: 12px; line-height: 1.45;
+    transform-origin: top center;
+}
+.paper-header { text-align: center; border-bottom: 2px solid #222; padding-bottom: 12px; }
+.university-name { font-size: 22px; font-weight: 800; letter-spacing: 1.5px; }
+.paper-subtitle { font-size: 11px; margin-top: 3px; }
+.paper-title { font-size: 16px; font-weight: 800; margin-top: 12px; }
+.paper-session { font-size: 12px; font-weight: 700; margin-top: 3px; }
+.paper-meta {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5px 20px; padding: 13px 0;
+    border-bottom: 1px solid #888;
+}
+.meta-item { display: flex; gap: 8px; overflow-wrap: anywhere; }
+.meta-item b { min-width: 85px; }
+.paper-instructions { margin: 12px 0 16px; border: 1px solid #888; padding: 10px 13px; }
+.paper-instructions h4 { margin: 0 0 5px; font-size: 12px; }
+.paper-instructions ol { margin: 0; padding-left: 19px; }
+.paper-section { margin-top: 17px; }
+.paper-section-heading {
+    display: flex; justify-content: space-between; gap: 10px;
+    border-top: 1px solid #777; padding-top: 8px;
+    font-size: 13px; font-weight: 800;
+}
+.paper-section-instruction { font-style: italic; margin: 3px 0 8px; }
+.paper-question { margin: 8px 0 12px; break-inside: avoid; }
+.paper-question-head { display: flex; align-items: start; gap: 7px; }
+.paper-question-number { min-width: 20px; font-weight: 700; }
+.paper-question-text { flex: 1; white-space: pre-wrap; }
+.paper-question-marks { white-space: nowrap; font-weight: 700; }
+.paper-answer { margin: 4px 0 0 27px; color: #333; white-space: pre-wrap; }
+.mcq-options {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4px 15px; margin: 7px 0 0 28px;
+}
+.empty-paper {
+    min-height: 400px; display: grid; place-items: center;
+    text-align: center; color: #65748b;
+}
+.empty-paper strong { display: block; font-size: 18px; margin-bottom: 8px; }
+.paper-footer {
+    margin-top: 40px; padding-top: 9px;
+    border-top: 1px solid #999; text-align: center; font-size: 10px;
+}
+.question-editor {
+    width: 100%; min-height: 90px; border: 1px solid #cbd5e1;
+    border-radius: 6px; padding: 8px; font-family: inherit;
+}
+.modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    z-index: 30; background: #020816c9; padding: 20px;
+    align-items: center; justify-content: center;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+    width: min(850px, 100%); max-height: 90vh; overflow: auto;
+    background: #0c1c38; border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px;
+}
+.modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.modal-head h2 { margin: 0; font-size: 18px; }
+.editor-item { border: 1px solid var(--line); padding: 13px; border-radius: 10px; margin-top: 12px; }
+.editor-item label { display: block; color: var(--muted); font-size: 11px; margin: 9px 0 5px; }
+.editor-item input, .editor-item textarea {
+    width: 100%; padding: 9px; color: white;
+    background: #07162e; border: 1px solid #315483; border-radius: 7px;
+}
+.toast {
+    position: fixed; right: 20px; bottom: 20px; z-index: 50;
+    max-width: 370px; padding: 14px 17px; border-radius: 10px;
+    color: white; background: #12375e; border: 1px solid #4674a8;
+    box-shadow: 0 10px 30px #0005; display: none;
+}
+.toast.show { display: block; }
+.footer { text-align: center; color: #849bbd; font-size: 11px; padding: 22px; }
+
+@media (max-width: 1200px) {
+    .layout { grid-template-columns: 1fr; }
+    .preview-card { position: static; }
+    .paper-stage { max-height: none; }
+}
+@media (max-width: 750px) {
+    .topbar { position: static; align-items: flex-start; flex-direction: column; padding: 14px; }
+    .nav { width: 100%; }
+    .nav a { padding: 8px; }
+    .container { padding: 0 10px; margin-top: 12px; }
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-body { padding: 12px; }
+    .card-heading { padding: 14px; }
+    .ai-badge { display: none; }
+    .paper-stage { padding: 10px; min-height: 400px; }
+    .paper { min-height: 800px; padding: 24px 18px; font-size: 10px; }
+    .university-name { font-size: 17px; }
+    .paper-meta { gap: 5px; }
+    .meta-item b { min-width: 65px; }
+}
+@media (max-width: 430px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .field.full { grid-column: auto; }
+    .stats { grid-template-columns: 1fr; }
+    .paper-meta { grid-template-columns: 1fr; }
+}
+@media print {
+    body { background: white !important; }
+    .topbar, .left-column, .preview-card > .card-heading,
+    .preview-tools-row, .footer, .toast, .modal-backdrop { display: none !important; }
+    .container { margin: 0; padding: 0; max-width: none; }
+    .layout { display: block; }
+    .preview-card, .card { border: 0; box-shadow: none; background: white; }
+    .paper-stage { padding: 0; overflow: visible; background: white; max-height: none; }
+    .paper { max-width: none; min-height: auto; padding: 12mm; margin: 0; box-shadow: none; width: 100%; font-size: 11pt; }
+    @page { size: A4; margin: 8mm; }
+}
+</style>
 </head>
 
 <body>
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-logo">✦</div>
+        <div>
+            <h1>PaperForge</h1>
+            <small>AI Powered Question Paper Generator</small>
+        </div>
+    </div>
+    <nav class="nav">
+        <a class="active" href="generate-paper.html">▤ Generate Paper</a>
+        <a href="question-bank.html">▤ Question Bank</a>
+        <a href="combined-questions.html">⇄ Combined Questions</a>
+        <a href="previous-papers.html">▣ Previous Papers</a>
+        <a href="university.html">▥ University</a>
+        <a href="settings.html">⚙ Settings</a>
+    </nav>
+</header>
 
-<div class="page">
+<main class="container">
+<div class="layout">
+    <div class="left-column">
 
-    <!-- ================= HEADER ================= -->
-
-    <header class="top-header">
-        <div class="header-inner">
-
-            <div class="brand">
-                <div class="brand-icon">📝</div>
-
+        <section class="card">
+            <div class="card-heading">
+                <div class="heading-icon">▣</div>
                 <div>
-                    <h1>Question Paper Generator</h1>
-                    <p>Generate professional question papers automatically</p>
+                    <h2>Generate Question Paper</h2>
+                    <p>Create professional examination papers using AI. Fill in the details and set your exam pattern.</p>
                 </div>
+                <div class="ai-badge">✦ AI Powered</div>
             </div>
-
-            <div class="header-buttons">
-                <button class="header-btn" onclick="window.location.href='dashboard.html'">
-                    🏠 Dashboard
-                </button>
-
-                <button class="header-btn" onclick="window.location.href='question-bank.html'">
-                    📚 Question Bank
-                </button>
-            </div>
-
-        </div>
-    </header>
-
-
-    <!-- ================= MAIN ================= -->
-
-    <main class="main-content">
-
-        <div class="page-title">
-            <h2>Generate Question Paper</h2>
-            <p>
-                Select subject, difficulty distribution and question pattern
-                to automatically generate a complete question paper.
-            </p>
-        </div>
-
-
-        <div id="statusMessage" class="status"></div>
-
-
-        <div class="content-grid">
-
-            <!-- ================= LEFT ================= -->
-
-            <section class="left-section">
-
-                <!-- PAPER DETAILS -->
-
-                <div class="card">
-
-                    <div class="card-header">
-                        <div class="card-icon">📋</div>
-
-                        <div>
-                            <h3>Paper Details</h3>
-                            <p>Enter the basic information for the question paper.</p>
-                        </div>
-                    </div>
-
-
+            <div class="card-body">
+                <form id="paperForm">
                     <div class="form-grid">
+                        <div class="field">
+                            <label for="university">University</label>
+                            <input id="university" value="Galgotias University" required>
+                        </div>
+                        
+<div class="field">
+    <label for="course">Course <span class="required">*</span></label>
 
-                        <div class="form-group">
-                            <label for="semester">Semester</label>
+    <select id="course" required onchange="toggleCustomCourse()">
+        <option value="">Select Course</option>
 
-                            <select id="semester">
-                                <option value="">Select Semester</option>
-                                <option value="1">Semester 1</option>
-                                <option value="2">Semester 2</option>
-                                <option value="3">Semester 3</option>
-                                <option value="4">Semester 4</option>
-                                <option value="5">Semester 5</option>
+        <optgroup label="Undergraduate Courses">
+            <option value="BCA">BCA</option>
+            <option value="B.Sc">B.Sc</option>
+            <option value="B.Com">B.Com</option>
+            <option value="B.A.">B.A.</option>
+            <option value="BBA">BBA</option>
+            <option value="B.Tech">B.Tech</option>
+            <option value="B.E.">B.E.</option>
+            <option value="B.Pharm">B.Pharm</option>
+            <option value="B.Des">B.Des</option>
+            <option value="B.Ed">B.Ed</option>
+            <option value="BCA (Hons.)">BCA (Hons.)</option>
+            <option value="B.Sc (Hons.)">B.Sc (Hons.)</option>
+            <option value="B.Com (Hons.)">B.Com (Hons.)</option>
+        </optgroup>
+
+        <optgroup label="Postgraduate Courses">
+            <option value="MCA">MCA</option>
+            <option value="M.Sc">M.Sc</option>
+            <option value="M.Com">M.Com</option>
+            <option value="M.A.">M.A.</option>
+            <option value="MBA">MBA</option>
+            <option value="M.Tech">M.Tech</option>
+            <option value="M.E.">M.E.</option>
+            <option value="M.Pharm">M.Pharm</option>
+            <option value="M.Des">M.Des</option>
+        </optgroup>
+
+        <optgroup label="Diploma and Other Courses">
+            <option value="Diploma">Diploma</option>
+            <option value="PG Diploma">PG Diploma</option>
+            <option value="Ph.D.">Ph.D.</option>
+            <option value="Other">Other (Enter Manually)</option>
+        </optgroup>
+    </select>
+
+    <input
+        type="text"
+        id="customCourse"
+        placeholder="Enter your course name"
+        style="display:none; margin-top:10px;"
+    >
+</div>
+
+                        <div class="field">
+                            <label for="semester">Semester <span class="required">*</span></label>
+                            <select id="semester" required>
+                                <option value="1">1st Semester</option>
+                                <option value="2">2nd Semester</option>
+                                <option value="3">3rd Semester</option>
+                                <option value="4">4th Semester</option>
+                                <option value="5" selected>5th Semester</option>
+                                <option value="6">6th Semester</option>
+                                <option value="7">7th Semester</option>
+                                <option value="8">8th Semester</option>
                             </select>
                         </div>
-
-
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-
-                            <select id="subject">
-                                <option value="">Select Subject</option>
-
-                                <option>Linear Algebra</option>
-                                <option>Web Design</option>
-                                <option>Computer System Organisation</option>
-                                <option>Programming for Problem Solving</option>
-                                <option>Report Writing</option>
-
-                                <option>Environmental Literature</option>
-                                <option>Probability</option>
-                                <option>Data Structure</option>
-                                <option>OOPS using C++</option>
-                                <option>Full Stack</option>
-                                <option>Data Base Management System</option>
-
-                                <option>Discrete Mathematics</option>
-                                <option>Python Programming</option>
-                                <option>Digital Marketing</option>
-                                <option>Operating System</option>
-
-                                <option>Machine Learning</option>
-                                <option>Java</option>
-                                <option>Mobile Application</option>
-                                <option>First Aid and Health</option>
-                                <option>Generative AI</option>
-
-                                <option>Computer Networks</option>
-                                <option>Design and Analysis of Algorithms</option>
-                                <option>Social Media Analytics</option>
-                                <option>Software Engineering and Testing</option>
+                        <div class="field">
+                            <label for="examType">Examination <span class="required">*</span></label>
+                            <select id="examType">
+                                <option>End Semester Examination</option>
+                                <option>Mid Semester Examination</option>
+                                <option>Internal Assessment</option>
+                                <option>Practice Examination</option>
+                                <option>Model Test Paper</option>
                             </select>
                         </div>
-
-
-                        <div class="form-group">
+                        <div class="field">
+                            <label for="subject">Subject <span class="required">*</span></label>
+                            <input id="subject" placeholder="e.g. Web Design" required>
+                        </div>
+                        <div class="field">
                             <label for="subjectCode">Subject Code</label>
-
-                            <input
-                                type="text"
-                                id="subjectCode"
-                                placeholder="Example: E1UA204C"
-                            >
+                            <input id="subjectCode" placeholder="e.g. BCA-305">
                         </div>
-
-
-                        <div class="form-group">
-                            <label for="academicSession">Academic Session</label>
-
-                            <input
-                                type="text"
-                                id="academicSession"
-                                placeholder="Example: 2026-27"
-                            >
+                        <div class="field">
+                            <label for="examDate">Examination Date</label>
+                            <input id="examDate" type="date">
                         </div>
-
-
-                        <div class="form-group">
-                            <label for="duration">Duration</label>
-
-                            <input
-                                type="text"
-                                id="duration"
-                                value="3 Hours"
-                            >
+                        <div class="field">
+                            <label for="duration">Duration (Hours)</label>
+                            <input id="duration" type="number" min="1" max="8" value="3" required>
                         </div>
-
-
-                        <div class="form-group">
-                            <label for="maximumMarks">Maximum Marks</label>
-
-                            <input
-                                type="number"
-                                id="maximumMarks"
-                                value="100"
-                            >
+                        <div class="field">
+                            <label for="maximumMarks">Maximum Marks <span class="required">*</span></label>
+                            <input id="maximumMarks" type="number" min="1" value="100" required>
                         </div>
-
-
-                        <div class="form-group full">
-                            <label for="paperName">Paper Name</label>
-
-                            <input
-                                type="text"
-                                id="paperName"
-                                placeholder="Example: BCA Semester Examination"
-                            >
+                        <div class="field full">
+                            <label for="paperName">Paper Name / Session</label>
+                            <input id="paperName" value="End Semester Examination - Practice Paper">
                         </div>
-
                     </div>
+                </form>
+            </div>
+        </section>
 
+        <section class="card">
+            <div class="card-body">
+                <div class="section-title">
+                    <div class="heading-icon">▤</div>
+                    <div><h2>Question Pattern</h2></div>
+                </div>
+                <p class="section-description">Set the number of questions for each type. Total marks are calculated automatically.</p>
+
+                <div class="pattern-wrap">
+                    <table class="pattern-table">
+                        <thead>
+                            <tr>
+                                <th>Question Type</th>
+                                <th>Count</th>
+                                <th>Marks / Question</th>
+                                <th>Total Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patternBody"></tbody>
+                    </table>
                 </div>
 
-
-                <!-- DIFFICULTY -->
-
-                <div class="card">
-
-                    <div class="card-header">
-                        <div class="card-icon">🎯</div>
-
-                        <div>
-                            <h3>Difficulty Distribution</h3>
-                            <p>Set the percentage of Easy, Medium and Hard questions.</p>
-                        </div>
-                    </div>
-
-
-                    <div class="difficulty-grid">
-
-                        <div class="difficulty-box easy">
-                            <div class="difficulty-title">
-                                🟢 Easy (%)
-                            </div>
-
-                            <input
-                                type="number"
-                                id="easyPercentage"
-                                value="30"
-                                min="0"
-                                max="100"
-                            >
-                        </div>
-
-
-                        <div class="difficulty-box medium">
-                            <div class="difficulty-title">
-                                🟡 Medium (%)
-                            </div>
-
-                            <input
-                                type="number"
-                                id="mediumPercentage"
-                                value="40"
-                                min="0"
-                                max="100"
-                            >
-                        </div>
-
-
-                        <div class="difficulty-box hard">
-                            <div class="difficulty-title">
-                                🔴 Hard (%)
-                            </div>
-
-                            <input
-                                type="number"
-                                id="hardPercentage"
-                                value="30"
-                                min="0"
-                                max="100"
-                            >
-                        </div>
-
-                    </div>
-
-
-                    <div class="percentage-note" id="percentageTotal">
-                        Total: 100%
-                    </div>
-
+                <div class="stats">
+                    <div class="stat"><span>Total Questions</span><strong id="totalQuestions">40</strong></div>
+                    <div class="stat"><span>Pattern Marks</span><strong id="patternMarks">100</strong></div>
+                    <div class="stat"><span>Pattern Status</span><strong id="patternStatus" class="small-status valid">● Valid</strong></div>
                 </div>
 
-
-                <!-- SUBJECTIVE PATTERN -->
-
-                <div class="card">
-
-                    <div class="card-header">
-                        <div class="card-icon">📚</div>
-
-                        <div>
-                            <h3>Subjective Question Pattern</h3>
-                            <p>Choose how many questions should be generated.</p>
-                        </div>
-                    </div>
-
-
-                    <div class="type-grid">
-
-                        <div class="type-box">
-                            <label for="shortAnswerCount">
-                                Short Answer Questions
-                            </label>
-
-                            <input
-                                type="number"
-                                id="shortAnswerCount"
-                                value="5"
-                                min="0"
-                            >
-                        </div>
-
-
-                        <div class="type-box">
-                            <label for="longAnswerCount">
-                                Long Answer Questions
-                            </label>
-
-                            <input
-                                type="number"
-                                id="longAnswerCount"
-                                value="5"
-                                min="0"
-                            >
-                        </div>
-
-
-                        <div class="type-box">
-                            <label for="numericalCount">
-                                Numerical Questions
-                            </label>
-
-                            <input
-                                type="number"
-                                id="numericalCount"
-                                value="0"
-                                min="0"
-                            >
-                        </div>
-
-
-                        <div class="type-box">
-                            <label for="programmingCount">
-                                Programming / Code Based
-                            </label>
-
-                            <input
-                                type="number"
-                                id="programmingCount"
-                                value="0"
-                                min="0"
-                            >
-                        </div>
-
-
-                        <div class="type-box">
-                            <label for="caseStudyCount">
-                                Case Study
-                            </label>
-
-                            <input
-                                type="number"
-                                id="caseStudyCount"
-                                value="0"
-                                min="0"
-                            >
-                        </div>
-
-                    </div>
-
-
-                    <div class="action-row">
-
-                        <button
-                            class="btn btn-primary"
-                            id="generateBtn"
-                        >
-                            ⚡ Generate Question Paper
-                        </button>
-
-                        <button
-                            class="btn btn-secondary"
-                            id="resetBtn"
-                        >
-                            🔄 Reset
-                        </button>
-
-                    </div>
+                <div class="actions">
+                    <button class="btn btn-primary btn-ai" id="generateBtn" type="button">✦ Generate Paper with AI</button>
+                    <button class="btn" id="addTypeBtn" type="button">＋ Add Question Type</button>
+                    <button class="btn btn-danger" id="clearPatternBtn" type="button">♲ Clear Pattern</button>
+                    <button class="btn" id="previewBtn" type="button">◉ Preview Paper</button>
+                    
+<button class="btn" type="button" id="editInstructionsBtn" onclick="openInstructionsEditor()">
+    ✎ Edit Instructions
+</button>
 
                 </div>
+                <div class="status" id="statusMessage" role="status"></div>
+            </div>
+        </section>
+    </div>
 
-
-                <!-- RULES -->
-
-                <div class="card">
-
-                    <div class="card-header">
-                        <div class="card-icon">⚙️</div>
-
-                        <div>
-                            <h3>Generation Rules</h3>
-                            <p>Rules applied automatically by the system.</p>
-                        </div>
-                    </div>
-
-
-                    <div class="rules">
-
-                        <div class="rule">
-                            <span>✅</span>
-                            <span>
-                                Questions are selected automatically from the question bank.
-                            </span>
-                        </div>
-
-                        <div class="rule">
-                            <span>✅</span>
-                            <span>
-                                Questions are selected according to the selected difficulty percentage.
-                            </span>
-                        </div>
-
-                        <div class="rule">
-                            <span>✅</span>
-                            <span>
-                                Previously used questions are avoided whenever sufficient unused questions are available.
-                            </span>
-                        </div>
-
-                        <div class="rule">
-                            <span>✅</span>
-                            <span>
-                                Duplicate questions are not allowed within the generated paper.
-                            </span>
-                        </div>
-
-                        <div class="rule">
-                            <span>✅</span>
-                            <span>
-                                The generated paper can be saved, printed or downloaded as PDF.
-                            </span>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- ================= RIGHT ================= -->
-
-            <aside class="right-section">
-
-                <div class="card preview-box" id="previewCard">
-
-                    <div class="card-header">
-                        <div class="card-icon">👁️</div>
-
-                        <div>
-                            <h3>Paper Preview</h3>
-                            <p>Preview your generated question paper.</p>
-                        </div>
-                    </div>
-
-
-                    <div id="paperPreview" class="paper-preview">
-                    </div>
-
-
-                    <div class="action-row">
-
-                        <button
-                            class="btn btn-success"
-                            id="savePaperBtn"
-                        >
-                            💾 Save Paper
-                        </button>
-
-                        <button
-                            class="btn btn-primary"
-                            id="downloadPdfBtn"
-                        >
-                            📄 Download PDF
-                        </button>
-
-                        <button
-                            class="btn btn-secondary"
-                            id="printBtn"
-                        >
-                            🖨️ Print
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="card" id="emptyCard">
-
-                    <div class="empty-preview">
-
-                        <div class="icon">📝</div>
-
-                        <h3>No Paper Generated</h3>
-
-                        <p style="margin-top:8px;">
-                            Fill the paper details and click
-                            <b>Generate Question Paper</b>.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </aside>
-
+    <section class="card preview-card">
+        <div class="card-heading">
+            <div class="heading-icon">▧</div>
+            <div>
+                <h2>Paper Preview</h2>
+                <p>Review your generated question paper before downloading or printing.</p>
+            </div>
         </div>
 
-    </main>
+        <div class="card-body" style="padding-bottom:12px">
+            <div class="preview-toolbar">
+                <button class="btn btn-primary" id="pdfBtn">⇩ Download PDF</button>
+                <button class="btn" id="pngBtn">▧ Download PNG</button>
+                <button class="btn" id="jsonBtn">⇩ Download JSON</button>
+                <button class="btn" id="txtBtn">⇩ Download TXT</button>
+                <button class="btn" id="printBtn">▣ Print Paper</button>
+                <button class="btn" id="editBtn">✎ Edit Questions</button>
+                <button class="btn btn-green" id="saveBtn">▣ Save Paper</button>
+            </div>
+        </div>
 
+        <div class="preview-tools-row">
+            <div class="zoom-tools">
+                <button id="zoomOutBtn" title="Zoom out">−</button>
+                <span id="zoomLabel">100%</span>
+                <button id="zoomInBtn" title="Zoom in">＋</button>
+            </div>
+            <span style="font-size:11px;color:var(--muted)">A4 • Portrait • English</span>
+        </div>
 
-    <footer>
-        Question Paper Generator System • Galgotias University
-    </footer>
-
+        <div class="paper-stage" id="paperStage">
+            <article class="paper" id="paperPreview">
+                <div class="paper-header">
+                    <div class="university-name" id="pvUniversity">GALGOTIAS UNIVERSITY</div>
+                    <div class="paper-subtitle">Under the Uttar Pradesh Private Universities Act</div>
+                    <div class="paper-title" id="pvExam">End Semester Examination</div>
+                    <div class="paper-session" id="pvSession">Practice Paper</div>
+                </div>
+                <div class="paper-meta" id="pvMeta"></div>
+      
+<div class="paper-instructions">
+    <h4>General Instructions</h4>
+    <ol id="paperInstructionsList">
+        <li>All questions must be answered in English.</li>
+        <li>Read each question carefully before answering.</li>
+        <li>Marks are indicated against each question.</li>
+        <li>Support your answers with relevant examples wherever required.</li>
+    </ol>
 </div>
 
 
+                <div id="pvQuestions">
+                    <div class="empty-paper">
+                        <div><strong>✦ AI Paper Preview</strong>Fill in your exam details and click Generate Paper with AI.</div>
+                    </div>
+                </div>
+                <div class="paper-footer" id="pvFooter">PaperForge • Galgotias University</div>
+            </article>
+        </div>
+    </section>
+</div>
+</main>
+
+<footer class="footer">PaperForge AI • Galgotias University • Question Paper Generator</footer>
+
+<div class="modal-backdrop" id="editModal">
+    <div class="modal">
+        <div class="modal-head">
+            <h2>✎ Edit Generated Questions</h2>
+            <button class="btn" id="closeEditBtn">✕ Close</button>
+        </div>
+        <p class="section-description" style="margin-top:10px">Edit the question text and answers below, then apply your changes to the paper.</p>
+        <div id="editorList"></div>
+        <div class="actions">
+            <button class="btn btn-primary" id="applyEditsBtn">Apply Changes</button>
+            <button class="btn" id="cancelEditsBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="instructionsModal">
+    <div class="modal" style="max-width:560px">
+        <div class="modal-head">
+            <h2>Edit Exam Instructions</h2>
+            <button class="btn" type="button" onclick="closeInstructionsEditor()">Close ✕</button>
+        </div>
+
+        <p>Har instruction ko alag line mein likho.</p>
+
+        <textarea
+            id="instructionsEditor"
+            rows="8"
+            style="width:100%;padding:12px;box-sizing:border-box"
+            placeholder="Enter each instruction on a new line..."
+        ></textarea>
+
+        <div class="actions">
+            <button class="btn btn-primary" type="button" onclick="saveInstructions()">
+                Save Instructions
+            </button>
+            <button class="btn" type="button" onclick="closeInstructionsEditor()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Libraries for PDF and PNG export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
+"use strict";
 
-    let generatedPaper = null;
+/*
+ * PaperForge frontend.
+ * AI questions are requested from the existing /api/generate-ai-questions route.
+ * This page does not replace or modify server.js.
+ */
 
+const $ = id => document.getElementById(id);
 
-    /* ================= STATUS ================= */
+const questionTypes = [
+    { id: "mcq", label: "MCQ", api: "MCQ", icon: "▣", count: 25, marks: 1 },
+    { id: "very-short", label: "Very Short Answer", api: "Short Answer", icon: "↗", count: 5, marks: 2 },
+    { id: "short", label: "Short Answer", api: "Short Answer", icon: "✎", count: 5, marks: 5 },
+    { id: "long", label: "Long Answer", api: "Long Answer", icon: "▤", count: 2, marks: 10 },
+    { id: "numerical", label: "Numerical / Problem Solving", api: "Numerical", icon: "∑", count: 3, marks: 10 },
+    { id: "case", label: "Case Study", api: "Case Study", icon: "◈", count: 0, marks: 10 },
+    { id: "programming", label: "Programming / Code Based", api: "Programming / Code Based", icon: "</>", count: 0, marks: 10 },
+    { id: "application", label: "Case Study / Application Based", api: "Case Study / Application Based", icon: "◇", count: 0, marks: 10 }
+];
 
-    function showStatus(message, type = "info") {
+let generatedQuestions = [];
+let lastPaperData = null;
+let zoom = 100;
+let customTypeCounter = 0;
 
-        const status = document.getElementById("statusMessage");
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[ch]));
+}
 
-        status.textContent = message;
-        status.className = "status " + type;
+function notify(message, kind = "info") {
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.style.borderColor = kind === "error" ? "#a53b5b" : kind === "success" ? "#178d70" : "#4674a8";
+    toast.classList.add("show");
+    clearTimeout(notify.timer);
+    notify.timer = setTimeout(() => toast.classList.remove("show"), 4200);
+}
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+function setStatus(message, type = "info") {
+    const el = $("statusMessage");
+    el.textContent = message;
+    el.className = "status show " + type;
+}
+
+function getPattern() {
+    return [...$("patternBody").querySelectorAll("tr")].map(row => ({
+        id: row.dataset.id,
+        label: row.dataset.label,
+        api: row.dataset.api,
+        count: Math.max(0, Number(row.querySelector(".count-input").value) || 0),
+        marks: Number(row.querySelector(".marks-input").value) || 0,
+        enabled: row.querySelector(".type-check").checked
+    })).filter(item => item.enabled && item.count > 0);
+}
+
+function renderPattern() {
+    $("patternBody").innerHTML = questionTypes.map(type => `
+        <tr data-id="${escapeHTML(type.id)}"
+            data-label="${escapeHTML(type.label)}"
+            data-api="${escapeHTML(type.api)}">
+            <td>
+                <div class="pattern-name">
+                    <input class="type-check" type="checkbox" ${type.count > 0 ? "checked" : ""} aria-label="Include ${escapeHTML(type.label)}">
+                    <span class="type-icon">${escapeHTML(type.icon)}</span>
+                    <span>${escapeHTML(type.label)}</span>
+                </div>
+            </td>
+            <td><input class="number-input count-input" type="number" min="0" max="100" value="${type.count}" aria-label="${escapeHTML(type.label)} count"></td>
+            <td><input class="number-input marks-input" type="number" min="1" max="100" value="${type.marks}" aria-label="${escapeHTML(type.label)} marks per question"></td>
+            <td class="total-cell row-total">${type.count * type.marks}</td>
+        </tr>
+    `).join("");
+
+    $("patternBody").addEventListener("input", updateTotals);
+    $("patternBody").addEventListener("change", updateTotals);
+    updateTotals();
+}
+
+function updateTotals() {
+    let questionCount = 0;
+    let patternMarks = 0;
+
+    [...$("patternBody").rows].forEach(row => {
+        const checkbox = row.querySelector(".type-check");
+        const countInput = row.querySelector(".count-input");
+        const marksInput = row.querySelector(".marks-input");
+        const count = Math.max(0, Number(countInput.value) || 0);
+        const marks = Math.max(0, Number(marksInput.value) || 0);
+        const total = checkbox.checked ? count * marks : 0;
+
+        row.querySelector(".row-total").textContent = total;
+        questionCount += checkbox.checked ? count : 0;
+        patternMarks += total;
+    });
+
+    $("totalQuestions").textContent = questionCount;
+    $("patternMarks").textContent = patternMarks;
+
+    const maximum = Number($("maximumMarks").value) || 0;
+    const valid = questionCount > 0 && patternMarks === maximum;
+    const status = $("patternStatus");
+    status.textContent = valid ? "● Valid" : `● ${patternMarks === maximum ? "Select questions" : "Marks mismatch"}`;
+    status.className = "small-status " + (valid ? "valid" : "invalid");
+
+    updatePaperMetadata();
+}
+
+function collectPaperData() {
+    return {
+        university: $("university").value.trim() || "Galgotias University",
+        course: $("course").value,
+        semester: $("semester").selectedOptions[0]?.textContent || $("semester").value,
+        semesterValue: $("semester").value,
+        examType: $("examType").value,
+        subject: $("subject").value.trim(),
+        subjectCode: $("subjectCode").value.trim(),
+        examDate: $("examDate").value,
+        duration: Number($("duration").value) || 3,
+        maximumMarks: Number($("maximumMarks").value) || 100,
+        paperName: $("paperName").value.trim() || $("examType").value,
+        questions: generatedQuestions.map(q => ({...q}))
+    };
+}
+
+function formatDate(value) {
+    if (!value) return "________________";
+    const date = new Date(value + "T00:00:00");
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric"
+    });
+}
+
+function updatePaperMetadata() {
+    const d = collectPaperData();
+    $("pvUniversity").textContent = d.university.toUpperCase();
+    $("pvExam").textContent = d.examType.toUpperCase();
+    $("pvSession").textContent = d.paperName;
+
+    $("pvMeta").innerHTML = [
+        ["Course", d.course],
+        ["Duration", d.duration + " Hours"],
+        ["Semester", d.semester],
+        ["Maximum Marks", d.maximumMarks],
+        ["Subject", d.subject || "________________"],
+        ["Subject Code", d.subjectCode || "________________"],
+        ["Date", formatDate(d.examDate)],
+        ["Total Questions", generatedQuestions.length]
+    ].map(([label, value]) => `
+        <div class="meta-item"><b>${escapeHTML(label)}:</b><span>${escapeHTML(value)}</span></div>
+    `).join("");
+
+    $("pvFooter").textContent = `${d.university} • ${d.paperName}`;
+}
+
+function sectionFor(type) {
+    const t = String(type).toLowerCase();
+    if (t.includes("mcq")) return { key: "A", title: "MCQ", instruction: "Choose the correct option for each question." };
+    if (t.includes("very short")) return { key: "B", title: "Very Short Answer", instruction: "Answer each question briefly." };
+    if (t === "short answer") return { key: "C", title: "Short Answer", instruction: "Answer each question in a few sentences." };
+    if (t.includes("long answer")) return { key: "D", title: "Long Answer", instruction: "Write detailed and well-structured answers." };
+    if (t.includes("numerical")) return { key: "E", title: "Numerical / Problem Solving", instruction: "Show all important steps and calculations." };
+    if (t.includes("programming")) return { key: "F", title: "Programming / Code Based", instruction: "Write the program and explain your approach where required." };
+    if (t.includes("case study") || t.includes("application")) return { key: "G", title: "Case Study / Application Based", instruction: "Read the case carefully and answer the questions." };
+    return { key: "H", title: type, instruction: "Answer the following questions." };
+}
+
+function renderPaper() {
+    updatePaperMetadata();
+
+    const container = $("pvQuestions");
+    container.replaceChildren();
+
+    if (!generatedQuestions.length) {
+        container.innerHTML = `<div class="empty-paper"><div><strong>✦ AI Paper Preview</strong>Fill in your exam details and click Generate Paper with AI.</div></div>`;
+        return;
     }
 
-
-    /* ================= DIFFICULTY TOTAL ================= */
-
-    function updatePercentage() {
-
-        const easy =
-            Number(document.getElementById("easyPercentage").value) || 0;
-
-        const medium =
-            Number(document.getElementById("mediumPercentage").value) || 0;
-
-        const hard =
-            Number(document.getElementById("hardPercentage").value) || 0;
-
-        const total = easy + medium + hard;
-
-        const box = document.getElementById("percentageTotal");
-
-        box.textContent = "Total: " + total + "%";
-
-        if (total === 100) {
-            box.style.background = "#dcfce7";
-            box.style.color = "#166534";
-        } else {
-            box.style.background = "#fee2e2";
-            box.style.color = "#991b1b";
-        }
-    }
-
-
-    document
-        .getElementById("easyPercentage")
-        .addEventListener("input", updatePercentage);
-
-    document
-        .getElementById("mediumPercentage")
-        .addEventListener("input", updatePercentage);
-
-    document
-        .getElementById("hardPercentage")
-        .addEventListener("input", updatePercentage);
-
-
-    /* ================= GENERATE ================= */
-
-    document
-        .getElementById("generateBtn")
-        .addEventListener("click", async function () {
-
-            const semester =
-                document.getElementById("semester").value;
-
-            const subject =
-                document.getElementById("subject").value;
-
-            const subjectCode =
-                document.getElementById("subjectCode").value.trim();
-
-            const academicSession =
-                document.getElementById("academicSession").value.trim();
-
-            const duration =
-                document.getElementById("duration").value.trim();
-
-            const maximumMarks =
-                Number(document.getElementById("maximumMarks").value);
-
-            const paperName =
-                document.getElementById("paperName").value.trim();
-
-
-            const easyPercentage =
-                Number(document.getElementById("easyPercentage").value) || 0;
-
-            const mediumPercentage =
-                Number(document.getElementById("mediumPercentage").value) || 0;
-
-            const hardPercentage =
-                Number(document.getElementById("hardPercentage").value) || 0;
-
-
-            const shortAnswerCount =
-                Number(document.getElementById("shortAnswerCount").value) || 0;
-
-            const longAnswerCount =
-                Number(document.getElementById("longAnswerCount").value) || 0;
-
-            const numericalCount =
-                Number(document.getElementById("numericalCount").value) || 0;
-
-            const programmingCount =
-                Number(document.getElementById("programmingCount").value) || 0;
-
-            const caseStudyCount =
-                Number(document.getElementById("caseStudyCount").value) || 0;
-
-
-            if (!semester) {
-                showStatus("Please select semester.", "error");
-                return;
-            }
-
-            if (!subject) {
-                showStatus("Please select subject.", "error");
-                return;
-            }
-
-            if (!subjectCode) {
-                showStatus("Please enter subject code.", "error");
-                return;
-            }
-
-            if (!academicSession) {
-                showStatus("Please enter academic session.", "error");
-                return;
-            }
-
-            if (!paperName) {
-                showStatus("Please enter paper name.", "error");
-                return;
-            }
-
-
-            const difficultyTotal =
-                easyPercentage +
-                mediumPercentage +
-                hardPercentage;
-
-
-            if (difficultyTotal !== 100) {
-                showStatus(
-                    "Easy + Medium + Hard percentage must be exactly 100%.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const totalQuestions =
-                shortAnswerCount +
-                longAnswerCount +
-                numericalCount +
-                programmingCount +
-                caseStudyCount;
-
-
-            if (totalQuestions === 0) {
-
-                showStatus(
-                    "Please select at least one question.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            showStatus(
-                "Generating question paper...",
-                "info"
-            );
-
-
-            const requestData = {
-
-    semester: Number(semester),
-
-    subject,
-
-    subjectCode,
-
-    academicSession,
-
-    duration,
-
-    maximumMarks,
-
-    paperName,
-
-    easyPercentage: easyPercentage,
-
-    mediumPercentage: mediumPercentage,
-
-    hardPercentage: hardPercentage,
-
-    shortAnswerCount: shortAnswerCount,
-
-    longAnswerCount: longAnswerCount,
-
-    numericalCount: numericalCount,
-
-    programmingCount: programmingCount,
-
-    caseStudyCount: caseStudyCount
-
-};
-
-            try {
-
-                const response =
-                    await fetch("/api/generate-paper", {
-
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        credentials: "include",
-
-                        body: JSON.stringify(requestData)
-                    });
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        data.error ||
-                        "Unable to generate question paper."
-                    );
-                }
-
-
-                generatedPaper =
-                    data.paper || data;
-
-
-                renderPaper(generatedPaper);
-
-
-                document
-                    .getElementById("previewCard")
-                    .classList.add("active");
-
-
-                document
-                    .getElementById("emptyCard")
-                    .style.display = "none";
-
-
-                showStatus(
-                    "Question paper generated successfully.",
-                    "success"
-                );
-
-
-                document
-                    .getElementById("previewCard")
-                    .scrollIntoView({
-                        behavior: "smooth"
-                    });
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                showStatus(
-                    error.message,
-                    "error"
-                );
-            }
-
-        });
-
-
-    /* ================= RENDER PAPER ================= */
-
-    function renderPaper(paper) {
-
-        const preview =
-            document.getElementById("paperPreview");
-
-
-        const questions =
-            paper.questions || [];
-
-
-        let html = `
-
-            <div class="paper-header">
-
-                <h2>
-                    ${escapeHtml(
-                        paper.paperName ||
-                        "Question Paper"
-                    )}
-                </h2>
-
-                <p>
-                    Galgotias University
-                </p>
-
-                <p>
-                    ${escapeHtml(
-                        paper.subject || ""
-                    )}
-                </p>
-
+    const groups = new Map();
+    generatedQuestions.forEach((q, index) => {
+        const section = sectionFor(q.type);
+        if (!groups.has(section.key)) groups.set(section.key, {section, questions: []});
+        groups.get(section.key).questions.push({...q, originalIndex: index});
+    });
+
+    for (const group of groups.values()) {
+        const groupMarks = group.questions.reduce((sum, q) => sum + Number(q.marks || 0), 0);
+        const heading = document.createElement("div");
+        heading.className = "paper-section";
+        heading.innerHTML = `
+            <div class="paper-section-heading">
+                <span>Section ${escapeHTML(group.section.key)} — ${escapeHTML(group.section.title)}</span>
+                <span>[${group.questions.length} Questions • ${groupMarks} Marks]</span>
             </div>
-
-
-            <div class="paper-meta">
-
-                <div>
-                    <b>Semester:</b>
-                    ${escapeHtml(
-                        String(paper.semester || "")
-                    )}
-                </div>
-
-                <div>
-                    <b>Subject Code:</b>
-                    ${escapeHtml(
-                        paper.subjectCode || ""
-                    )}
-                </div>
-
-                <div>
-                    <b>Duration:</b>
-                    ${escapeHtml(
-                        paper.duration || "3 Hours"
-                    )}
-                </div>
-
-                <div>
-                    <b>Maximum Marks:</b>
-                    ${escapeHtml(
-                        String(paper.maximumMarks || 100)
-                    )}
-                </div>
-
-                <div>
-                    <b>Academic Session:</b>
-                    ${escapeHtml(
-                        paper.academicSession || ""
-                    )}
-                </div>
-
-                <div>
-                    <b>Total Questions:</b>
-                    ${questions.length}
-                </div>
-
-            </div>
-
+            <div class="paper-section-instruction">${escapeHTML(group.section.instruction)}</div>
         `;
+        container.appendChild(heading);
 
+        group.questions.forEach((q, localIndex) => {
+            const item = document.createElement("div");
+            item.className = "paper-question";
 
-        if (questions.length === 0) {
+            const options = Array.isArray(q.options) ? q.options : [];
+            const optionsHTML = options.length ? `
+                <div class="mcq-options">${options.map((option, i) => {
+                    const text = typeof option === "object"
+                        ? option.text ?? option.label ?? option.value ?? JSON.stringify(option)
+                        : option;
+                    return `<div>(${String.fromCharCode(65 + i)}) ${escapeHTML(text)}</div>`;
+                }).join("")}</div>
+            ` : "";
 
-            html += `
-                <div class="empty-preview">
-                    No questions found.
+            item.innerHTML = `
+                <div class="paper-question-head">
+                    <span class="paper-question-number">${localIndex + 1}.</span>
+                    <span class="paper-question-text">${escapeHTML(q.question)}</span>
+                    <span class="paper-question-marks">[${Number(q.marks) || 1}]</span>
                 </div>
+                ${optionsHTML}
             `;
+            container.appendChild(item);
+        });
+    }
 
-        } else {
+    const footer = document.createElement("div");
+    footer.className = "paper-footer";
+    footer.textContent = `Total Questions: ${generatedQuestions.length} • Total Marks: ${generatedQuestions.reduce((s, q) => s + Number(q.marks || 0), 0)} • End of Question Paper`;
+    container.appendChild(footer);
+}
 
-            questions.forEach((question, index) => {
+async function requestQuestions(type, difficulty, quantity, marks) {
+    const payload = {
+        course: $("course").value.trim(),
+        semester: $("semester").value,
+        subject: $("subject").value.trim(),
+        subjectCode: $("subjectCode").value.trim(),
+        unit: "",
+        topic: "",
+        questionType: type,
+        difficulty,
+        quantity,
+        marks
+    };
 
-                html += `
+    const response = await fetch("/api/generate-ai-questions", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    });
 
-                    <div class="question-item">
+    let data;
+    try {
+        data = await response.json();
+    } catch {
+        throw new Error("Server returned an invalid response. Check server.js terminal.");
+    }
 
-                        <div class="question-text">
+    if (!response.ok || data.success === false) {
+        throw new Error(data.message || `Generation failed (HTTP ${response.status}).`);
+    }
 
-                            <span class="question-number">
-                                ${index + 1}.
-                            </span>
+    const list = Array.isArray(data.questions) ? data.questions
+        : Array.isArray(data.data?.questions) ? data.data.questions
+        : Array.isArray(data.result?.questions) ? data.result.questions
+        : Array.isArray(data.data) ? data.data
+        : null;
 
-                            ${escapeHtml(
-                                question.question ||
-                                question.text ||
-                                ""
-                            )}
+    if (!list) throw new Error("Server response did not contain a questions array.");
+    if (!list.length) throw new Error(data.message || "AI returned no questions. Try a different topic or difficulty.");
+    return list;
+}
 
-                        </div>
+function normalizeQuestion(q, type, marks) {
+    const question = typeof q === "string"
+        ? q
+        : (q.question || q.text || q.questionText || "");
 
-                        <div class="question-info">
+    if (!String(question).trim()) return null;
 
-                            ${escapeHtml(
-                                question.type ||
-                                question.questionType ||
-                                ""
-                            )}
+    return {
+        type,
+        marks: Number(q.marks) > 0 ? Number(q.marks) : marks,
+        question: String(question).trim(),
+        answer: String(q.answer || q.solution || ""),
+        options: Array.isArray(q.options) ? q.options : []
+    };
+}
 
-                            &nbsp; • &nbsp;
+async function generatePaper() {
+    const d = collectPaperData();
+    const pattern = getPattern();
+    const count = pattern.reduce((s, t) => s + t.count, 0);
+    const marks = pattern.reduce((s, t) => s + t.count * t.marks, 0);
 
-                            ${escapeHtml(
-                                question.difficulty ||
-                                ""
-                            )}
+    if (!d.subject) return setStatus("Please enter a subject.", "error");
+    if (!d.course) return setStatus("Please select a course.", "error");
+    if (!Number.isInteger(d.maximumMarks) || d.maximumMarks < 1)
+        return setStatus("Maximum marks must be a positive whole number.", "error");
+    if (!pattern.length) return setStatus("Select at least one question type and set its count.", "error");
+    if (pattern.some(t => !Number.isInteger(t.count) || t.count < 1 || !Number.isFinite(t.marks) || t.marks <= 0))
+        return setStatus("Check question counts and marks.", "error");
+    if (marks !== d.maximumMarks)
+        return setStatus(`Pattern total is ${marks}, but maximum marks are ${d.maximumMarks}. Adjust the pattern so both match.`, "error");
 
-                            &nbsp; • &nbsp;
+    const button = $("generateBtn");
+    button.disabled = true;
+    button.textContent = "✦ Generating with AI...";
+    generatedQuestions = [];
+    lastPaperData = null;
+    renderPaper();
 
-                            ${question.marks || 0} Marks
+    try {
+        let done = 0;
 
-                        </div>
+        for (const t of pattern) {
+            let remaining = t.count;
 
-                    </div>
+            while (remaining > 0) {
+                const batch = Math.min(remaining, 10);
+                const difficulty = ["Easy", "Medium", "Hard"][done % 3];
 
-                `;
+                setStatus(`Generating ${t.label}: ${done + 1} of ${count} questions. Please wait...`);
 
-            });
+                const list = await requestQuestions(t.api, difficulty, batch, t.marks);
+                const normalized = list
+                    .map(q => normalizeQuestion(q, t.label, t.marks))
+                    .filter(Boolean);
 
+                if (normalized.length < batch) {
+                    throw new Error(`${t.label}: requested ${batch} questions but received ${normalized.length}. Try again or check the AI server.`);
+                }
+
+                generatedQuestions.push(...normalized.slice(0, batch));
+                done += batch;
+                remaining -= batch;
+                renderPaper();
+            }
         }
 
+        lastPaperData = collectPaperData();
+        setStatus(`Success! Generated ${generatedQuestions.length} questions. Review the paper and use the export buttons.`, "success");
+        notify("AI question paper generated successfully.", "success");
+    } catch (error) {
+        console.error("PaperForge generation error:", error);
+        setStatus(error.message || "Question generation failed. Check the server.", "error");
+        notify(error.message || "Question generation failed.", "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "✦ Generate Paper with AI";
+        renderPaper();
+    }
+}
 
-        preview.innerHTML = html;
+function clearPattern() {
+    $("patternBody").querySelectorAll("tr").forEach(row => {
+        row.querySelector(".type-check").checked = false;
+        row.querySelector(".count-input").value = 0;
+    });
+    updateTotals();
+    setStatus("Question pattern cleared. Select the types you need.", "info");
+}
+
+function addQuestionType() {
+    const label = prompt("Enter the new question type name:");
+    if (!label || !label.trim()) return;
+
+    const cleanLabel = label.trim();
+    const existing = questionTypes.find(t => t.label.toLowerCase() === cleanLabel.toLowerCase());
+    if (existing) {
+        notify("That question type already exists.");
+        return;
     }
 
-
-    /* ================= SAVE PAPER ================= */
-
-    document
-        .getElementById("savePaperBtn")
-        .addEventListener("click", async function () {
-
-            if (!generatedPaper) {
-
-                showStatus(
-                    "Please generate a paper first.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            try {
-
-                const response =
-                    await fetch("/api/save-paper", {
-
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        credentials: "include",
-
-                        body: JSON.stringify({
-
-                            paperName:
-                                generatedPaper.paperName ||
-                                document.getElementById("paperName").value,
-
-                            subject:
-                                generatedPaper.subject ||
-                                document.getElementById("subject").value,
-
-                            semester:
-                                Number(
-                                    generatedPaper.semester ||
-                                    document.getElementById("semester").value
-                                ),
-
-                            subjectCode:
-                                generatedPaper.subjectCode ||
-                                document.getElementById("subjectCode").value,
-
-                            academicSession:
-                                generatedPaper.academicSession ||
-                                document.getElementById("academicSession").value,
-
-                            duration:
-                                generatedPaper.duration ||
-                                document.getElementById("duration").value,
-
-                            maximumMarks:
-                                generatedPaper.maximumMarks ||
-                                Number(
-                                    document.getElementById("maximumMarks").value
-                                ),
-
-                            questions:
-                                generatedPaper.questions || []
-
-                        })
-
-                    });
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        data.error ||
-                        "Unable to save paper."
-                    );
-                }
-
-
-                showStatus(
-                    "Question paper saved successfully.",
-                    "success"
-                );
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                showStatus(
-                    error.message,
-                    "error"
-                );
-            }
-
-        });
-
-
-    /* ================= PDF ================= */
-
-    document
-        .getElementById("downloadPdfBtn")
-        .addEventListener("click", function () {
-
-            if (!generatedPaper) {
-
-                showStatus(
-                    "Please generate a paper first.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const {
-                jsPDF
-            } = window.jspdf;
-
-
-            const doc =
-                new jsPDF();
-
-
-            const paper =
-                generatedPaper;
-
-
-            let y = 20;
-
-
-            doc.setFontSize(16);
-
-            doc.setFont("helvetica", "bold");
-
-            doc.text(
-                "GALgotias University",
-                105,
-                y,
-                {
-                    align: "center"
-                }
-            );
-
-
-            y += 10;
-
-
-            doc.setFontSize(13);
-
-            doc.text(
-                paper.paperName || "Question Paper",
-                105,
-                y,
-                {
-                    align: "center"
-                }
-            );
-
-
-            y += 8;
-
-
-            doc.setFontSize(10);
-
-            doc.setFont("helvetica", "normal");
-
-
-            doc.text(
-                `Subject: ${paper.subject || ""}`,
-                15,
-                y
-            );
-
-
-            doc.text(
-                `Semester: ${paper.semester || ""}`,
-                150,
-                y
-            );
-
-
-            y += 6;
-
-
-            doc.text(
-                `Subject Code: ${paper.subjectCode || ""}`,
-                15,
-                y
-            );
-
-
-            doc.text(
-                `Maximum Marks: ${paper.maximumMarks || 100}`,
-                150,
-                y
-            );
-
-
-            y += 6;
-
-
-            doc.text(
-                `Duration: ${paper.duration || "3 Hours"}`,
-                15,
-                y
-            );
-
-
-            doc.text(
-                `Session: ${paper.academicSession || ""}`,
-                150,
-                y
-            );
-
-
-            y += 12;
-
-
-            doc.setLineWidth(0.5);
-
-            doc.line(
-                15,
-                y,
-                195,
-                y
-            );
-
-
-            y += 10;
-
-
-            const questions =
-                paper.questions || [];
-
-
-            questions.forEach((question, index) => {
-
-                const text =
-                    `${index + 1}. ${
-                        question.question ||
-                        question.text ||
-                        ""
-                    }`;
-
-
-                const lines =
-                    doc.splitTextToSize(
-                        text,
-                        175
-                    );
-
-
-                if (y + lines.length * 6 > 280) {
-
-                    doc.addPage();
-
-                    y = 20;
-                }
-
-
-                doc.text(
-                    lines,
-                    15,
-                    y
-                );
-
-
-                y +=
-                    lines.length * 6;
-
-
-                doc.setFontSize(8);
-
-                doc.setTextColor(100);
-
-
-                doc.text(
-                    `${question.type || ""} | ${
-                        question.difficulty || ""
-                    } | ${
-                        question.marks || 0
-                    } Marks`,
-                    20,
-                    y
-                );
-
-
-                doc.setTextColor(0);
-
-                doc.setFontSize(10);
-
-
-                y += 10;
-
-            });
-
-
-            const safeName =
-                (paper.paperName || "question-paper")
-                    .replace(/[^a-z0-9]/gi, "_");
-
-
-            doc.save(
-                safeName + ".pdf"
-            );
-
-        });
-
-
-    /* ================= PRINT ================= */
-
-    document
-        .getElementById("printBtn")
-        .addEventListener("click", function () {
-
-            if (!generatedPaper) {
-
-                showStatus(
-                    "Please generate a paper first.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            const printWindow =
-                window.open(
-                    "",
-                    "_blank"
-                );
-
-
-            printWindow.document.write(`
-
-                <html>
-
-                <head>
-
-                    <title>Question Paper</title>
-
-                    <style>
-
-                        body {
-                            font-family: Arial, sans-serif;
-                            padding: 35px;
-                            color: #111;
-                        }
-
-                        h2, h3, p {
-                            text-align: center;
-                        }
-
-                        .meta {
-                            margin: 20px 0;
-                            display: grid;
-                            grid-template-columns: 1fr 1fr;
-                            gap: 8px;
-                        }
-
-                        .question {
-                            margin: 18px 0;
-                            line-height: 1.6;
-                        }
-
-                        .info {
-                            font-size: 11px;
-                            color: #666;
-                        }
-
-                    </style>
-
-                </head>
-
-                <body>
-
-                    <h2>Galgotias University</h2>
-
-                    <h3>
-                        ${escapeHtml(
-                            generatedPaper.paperName ||
-                            "Question Paper"
-                        )}
-                    </h3>
-
-                    <p>
-                        ${escapeHtml(
-                            generatedPaper.subject || ""
-                        )}
-                    </p>
-
-                    <div class="meta">
-
-                        <div>
-                            Semester:
-                            ${escapeHtml(
-                                String(
-                                    generatedPaper.semester || ""
-                                )
-                            )}
-                        </div>
-
-                        <div>
-                            Subject Code:
-                            ${escapeHtml(
-                                generatedPaper.subjectCode || ""
-                            )}
-                        </div>
-
-                        <div>
-                            Duration:
-                            ${escapeHtml(
-                                generatedPaper.duration ||
-                                "3 Hours"
-                            )}
-                        </div>
-
-                        <div>
-                            Maximum Marks:
-                            ${escapeHtml(
-                                String(
-                                    generatedPaper.maximumMarks ||
-                                    100
-                                )
-                            )}
-                        </div>
-
-                    </div>
-
-                    ${
-                        (generatedPaper.questions || [])
-                            .map((q, i) => `
-
-                                <div class="question">
-
-                                    <b>${i + 1}.</b>
-                                    ${escapeHtml(
-                                        q.question ||
-                                        q.text ||
-                                        ""
-                                    )}
-
-                                    <div class="info">
-
-                                        ${
-                                            escapeHtml(
-                                                q.type ||
-                                                ""
-                                            )
-                                        }
-                                        |
-                                        ${
-                                            escapeHtml(
-                                                q.difficulty ||
-                                                ""
-                                            )
-                                        }
-                                        |
-                                        ${
-                                            q.marks || 0
-                                        } Marks
-
-                                    </div>
-
-                                </div>
-
-                            `)
-                            .join("")
-                    }
-
-                </body>
-
-                </html>
-
-            `);
-
-
-            printWindow.document.close();
-
-            printWindow.focus();
-
-            setTimeout(() => {
-
-                printWindow.print();
-
-            }, 300);
-
-        });
-
-
-    /* ================= RESET ================= */
-
-    document
-        .getElementById("resetBtn")
-        .addEventListener("click", function () {
-
-            document
-                .getElementById("semester")
-                .value = "";
-
-            document
-                .getElementById("subject")
-                .value = "";
-
-            document
-                .getElementById("subjectCode")
-                .value = "";
-
-            document
-                .getElementById("academicSession")
-                .value = "";
-
-            document
-                .getElementById("paperName")
-                .value = "";
-
-            document
-                .getElementById("duration")
-                .value = "3 Hours";
-
-            document
-                .getElementById("maximumMarks")
-                .value = "100";
-
-
-            document
-                .getElementById("easyPercentage")
-                .value = "30";
-
-            document
-                .getElementById("mediumPercentage")
-                .value = "40";
-
-            document
-                .getElementById("hardPercentage")
-                .value = "30";
-
-
-            document
-                .getElementById("shortAnswerCount")
-                .value = "5";
-
-            document
-                .getElementById("longAnswerCount")
-                .value = "5";
-
-            document
-                .getElementById("numericalCount")
-                .value = "0";
-
-            document
-                .getElementById("programmingCount")
-                .value = "0";
-
-            document
-                .getElementById("caseStudyCount")
-                .value = "0";
-
-
-            generatedPaper = null;
-
-
-            document
-                .getElementById("previewCard")
-                .classList.remove("active");
-
-
-            document
-                .getElementById("emptyCard")
-                .style.display = "block";
-
-
-            document
-                .getElementById("statusMessage")
-                .className = "status";
-
-
-            updatePercentage();
-
-        });
-
-
-    /* ================= ESCAPE HTML ================= */
-
-    function escapeHtml(value) {
-
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+    const typeOptions = [
+        {label: "Short Answer", api: "Short Answer"},
+        {label: "Long Answer", api: "Long Answer"},
+        {label: "Numerical / Problem Solving", api: "Numerical"},
+        {label: "Programming / Code Based", api: "Programming / Code Based"},
+        {label: "Case Study", api: "Case Study"},
+        {label: "Case Study / Application Based", api: "Case Study / Application Based"},
+        {label: "MCQ", api: "MCQ"}
+    ];
+
+    const chosen = prompt(
+        "Choose the backend type by number:\n" +
+        typeOptions.map((t, i) => `${i + 1}. ${t.label}`).join("\n")
+    );
+    const index = Number(chosen) - 1;
+    if (!Number.isInteger(index) || !typeOptions[index]) {
+        notify("No valid backend type selected.");
+        return;
     }
 
+    customTypeCounter++;
+    questionTypes.push({
+        id: "custom-" + customTypeCounter,
+        label: cleanLabel,
+        api: typeOptions[index].api,
+        icon: "✦",
+        count: 0,
+        marks: 5
+    });
 
-    updatePercentage();
+    renderPattern();
+    notify("Question type added. Set its count and marks.");
+}
 
+function buildTextPaper() {
+    const d = collectPaperData();
+    const lines = [
+        d.university.toUpperCase(),
+        d.examType,
+        d.paperName,
+        "",
+        `Course: ${d.course}    Semester: ${d.semester}`,
+        `Subject: ${d.subject}    Subject Code: ${d.subjectCode || "—"}`,
+        `Duration: ${d.duration} Hours    Maximum Marks: ${d.maximumMarks}`,
+        `Date: ${formatDate(d.examDate)}`,
+        "",
+        "GENERAL INSTRUCTIONS",
+        "1. All questions must be answered in English.",
+        "2. Read each question carefully before answering.",
+        "3. Marks are indicated against each question.",
+        ""
+    ];
+
+    const groups = new Map();
+    generatedQuestions.forEach(q => {
+        const section = sectionFor(q.type);
+        if (!groups.has(section.key)) groups.set(section.key, {section, questions: []});
+        groups.get(section.key).questions.push(q);
+    });
+
+    let number = 1;
+    for (const group of groups.values()) {
+        lines.push(`SECTION ${group.section.key} — ${group.section.title}`);
+        lines.push(group.section.instruction);
+        group.questions.forEach(q => {
+            lines.push(`${number++}. ${q.question} [${q.marks} marks]`);
+            if (q.options?.length) {
+                q.options.forEach((option, i) => {
+                    const value = typeof option === "object"
+                        ? option.text ?? option.label ?? option.value ?? JSON.stringify(option)
+                        : option;
+                    lines.push(`   (${String.fromCharCode(65 + i)}) ${value}`);
+                });
+            }
+            lines.push("");
+        });
+        lines.push("");
+    }
+    return lines.join("\n");
+}
+
+function downloadBlob(filename, blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function safeFilename(value) {
+    return String(value || "paper").replace(/[<>:"/\\|?*\x00-\x1F]/g, "-").trim().replace(/\s+/g, "_").slice(0, 90) || "paper";
+}
+
+function requireGeneratedPaper() {
+    if (!generatedQuestions.length) {
+        setStatus("Generate a paper first, then use this action.", "error");
+        return false;
+    }
+    return true;
+}
+
+async function downloadPDF() {
+    if (!requireGeneratedPaper()) return;
+    if (!window.jspdf?.jsPDF || typeof html2canvas === "undefined") {
+        notify("PDF library could not load. Check internet connection or use Print Paper.", "error");
+        return;
+    }
+
+    const button = $("pdfBtn");
+    button.disabled = true;
+    button.textContent = "Preparing PDF...";
+
+    try {
+        const element = $("paperPreview");
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            backgroundColor: "#ffffff",
+            useCORS: true
+        });
+
+        const {jsPDF} = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 8;
+        const imageWidth = pageWidth - margin * 2;
+        const imageHeight = canvas.height * imageWidth / canvas.width;
+        const imageData = canvas.toDataURL("image/png");
+        let remainingHeight = imageHeight;
+        let position = margin;
+
+        pdf.addImage(imageData, "PNG", margin, position, imageWidth, imageHeight);
+        remainingHeight -= pageHeight - margin * 2;
+
+        while (remainingHeight > 0) {
+            pdf.addPage();
+            position = margin - (imageHeight - remainingHeight);
+            pdf.addImage(imageData, "PNG", margin, position, imageWidth, imageHeight);
+            remainingHeight -= pageHeight - margin * 2;
+        }
+
+        pdf.save(safeFilename($("paperName").value || $("subject").value) + ".pdf");
+        notify("PDF download started.", "success");
+    } catch (error) {
+        console.error("PDF export error:", error);
+        notify("PDF export failed. Try Print Paper and choose Save as PDF.", "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "⇩ Download PDF";
+    }
+}
+
+async function downloadPNG() {
+    if (!requireGeneratedPaper()) return;
+    if (typeof html2canvas === "undefined") {
+        notify("PNG library could not load. Check your internet connection.", "error");
+        return;
+    }
+    try {
+        const canvas = await html2canvas($("paperPreview"), {scale: 2, backgroundColor: "#ffffff"});
+        canvas.toBlob(blob => {
+            if (blob) downloadBlob(safeFilename($("paperName").value || $("subject").value) + ".png", blob);
+        }, "image/png");
+    } catch (error) {
+        console.error(error);
+        notify("PNG export failed.", "error");
+    }
+}
+
+function downloadJSON() {
+    if (!requireGeneratedPaper()) return;
+    const data = {
+        ...collectPaperData(),
+        createdAt: new Date().toISOString(),
+        questionCount: generatedQuestions.length,
+        patternMarks: generatedQuestions.reduce((s, q) => s + Number(q.marks || 0), 0)
+    };
+    downloadBlob(
+        safeFilename($("paperName").value || $("subject").value) + ".json",
+        new Blob([JSON.stringify(data, null, 2)], {type: "application/json;charset=utf-8"})
+    );
+}
+
+function downloadTXT() {
+    if (!requireGeneratedPaper()) return;
+    downloadBlob(
+        safeFilename($("paperName").value || $("subject").value) + ".txt",
+        new Blob([buildTextPaper()], {type: "text/plain;charset=utf-8"})
+    );
+}
+
+function openEditor() {
+    if (!requireGeneratedPaper()) return;
+    const list = $("editorList");
+    list.innerHTML = "";
+
+    generatedQuestions.forEach((q, index) => {
+        const item = document.createElement("div");
+        item.className = "editor-item";
+        item.innerHTML = `
+            <strong>Question ${index + 1} — ${escapeHTML(q.type)}</strong>
+            <label for="editQ${index}">Question text</label>
+            <textarea id="editQ${index}" rows="3">${escapeHTML(q.question)}</textarea>
+            <label for="editA${index}">Answer / solution (saved with the paper data)</label>
+            <textarea id="editA${index}" rows="3">${escapeHTML(q.answer || "")}</textarea>
+            <label for="editM${index}">Marks</label>
+            <input id="editM${index}" type="number" min="1" value="${Number(q.marks) || 1}">
+        `;
+        list.appendChild(item);
+    });
+    $("editModal").classList.add("open");
+}
+
+function closeEditor() {
+    $("editModal").classList.remove("open");
+}
+
+function applyEdits() {
+    generatedQuestions = generatedQuestions.map((q, index) => ({
+        ...q,
+        question: $("editQ" + index).value.trim() || q.question,
+        answer: $("editA" + index).value.trim(),
+        marks: Math.max(1, Number($("editM" + index).value) || q.marks)
+    }));
+    renderPaper();
+    closeEditor();
+    lastPaperData = collectPaperData();
+    setStatus("Question edits applied to the preview.", "success");
+    notify("Edits applied.", "success");
+}
+
+async function savePaper() {
+    if (!requireGeneratedPaper()) return;
+
+    const d = collectPaperData();
+    const payload = {
+        ...d,
+        paperName: d.paperName,
+        subject: d.subject,
+        semester: d.semesterValue,
+        questions: generatedQuestions,
+        totalQuestions: generatedQuestions.length,
+        totalMarks: generatedQuestions.reduce((sum, q) => sum + Number(q.marks || 0), 0),
+        createdAt: new Date().toISOString()
+    };
+
+    const button = $("saveBtn");
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    try {
+        const response = await fetch("/api/save-paper", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || data.success === false) {
+            throw new Error(data.message || `Save failed (HTTP ${response.status}).`);
+        }
+
+        setStatus(data.message || "Paper saved successfully.", "success");
+        notify(data.message || "Paper saved successfully.", "success");
+    } catch (error) {
+        console.error("Save paper error:", error);
+        setStatus("Paper could not be saved: " + error.message + ". You can still download it as JSON or PDF.", "error");
+        notify("Save failed: " + error.message, "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "▣ Save Paper";
+    }
+}
+
+function changeZoom(amount) {
+    zoom = Math.min(130, Math.max(60, zoom + amount));
+    $("zoomLabel").textContent = zoom + "%";
+    $("paperPreview").style.zoom = String(zoom / 100);
+}
+
+$("generateBtn").addEventListener("click", generatePaper);
+$("clearPatternBtn").addEventListener("click", clearPattern);
+$("addTypeBtn").addEventListener("click", addQuestionType);
+$("previewBtn").addEventListener("click", () => {
+    updatePaperMetadata();
+    renderPaper();
+    $("paperPreview").scrollIntoView({behavior: "smooth", block: "start"});
+});
+$("pdfBtn").addEventListener("click", downloadPDF);
+$("pngBtn").addEventListener("click", downloadPNG);
+$("jsonBtn").addEventListener("click", downloadJSON);
+$("txtBtn").addEventListener("click", downloadTXT);
+$("printBtn").addEventListener("click", () => {
+    if (!requireGeneratedPaper()) return;
+    window.print();
+});
+$("editBtn").addEventListener("click", openEditor);
+$("saveBtn").addEventListener("click", savePaper);
+$("closeEditBtn").addEventListener("click", closeEditor);
+$("cancelEditsBtn").addEventListener("click", closeEditor);
+$("applyEditsBtn").addEventListener("click", applyEdits);
+$("zoomInBtn").addEventListener("click", () => changeZoom(10));
+$("zoomOutBtn").addEventListener("click", () => changeZoom(-10));
+
+$("maximumMarks").addEventListener("input", updateTotals);
+$("university").addEventListener("input", updatePaperMetadata);
+$("course").addEventListener("change", updatePaperMetadata);
+$("semester").addEventListener("change", updatePaperMetadata);
+$("examType").addEventListener("change", updatePaperMetadata);
+$("subject").addEventListener("input", updatePaperMetadata);
+$("subjectCode").addEventListener("input", updatePaperMetadata);
+$("examDate").addEventListener("change", updatePaperMetadata);
+$("duration").addEventListener("input", updatePaperMetadata);
+$("paperName").addEventListener("input", updatePaperMetadata);
+
+$("editModal").addEventListener("click", event => {
+    if (event.target === $("editModal")) closeEditor();
+});
+
+renderPattern();
+updatePaperMetadata();
+renderPaper();
+
+
+function openInstructionsEditor() {
+    const list = document.getElementById("paperInstructionsList");
+    const editor = document.getElementById("instructionsEditor");
+    const modal = document.getElementById("instructionsModal");
+
+    if (!list || !editor || !modal) {
+        alert("Instructions popup HTML nahi mila. HTML IDs check karo.");
+        return;
+    }
+
+    editor.value = [...list.querySelectorAll("li")]
+        .map(li => li.textContent)
+        .join("\n");
+
+    modal.classList.add("open");
+    editor.focus();
+}
+
+function closeInstructionsEditor() {
+    document.getElementById("instructionsModal").classList.remove("open");
+}
+
+function saveInstructions() {
+    const list = document.getElementById("paperInstructionsList");
+    const editor = document.getElementById("instructionsEditor");
+
+    const instructions = editor.value
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean);
+
+    if (instructions.length === 0) {
+        alert("Kam se kam ek instruction likho.");
+        return;
+    }
+
+    list.replaceChildren();
+
+    instructions.forEach(instruction => {
+        const li = document.createElement("li");
+        li.textContent = instruction;
+        list.appendChild(li);
+    });
+
+    closeInstructionsEditor();
+    alert("Instructions update ho gayi!");
+}
+
+function toggleCustomCourse() {
+    const courseSelect = document.getElementById("course");
+    const customCourse = document.getElementById("customCourse");
+
+    if (!courseSelect || !customCourse) return;
+
+    customCourse.style.display =
+        courseSelect.value === "Other" ? "block" : "none";
+
+    customCourse.required = courseSelect.value === "Other";
+
+    if (courseSelect.value !== "Other") {
+        customCourse.value = "";
+    }
+}
 </script>
-
 </body>
 </html>

@@ -1,2373 +1,789 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        Question Bank - Question Paper Generator
-    </title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background:
-                linear-gradient(
-                    135deg,
-                    #eef4ff,
-                    #f8fbff,
-                    #eef7ff
-                );
-            color: #172033;
-            min-height: 100vh;
-        }
-
-        /* HEADER */
-
-        .header {
-            background:
-                linear-gradient(
-                    135deg,
-                    #073b8f,
-                    #0b63ce,
-                    #1595e7
-                );
-
-            color: white;
-            padding: 22px 35px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            box-shadow:
-                0 5px 20px rgba(0,0,0,0.15);
-        }
-
-        .university-name {
-            font-size: 27px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .system-name {
-            margin-top: 5px;
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .back-btn {
-            border: none;
-            background: white;
-            color: #0757b8;
-
-            padding: 11px 20px;
-            border-radius: 10px;
-
-            font-weight: 700;
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow:
-                0 5px 15px rgba(0,0,0,0.15);
-        }
-
-        /* MAIN */
-
-        .container {
-            width: 94%;
-            max-width: 1450px;
-
-            margin: 30px auto;
-        }
-
-        .page-heading {
-            background: white;
-            border-radius: 18px;
-
-            padding: 25px 28px;
-            margin-bottom: 22px;
-
-            box-shadow:
-                0 8px 30px rgba(22,70,130,0.08);
-
-            border-left:
-                6px solid #0b63ce;
-        }
-
-        .page-heading h2 {
-            color: #073b8f;
-            font-size: 27px;
-        }
-
-        .page-heading p {
-            margin-top: 7px;
-            color: #667085;
-        }
-
-        /* GENERATOR */
-
-        .generator-card {
-            background: white;
-
-            border-radius: 20px;
-            padding: 25px;
-
-            box-shadow:
-                0 8px 30px rgba(22,70,130,0.10);
-
-            margin-bottom: 25px;
-        }
-
-        .generator-title {
-            font-size: 21px;
-            font-weight: 800;
-            color: #073b8f;
-
-            margin-bottom: 20px;
-        }
-
-        .generator-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 18px;
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .field label {
-            font-weight: 700;
-            color: #344054;
-            margin-bottom: 7px;
-            font-size: 14px;
-        }
-
-        .field select,
-        .field input {
-            width: 100%;
-
-            padding: 12px 13px;
-
-            border:
-                1px solid #cbd5e1;
-
-            border-radius: 10px;
-
-            background: #fff;
-
-            outline: none;
-
-            font-size: 14px;
-        }
-
-        .field select:focus,
-        .field input:focus {
-            border-color: #0b63ce;
-
-            box-shadow:
-                0 0 0 3px rgba(11,99,206,0.10);
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        /* DETAILED ANSWER */
-
-        .answer-option {
-            margin-top: 18px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #eff8ff,
-                    #f7fbff
-                );
-
-            border:
-                1px solid #cfe6ff;
-
-            border-radius: 13px;
-
-            padding: 14px 17px;
-
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .answer-option input {
-            width: 19px;
-            height: 19px;
-        }
-
-        .answer-option strong {
-            color: #0757b8;
-        }
-
-        .answer-option span {
-            color: #667085;
-            font-size: 13px;
-        }
-
-        /* BUTTONS */
-
-        .generator-actions {
-            margin-top: 22px;
-
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border: none;
-
-            padding: 12px 22px;
-
-            border-radius: 10px;
-
-            font-weight: 700;
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .generate-btn {
-            background:
-                linear-gradient(
-                    135deg,
-                    #0757b8,
-                    #0b83d5
-                );
-
-            color: white;
-        }
-
-        .print-btn {
-            background: #198754;
-            color: white;
-        }
-
-        .clear-btn {
-            background: #eef2f6;
-            color: #344054;
-        }
-
-        .download-btn {
-            background: #7c3aed;
-            color: white;
-        }
-
-        /* STATUS */
-
-        #status {
-            display: none;
-
-            padding: 13px 16px;
-
-            border-radius: 10px;
-
-            margin-top: 18px;
-
-            font-weight: 600;
-        }
-
-        .status-success {
-            display: block !important;
-            background: #e9f8ef;
-            color: #16743d;
-            border: 1px solid #b8e5c8;
-        }
-
-        .status-error {
-            display: block !important;
-            background: #fff0f0;
-            color: #b42318;
-            border: 1px solid #f2b8b5;
-        }
-
-        /* QUESTION TABLE */
-
-        .table-card {
-            background: white;
-
-            border-radius: 20px;
-            padding: 22px;
-
-            box-shadow:
-                0 8px 30px rgba(22,70,130,0.08);
-
-            overflow-x: auto;
-        }
-
-        .table-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 18px;
-        }
-
-        .table-heading h3 {
-            color: #073b8f;
-        }
-
-        .question-count {
-            background: #e8f2ff;
-            color: #0757b8;
-
-            padding: 7px 12px;
-
-            border-radius: 20px;
-
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1000px;
-        }
-
-        th {
-            background: #0757b8;
-            color: white;
-
-            padding: 13px 10px;
-
-            text-align: left;
-            font-size: 13px;
-        }
-
-        td {
-            padding: 12px 10px;
-
-            border-bottom:
-                1px solid #e7edf5;
-
-            font-size: 13px;
-
-            vertical-align: top;
-        }
-
-        tr:hover td {
-            background: #f8fbff;
-        }
-
-        .question-cell {
-            min-width: 300px;
-            max-width: 500px;
-        }
-
-        .type-badge,
-        .difficulty-badge {
-            display: inline-block;
-
-            padding: 5px 8px;
-
-            border-radius: 6px;
-
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .type-badge {
-            background: #eef4ff;
-            color: #0757b8;
-        }
-
-        .difficulty-badge {
-            background: #fff4df;
-            color: #9a6700;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .small-btn {
-            border: none;
-
-            padding: 7px 10px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .view-btn {
-            background: #e8f2ff;
-            color: #0757b8;
-        }
-
-        .edit-btn {
-            background: #fff4df;
-            color: #8a5a00;
-        }
-
-        .delete-btn {
-            background: #ffe8e8;
-            color: #b42318;
-        }
-
-        /* GENERATION RESULT */
-
-        #generatedSection {
-            display: none;
-
-            margin-top: 25px;
-        }
-
-        .generated-header {
-            background:
-                linear-gradient(
-                    135deg,
-                    #073b8f,
-                    #0b63ce
-                );
-
-            color: white;
-
-            border-radius: 18px 18px 0 0;
-
-            padding: 22px;
-        }
-
-        .generated-header h2 {
-            font-size: 23px;
-        }
-
-        .generated-header p {
-            margin-top: 6px;
-            opacity: 0.9;
-        }
-
-        .generated-pages {
-            background: #dfe6ee;
-
-            padding: 25px;
-        }
-
-        .question-bank-page {
-            background: white;
-
-            width: 210mm;
-            min-height: 297mm;
-
-            margin: 0 auto 25px;
-
-            padding: 18mm;
-
-            box-shadow:
-                0 8px 25px rgba(0,0,0,0.12);
-
-            page-break-after: always;
-        }
-
-        .bank-page-header {
-            text-align: center;
-
-            border-bottom:
-                2px solid #0b63ce;
-
-            padding-bottom: 12px;
-
-            margin-bottom: 18px;
-        }
-
-        .bank-page-header h1 {
-            color: #073b8f;
-            font-size: 19px;
-        }
-
-        .bank-page-header h2 {
-            margin-top: 5px;
-            font-size: 15px;
-        }
-
-        .bank-page-header p {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #667085;
-        }
-
-        .bank-question {
-            margin-bottom: 17px;
-            break-inside: avoid;
-        }
-
-        .bank-question-number {
-            font-weight: 800;
-            color: #0757b8;
-        }
-
-        .bank-question-text {
-            margin-top: 5px;
-            line-height: 1.55;
-            font-size: 14px;
-        }
-
-        .bank-answer {
-            margin-top: 7px;
-
-            padding: 10px 12px;
-
-            background: #f5f9ff;
-
-            border-left:
-                3px solid #0b63ce;
-
-            line-height: 1.55;
-
-            font-size: 13px;
-        }
-
-        .bank-answer-title {
-            font-weight: 800;
-            color: #0757b8;
-
-            margin-bottom: 4px;
-        }
-
-        .bank-meta {
-            margin-top: 5px;
-
-            color: #667085;
-
-            font-size: 11px;
-        }
-
-        .page-number {
-            text-align: center;
-
-            margin-top: 20px;
-
-            color: #667085;
-
-            font-size: 11px;
-        }
-
-        /* MODAL */
-
-        .modal {
-            display: none;
-
-            position: fixed;
-            inset: 0;
-
-            background:
-                rgba(4,22,48,0.65);
-
-            z-index: 9999;
-
-            align-items: center;
-            justify-content: center;
-
-            padding: 20px;
-        }
-
-        .modal-content {
-            width: 100%;
-            max-width: 750px;
-
-            max-height: 90vh;
-            overflow-y: auto;
-
-            background: white;
-
-            border-radius: 18px;
-
-            padding: 25px;
-
-            box-shadow:
-                0 20px 60px rgba(0,0,0,0.25);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 18px;
-        }
-
-        .modal-header h2 {
-            color: #073b8f;
-        }
-
-        .close-btn {
-            border: none;
-            background: #eef2f6;
-
-            width: 35px;
-            height: 35px;
-
-            border-radius: 50%;
-
-            cursor: pointer;
-
-            font-size: 18px;
-        }
-
-        .detail-row {
-            margin-bottom: 14px;
-        }
-
-        .detail-label {
-            font-size: 12px;
-            font-weight: 800;
-
-            color: #667085;
-
-            margin-bottom: 5px;
-        }
-
-        .detail-value {
-            background: #f7f9fc;
-
-            border-radius: 9px;
-
-            padding: 11px;
-
-            line-height: 1.5;
-
-            white-space: pre-wrap;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 1100px) {
-
-            .generator-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
-        }
-
-        @media (max-width: 650px) {
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .generator-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                width: 96%;
-            }
-
-        }
-
-        /* PRINT */
-
-        @media print {
-
-            body {
-                background: white;
-            }
-
-            body * {
-                visibility: hidden;
-            }
-
-            #generatedSection,
-            #generatedSection * {
-                visibility: visible;
-            }
-
-            #generatedSection {
-                display: block !important;
-
-                position: absolute;
-                left: 0;
-                top: 0;
-
-                width: 100%;
-            }
-
-            .generated-header {
-                display: none;
-            }
-
-            .generated-pages {
-                padding: 0;
-                background: white;
-            }
-
-            .question-bank-page {
-                width: 210mm;
-                min-height: 297mm;
-
-                margin: 0;
-                padding: 15mm;
-
-                box-shadow: none;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaperForge | Question Bank</title>
+<style>
+:root{--bg:#070c19;--panel:#0d172b;--panel2:#101d34;--border:#293c5d;--text:#edf4ff;--muted:#8296b7;--cyan:#36e5f5;--purple:#a16bff;--green:#35e0ad;--red:#ff6b8b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:12px "Segoe UI",Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}
+.app{max-width:1500px;margin:auto;padding:14px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px}.brand-area{display:flex;align-items:center;gap:10px}.brand-logo{width:39px;height:39px;display:grid;place-items:center;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#06101f;font-size:18px;font-weight:900}.brand-name{font-size:19px;font-weight:900}.brand-name span{color:var(--cyan)}.brand-subtitle{margin-top:3px;color:var(--muted);font-size:10px}.status-pill,.tag,.count,.badge{border:1px solid #28516c;border-radius:5px;padding:5px 8px;color:var(--cyan);background:#0b2638}.status-pill{border-radius:20px;color:var(--green);border-color:#225e54;background:#0b2929}
+.nav{display:flex;gap:5px;overflow:auto;padding:6px;margin-bottom:14px;border:1px solid var(--border);border-radius:9px;background:var(--panel)}.nav a{flex-shrink:0;padding:10px 13px;border-radius:6px;color:#9badc9;text-decoration:none;font-weight:700}.nav a:hover,.nav a.active{background:#142944;color:var(--cyan)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}.stat,.panel{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--border);border-radius:9px}.stat{padding:12px;min-width:0}.stat-label{color:#91a7c9;font-size:9px;font-weight:700;text-transform:uppercase}.stat-value{margin-top:7px;font-size:17px;font-weight:900;overflow-wrap:anywhere}.stat-note,.help{color:var(--muted);font-size:9px;line-height:1.6;margin-top:5px}
+.page-title{margin:20px 0 13px}.page-title h1{margin:0;font-size:23px}.page-title p,.panel-description{color:var(--muted);font-size:10px;line-height:1.6;margin-top:7px}
+.layout{display:grid;grid-template-columns:minmax(260px,31%) minmax(0,69%);gap:11px;align-items:start}.column{display:grid;gap:11px;min-width:0}.panel{padding:14px;min-width:0}.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}.panel-title{font-size:12px;font-weight:900;margin:0}.form-grid,.toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px}.toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}.field{min-width:0}.field.full{grid-column:1/-1}.field label{display:block;color:#a8bad6;font-size:10px;font-weight:700;margin-bottom:7px}
+input,select{width:100%;min-width:0;color:var(--text);background:#091326;border:1px solid #304668;border-radius:5px;padding:10px;outline:none;font-size:11px}input::placeholder{color:#657b9e}input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #36e5f51a}select option{background:var(--panel);color:var(--text)}
+.btn-row,.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:6px;padding:10px 12px;border:1px solid #334969;border-radius:6px;background:#14233b;color:#dce8fa;font-size:10px;font-weight:800}.btn:hover{border-color:var(--cyan)}.btn:disabled{opacity:.55;cursor:wait}.primary{color:#07101e;border:0;background:linear-gradient(100deg,#35def0,#9e6cff)}.green{background:#0d2c2b;border-color:#236355;color:var(--green)}.red{background:#301a2a;border-color:#70364c;color:var(--red)}.btn-block{width:100%}.small{padding:6px 8px;font-size:9px}
+.message{display:none;padding:10px 12px;border-radius:6px;margin-top:12px;line-height:1.6;font-size:10px;white-space:pre-wrap;overflow-wrap:anywhere}.message.success,.message.error,.message.info{display:block}.message.success{background:#0c2b29;color:var(--green);border:1px solid #245c4e}.message.error{background:#321a2b;color:#ff9bb0;border:1px solid #71374d}.message.info{background:#10283c;color:var(--cyan);border:1px solid #245a72}
+.search{margin-bottom:10px}.table-wrap{overflow:auto;margin-top:12px;border:1px solid var(--border);border-radius:7px}table{width:100%;min-width:870px;border-collapse:collapse}th{background:#14233b;color:#9db5d7;text-align:left;padding:11px 9px;font-size:9px;text-transform:uppercase;white-space:nowrap}td{padding:10px 9px;border-top:1px solid #223653;font-size:10px;vertical-align:top;line-height:1.6}tr:hover td{background:#111f35}.qcell{min-width:220px;max-width:380px;overflow-wrap:anywhere}.difficulty{color:#d8bdff;background:#241b3e;border-color:#4b3876}.empty{text-align:center;color:var(--muted);padding:28px 10px}
+.bank-page{background:white;color:#172033;padding:18mm;max-width:210mm;min-height:250mm;margin:12px auto;box-shadow:0 8px 25px #0005;overflow-wrap:anywhere}.bank-head{text-align:center;border-bottom:2px solid #0b63ce;padding-bottom:12px;margin-bottom:18px}.bank-head h1{font-size:19px;margin:0;color:#073b8f}.bank-head h2{font-size:15px;margin:6px 0}.bank-head p{font-size:11px;color:#667085}.bank-question{margin-bottom:16px;break-inside:avoid;font-size:12px;line-height:1.6}.bank-meta{font-size:10px;color:#667085;margin:5px 0}.bank-answer{white-space:pre-wrap;background:#f5f9ff;border-left:3px solid #0b63ce;padding:9px;margin-top:6px;font-size:11px;line-height:1.6}
+.modal{display:none;position:fixed;inset:0;background:#020817d9;z-index:10;align-items:center;justify-content:center;padding:15px}.modal-box{width:100%;max-width:650px;max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:17px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.detail{margin:10px 0}.detail label{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.detail-value{padding:10px;border:1px solid var(--border);border-radius:5px;background:#091326;white-space:pre-wrap;line-height:1.6;overflow-wrap:anywhere}.footer{text-align:center;color:#647998;font-size:9px;padding:20px 0 8px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.app{padding:9px}.form-grid,.toolbar{grid-template-columns:1fr}.field.full{grid-column:auto}.header{align-items:flex-start}.status-pill{display:none}.panel{padding:11px}.page-title h1{font-size:20px}}
+@media print{body{background:white;color:#111}body *{visibility:hidden!important}#generatedSection,#generatedSection *{visibility:visible!important}#generatedSection{display:block!important;position:absolute;left:0;top:0;width:100%}#generatedSection .panel-heading{display:none!important}#generatedSection .pages{margin:0}.bank-page{box-shadow:none;margin:0 auto;padding:15mm;width:210mm;max-width:none;min-height:297mm;page-break-after:always}@page{size:A4;margin:0}}
+</style>
 </head>
-
-
 <body>
-
-
+<div class="app">
 <header class="header">
-
-    <div>
-
-        <div class="university-name">
-            Galgotias University
-        </div>
-
-        <div class="system-name">
-            Question Paper Generator System
-        </div>
-
-    </div>
-
-    <button
-        class="back-btn"
-        onclick="window.location.href='dashboard.html'">
-
-        ← Dashboard
-
-    </button>
-
+  <div class="brand-area"><div class="brand-logo">P</div><div><div class="brand-name">Paper<span>Forge</span></div><div class="brand-subtitle">Intelligent Question Paper Workspace</div></div></div>
+  <span class="status-pill">● QUESTION BANK</span>
 </header>
 
-
-<main class="container">
-
-
-    <section class="page-heading">
-
-        <h2>
-            Question Bank
-        </h2>
-
-        <p>
-            Manage questions and generate detailed-answer
-            question banks according to the required number of pages.
-        </p>
-
-    </section>
-
-
-    <!-- GENERATOR -->
-
-    <section class="generator-card">
-
-        <div class="generator-title">
-            📚 Generate Question Bank
-        </div>
-
-
-        <div class="generator-grid">
-
-
-            <div class="field">
-
-                <label>
-                    Semester
-                </label>
-
-                <select id="generateSemester">
-
-                    <option value="">
-                        All Semesters
-                    </option>
-
-                    <option value="1">
-                        Semester 1
-                    </option>
-
-                    <option value="2">
-                        Semester 2
-                    </option>
-
-                    <option value="3">
-                        Semester 3
-                    </option>
-
-                    <option value="4">
-                        Semester 4
-                    </option>
-
-                    <option value="5">
-                        Semester 5
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Subject
-                </label>
-
-                <select id="generateSubject">
-
-                    <option value="">
-                        All Subjects
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Subject Code
-                </label>
-
-                <input
-                    id="generateSubjectCode"
-                    type="text"
-                    placeholder="Optional"
-                >
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Units
-                </label>
-
-                <select id="generateUnit">
-
-                    <option value="">
-                        All Units
-                    </option>
-
-                    <option value="Unit 1">
-                        Unit 1
-                    </option>
-
-                    <option value="Unit 2">
-                        Unit 2
-                    </option>
-
-                    <option value="Unit 3">
-                        Unit 3
-                    </option>
-
-                    <option value="Unit 4">
-                        Unit 4
-                    </option>
-
-                    <option value="Unit 5">
-                        Unit 5
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Difficulty
-                </label>
-
-                <select id="generateDifficulty">
-
-                    <option value="">
-                        All Difficulties
-                    </option>
-
-                    <option value="Easy">
-                        Easy
-                    </option>
-
-                    <option value="Medium">
-                        Medium
-                    </option>
-
-                    <option value="Hard">
-                        Hard
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Question Type
-                </label>
-
-                <select id="generateType">
-
-                    <option value="">
-                        All Types
-                    </option>
-
-                    <option value="MCQ">
-                        MCQ
-                    </option>
-
-                    <option value="Short Answer">
-                        Short Answer
-                    </option>
-
-                    <option value="Long Answer">
-                        Long Answer
-                    </option>
-
-                    <option value="Numerical">
-                        Numerical
-                    </option>
-
-                    <option value="Programming / Code Based">
-                        Programming / Code Based
-                    </option>
-
-                    <option value="Case Study">
-                        Case Study
-                    </option>
-
-                    <option value="Case Study / Application Based">
-                        Case Study / Application Based
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>
-                    Number of Pages
-                </label>
-
-                <select id="pageCount">
-
-                    <option value="5">
-                        5 Pages
-                    </option>
-
-                    <option value="10">
-                        10 Pages
-                    </option>
-
-                    <option value="15">
-                        15 Pages
-                    </option>
-
-                    <option value="20" selected>
-                        20 Pages
-                    </option>
-
-                    <option value="25">
-                        25 Pages
-                    </option>
-
-                    <option value="30">
-                        30 Pages
-                    </option>
-
-                </select>
-
-            </div>
-
-
-        </div>
-
-
-        <div class="answer-option">
-
-            <input
-                type="checkbox"
-                id="detailedAnswers"
-                checked
-                disabled
-            >
-
-            <div>
-
-                <strong>
-                    Detailed Answers Included
-                </strong>
-
-                <br>
-
-                <span>
-                    Every generated question will show its
-                    detailed answer stored in the Question Bank.
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="generator-actions">
-
-            <button
-                class="btn generate-btn"
-                onclick="generateQuestionBank()">
-
-                📚 Generate Question Bank
-
-            </button>
-
-
-            <button
-                class="btn print-btn"
-                onclick="printGeneratedBank()">
-
-                🖨️ Print
-
-            </button>
-
-
-            <button
-                class="btn download-btn"
-                onclick="downloadAsPDF()">
-
-                📄 Download PDF
-
-            </button>
-
-
-            <button
-                class="btn clear-btn"
-                onclick="clearGenerator()">
-
-                Clear
-
-            </button>
-
-        </div>
-
-
-        <div id="status"></div>
-
-    </section>
-
-
-    <!-- GENERATED QUESTION BANK -->
-
-    <section id="generatedSection">
-
-        <div class="generated-header">
-
-            <h2>
-                Generated Question Bank
-            </h2>
-
-            <p id="generatedSummary"></p>
-
-        </div>
-
-
-        <div
-            class="generated-pages"
-            id="generatedPages">
-        </div>
-
-    </section>
-
-
-    <!-- EXISTING QUESTIONS -->
-
-    <section class="table-card">
-
-        <div class="table-heading">
-
-            <h3>
-                Stored Questions
-            </h3>
-
-            <span
-                class="question-count"
-                id="questionCount">
-
-                0 Questions
-
-            </span>
-
-        </div>
-
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>No.</th>
-                    <th>Question</th>
-                    <th>Subject</th>
-                    <th>Type</th>
-                    <th>Unit</th>
-                    <th>Difficulty</th>
-                    <th>Marks</th>
-                    <th>Answer</th>
-                    <th>Action</th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="questionTableBody">
-
-            </tbody>
-
-        </table>
-
-    </section>
-
-
-</main>
-
-
-<!-- VIEW MODAL -->
-
-<div
-    class="modal"
-    id="viewModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>
-                Question Details
-            </h2>
-
-            <button
-                class="close-btn"
-                onclick="closeModal()">
-
-                ×
-
-            </button>
-
-        </div>
-
-
-        <div id="modalBody"></div>
-
-    </div>
-
+<nav class="nav">
+<a href="dashboard.html">Dashboard</a><a href="generate-paper.html">Generate Paper</a><a href="question-bank.html" class="active">Question Bank</a><a href="previous-papers.html">Previous Papers</a><a href="create-question.html">Create Question</a>
+</nav>
+
+<section class="stats">
+<div class="stat"><div class="stat-label">Stored Questions</div><div class="stat-value" id="statTotal">—</div><div class="stat-note">Loaded from database</div></div>
+<div class="stat"><div class="stat-label">Subjects</div><div class="stat-value" id="statSubjects">—</div><div class="stat-note">Subjects represented</div></div>
+<div class="stat"><div class="stat-label">Answers</div><div class="stat-value" id="statAnswers">—</div><div class="stat-note">Questions with answers</div></div>
+<div class="stat"><div class="stat-label">Workspace</div><div class="stat-value">PaperForge</div><div class="stat-note">Question bank manager</div></div>
+</section>
+
+<div class="page-title"><h1>Question Bank</h1><p>Manage questions across courses, semesters, subjects, units and topics.</p></div>
+
+<div class="layout">
+    <div class="column">
+<section class="panel">
+<div class="panel-heading"><div><h2 class="panel-title">01 / Bank Generator</h2><div class="panel-description">Select course and filters for the question-bank document.</div></div><span class="tag">EXPORT</span></div>
+<form id="generatorForm">
+
+<div class="form-grid">
+  <div class="field">
+    <label for="generateCourse">Course</label>
+    <select id="generateCourse">
+      <option value="">All Courses</option>
+      <optgroup label="Undergraduate Courses">
+        <option>BCA</option>
+        <option>B.Sc</option>
+        <option>B.Com</option>
+        <option>B.A.</option>
+        <option>BBA</option>
+        <option>B.Tech</option>
+        <option>B.E.</option>
+        <option>B.Pharm</option>
+        <option>B.Des</option>
+        <option>B.Ed</option>
+        <option>BCA (Hons.)</option>
+        <option>B.Sc (Hons.)</option>
+        <option>B.Com (Hons.)</option>
+        <option>B.Voc</option>
+        <option>LLB</option>
+        <option>MBBS</option>
+        <option>BDS</option>
+      </optgroup>
+      <optgroup label="Postgraduate Courses">
+        <option>MCA</option>
+        <option>M.Sc</option>
+        <option>M.Com</option>
+        <option>M.A.</option>
+        <option>MBA</option>
+        <option>M.Tech</option>
+        <option>M.E.</option>
+        <option>M.Pharm</option>
+        <option>M.Des</option>
+        <option>M.Ed</option>
+        <option>LLM</option>
+        <option>MD</option>
+        <option>MS</option>
+      </optgroup>
+      <optgroup label="Diploma Courses">
+        <option>Diploma</option>
+        <option>Polytechnic</option>
+        <option>PG Diploma</option>
+      </optgroup>
+      <option value="__custom__">+ Enter Custom Course</option>
+    </select>
+  </div>
+
+  <div class="field" id="customCourseField" hidden>
+    <label for="customCourse">Enter Course Name</label>
+    <input id="customCourse" placeholder="e.g. BCA AI & Data Science">
+  </div>
+
+  <div class="field">
+    <label for="generateSemester">Semester</label>
+    <select id="generateSemester">
+      <option value="">All Semesters</option>
+      <option>1</option><option>2</option>
+      <option>3</option><option>4</option>
+      <option>5</option><option>6</option>
+      <option>7</option><option>8</option>
+    </select>
+  </div>
+<div class="field">
+  <label for="generateSubject">Subject</label>
+  <select id="generateSubject">
+    <option value="">All Subjects</option>
+    <option value="__custom__">Enter Custom Subject</option>
+  </select>
+</div>
+<div class="field" id="customCourseField" hidden>
+  <label for="customCourse">Enter Course Name</label>
+  <input
+    id="customCourse"
+    type="text"
+    placeholder="Apne course ka naam likho"
+    autocomplete="off"
+  >
+</div>
+<div class="field" id="customSubjectField" hidden>
+  <label for="customSubject">Enter Subject Name</label>
+  <input
+    id="customSubject"
+    type="text"
+    placeholder="Type your subject name here"
+    autocomplete="off"
+  >
+</div>
+  <div class="field">
+    <label for="generateSubjectCode">Subject Code</label>
+    <input id="generateSubjectCode" placeholder="Optional">
+  </div>
+
+  <div class="field">
+    <label for="generateUnit">Unit</label>
+    <select id="generateUnit">
+      <option value="">All Units</option>
+      <option>Unit 1</option><option>Unit 2</option>
+      <option>Unit 3</option><option>Unit 4</option>
+      <option>Unit 5</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="generateDifficulty">Difficulty</label>
+    <select id="generateDifficulty">
+      <option value="">All Difficulties</option>
+      <option>Easy</option><option>Medium</option><option>Hard</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="generateType">Question Type</label>
+    <select id="generateType">
+      <option value="">All Types</option>
+      <option>MCQ</option><option>Short</option>
+      <option>Short Answer</option><option>Long</option>
+      <option>Long Answer</option><option>Numerical</option>
+      <option>Programming</option><option>Programming / Code Based</option>
+      <option>Case Study</option>
+      <option>Case Study / Application Based</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="pageCount">Target Pages</label>
+    <select id="pageCount">
+      <option>5</option><option>10</option><option>15</option>
+      <option selected>20</option><option>25</option><option>30</option>
+    </select>
+  </div>
 </div>
 
+<div class="help">Only stored questions matching your selected filters are included. Answers are required for this document.</div>
+<div class="btn-row"><button class="btn primary btn-block" type="submit">✦ Generate Question Bank</button><button class="btn" type="button" id="clearGeneratorBtn">Clear</button></div>
+</form>
+<div id="status" class="message" role="status" aria-live="polite"></div>
+</section>
+
+<section class="panel"><div class="panel-heading"><div><h2 class="panel-title">02 / Document Actions</h2><div class="panel-description">Print or save the generated bank as PDF.</div></div><span class="tag">OUTPUT</span></div><button class="btn btn-block" type="button" id="printBtn">Print / Save as PDF</button><div class="help">Choose “Save as PDF” in the print dialog.</div></section>
+</div>
+
+<div class="column">
+<section class="panel" id="generatedSection"><div class="panel-heading"><div><h2 class="panel-title">03 / Generated Question Bank</h2><div class="panel-description" id="generatedSummary">Your generated document will appear here.</div></div><span class="tag">PREVIEW</span></div><div class="pages" id="generatedPages"><div class="empty">Select your filters and generate a question bank.</div></div></section>
+
+<section class="panel">
+<div class="panel-heading"><div><h2 class="panel-title">04 / Stored Questions</h2><div class="panel-description">Search and manage questions already in the database.</div></div><span class="count" id="questionCount">0 questions</span></div>
+<input class="search" id="searchQuestions" type="search" placeholder="Search question, answer, course, subject or topic...">
+
+<div class="form-grid">
+  <div class="field">
+    <label for="generateCourse">Course</label>
+    <select id="generateCourse">
+      <option value="">All Courses</option>
+      <optgroup label="Undergraduate Courses">
+        <option>BCA</option>
+        <option>B.Sc</option>
+        <option>B.Com</option>
+        <option>B.A.</option>
+        <option>BBA</option>
+        <option>B.Tech</option>
+        <option>B.E.</option>
+        <option>B.Pharm</option>
+        <option>B.Des</option>
+        <option>B.Ed</option>
+        <option>BCA (Hons.)</option>
+        <option>B.Sc (Hons.)</option>
+        <option>B.Com (Hons.)</option>
+        <option>B.Voc</option>
+        <option>LLB</option>
+        <option>MBBS</option>
+        <option>BDS</option>
+      </optgroup>
+      <optgroup label="Postgraduate Courses">
+        <option>MCA</option>
+        <option>M.Sc</option>
+        <option>M.Com</option>
+        <option>M.A.</option>
+        <option>MBA</option>
+        <option>M.Tech</option>
+        <option>M.E.</option>
+        <option>M.Pharm</option>
+        <option>M.Des</option>
+        <option>M.Ed</option>
+        <option>LLM</option>
+        <option>MD</option>
+        <option>MS</option>
+      </optgroup>
+      <optgroup label="Diploma Courses">
+        <option>Diploma</option>
+        <option>Polytechnic</option>
+        <option>PG Diploma</option>
+      </optgroup>
+      <option value="__custom__">Enter Custom Course</option>
+    </select>
+  </div>
+
+  <div class="field" id="customCourseField" hidden>
+    <label for="customCourse">Enter Course Name</label>
+    <input id="customCourse" placeholder="e.g. BCA AI & Data Science">
+  </div>
+
+  <div class="field">
+    <label for="generateSemester">Semester</label>
+    <select id="generateSemester">
+      <option value="">All Semesters</option>
+      <option>1</option><option>2</option>
+      <option>3</option><option>4</option>
+      <option>5</option><option>6</option>
+      <option>7</option><option>8</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="generateSubject">Subject</label>
+    <select id="generateSubject">
+      <option value="">All Subjects</option>
+      
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="generateSubjectCode">Subject Code</label>
+    <input id="generateSubjectCode" placeholder="Optional">
+  </div>
+
+  <div class="field">
+    <label for="generateUnit">Unit</label>
+    <select id="generateUnit">
+      <option value="">All Units</option>
+      <option>Unit 1</option><option>Unit 2</option>
+      <option>Unit 3</option><option>Unit 4</option>
+      <option>Unit 5</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="generateDifficulty">Difficulty</label>
+    <select id="generateDifficulty">
+      <option value="">All Difficulties</option>
+      <option>Easy</option><option>Medium</option><option>Hard</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="generateType">Question Type</label>
+    <select id="generateType">
+      <option value="">All Types</option>
+      <option>MCQ</option><option>Short</option>
+      <option>Short Answer</option><option>Long</option>
+      <option>Long Answer</option><option>Numerical</option>
+      <option>Programming</option><option>Programming / Code Based</option>
+      <option>Case Study</option>
+      <option>Case Study / Application Based</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="pageCount">Target Pages</label>
+    <select id="pageCount">
+      <option>5</option><option>10</option><option>15</option>
+      <option selected>20</option><option>25</option><option>30</option>
+    </select>
+  </div>
+</div>
+
+<div class="btn-row"><button class="btn" type="button" id="resetFiltersBtn">Reset Filters</button><button class="btn" type="button" id="refreshBtn">↻ Refresh Questions</button></div>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Question</th><th>Course / Subject / Topic</th><th>Type</th><th>Unit</th><th>Level</th><th>Marks</th><th>Answer</th><th>Actions</th></tr></thead><tbody id="questionTableBody"><tr><td colspan="9" class="empty">Loading questions...</td></tr></tbody></table></div>
+</section>
+</div>
+</div>
+<footer class="footer">PAPERFORGE · QUESTION BANK WORKSPACE</footer>
+</div>
+
+<div class="modal" id="viewModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-box"><div class="modal-head"><h2 class="panel-title" id="modalTitle">Question Details</h2><button class="btn" type="button" id="closeModalBtn">✕ Close</button></div><div id="modalBody"></div></div></div>
 
 <script>
+"use strict";
 
+const defaultCourses = {
+  "BCA": [
+    {semester:1,subjects:["Programming for Problem Solving","Computer Fundamentals","Mathematics","Communication Skills"]},
+    {semester:2,subjects:["Data Structures","Digital Electronics","Environmental Studies","Mathematics"]},
+    {semester:3,subjects:["OOPS using C++","Discrete Mathematics","Python Programming","Web Design"]},
+    {semester:4,subjects:["Operating System","Data Base Management System","Java","Computer Organisation"]},
+    {semester:5,subjects:["Linear Algebra","Web Design","Computer System Organisation","Programming for Problem Solving","Report Writing","Environmental Literature","Probability","Data Structure","OOPS using C++","Full Stack","Data Base Management System","Discrete Mathematics","Python Programming","Digital Marketing","Operating System","Machine Learning","Java","Mobile Application","First Aid and Health","Generative AI","Computer Networks","Design and Analysis of Algorithms","Social Media Analytics","Software Engineering and Testing"]},
+    {semester:6,subjects:["Computer Networks","Software Engineering and Testing","Machine Learning","Full Stack Development"]}
+  ],
+  "BBA":[{semester:1,subjects:["Principles of Management","Business Communication","Financial Accounting","Business Economics"]},{semester:2,subjects:["Marketing Management","Business Statistics","Organisational Behaviour","Business Law"]}],
+  "B.Tech":[{semester:1,subjects:["Engineering Mathematics","Programming for Problem Solving","Engineering Physics","Basic Electrical Engineering"]},{semester:2,subjects:["Data Structures","Engineering Mathematics","Digital Electronics","Environmental Studies"]}],
+  "MCA":[{semester:1,subjects:["Advanced Programming","Database Management Systems","Computer Networks","Mathematics for Computing"]},{semester:2,subjects:["Advanced Data Structures","Operating Systems","Software Engineering","Web Technologies"]}],
+  "MBA":[{semester:1,subjects:["Management Principles","Managerial Economics","Financial Accounting","Business Communication"]},{semester:2,subjects:["Marketing Management","Human Resource Management","Financial Management","Operations Management"]}],
+  "B.Com":[{semester:1,subjects:["Financial Accounting","Business Law","Business Economics","Business Organisation"]}],
+  "B.Sc":[{semester:1,subjects:["Mathematics","Physics","Chemistry","Computer Fundamentals"]}],
+  "BA":[{semester:1,subjects:["English","Political Science","History","Economics"]}]
+};
 
-/* --------------------------------
-   SUBJECT LIST
--------------------------------- */
+let allQuestions=[];
+let generatedQuestions=[];
+const $=id=>document.getElementById(id);
+const normalize=value=>String(value??"").trim().toLowerCase();
+const answerOf=q=>String(q.answer??q.solution??q.explanation??"").trim();
+const idOf=q=>String(q._id??q.id??"");
+const semesterOf=q=>String(q.semester??"").replace(/^semester\s*/i,"").trim();
+const courseOf=q=>String(q.course??q.program??q.degree??"").trim();
+const hasAnswer=q=>Boolean(answerOf(q));
 
-const subjects = [
-
-    "Linear Algebra",
-    "Web Design",
-    "Computer System Organisation",
-    "Programming for Problem Solving",
-    "Report Writing",
-
-    "Environmental Literature",
-    "Probability",
-    "Data Structure",
-    "OOPS using C++",
-    "Full Stack",
-    "Data Base Management System",
-
-    "Discrete Mathematics",
-    "Python Programming",
-    "Digital Marketing",
-    "Operating System",
-
-    "Machine Learning",
-    "Java",
-    "Mobile Application",
-    "First Aid and Health",
-    "Generative AI",
-
-    "Computer Networks",
-    "Design and Analysis of Algorithms",
-    "Social Media Analytics",
-    "Software Engineering and Testing"
-
-];
-
-
-let allQuestions = [];
-let generatedQuestions = [];
-
-
-/* --------------------------------
-   LOAD QUESTIONS
--------------------------------- */
-
-async function loadQuestions() {
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/questions",
-                {
-                    credentials: "include"
-                }
-            );
-
-        const data =
-            await response.json();
-
-        if (!response.ok || !data.success) {
-
-            throw new Error(
-                data.message ||
-                "Unable to load questions."
-            );
-
-        }
-
-        allQuestions =
-            Array.isArray(data.questions)
-                ? data.questions
-                : [];
-
-        populateSubjectDropdown();
-
-        displayQuestions(allQuestions);
-
-    } catch (error) {
-
-        console.error(error);
-
-        showStatus(
-            "Unable to load questions.",
-            "error"
-        );
-
-    }
-
+function showStatus(message,type="info"){
+  $("status").textContent=message;
+  $("status").className="message "+type;
 }
+function clearStatus(){
+  $("status").textContent="";
+  $("status").className="message";
+}
+function unique(values){
+  return [...new Set(values.map(v=>String(v??"").trim()).filter(Boolean))];
+}
+function coursesAvailable(){
+  return unique([
+    ...Object.keys(defaultCourses),
+    ...allQuestions.map(courseOf)
+  ]).sort((a,b)=>a.localeCompare(b));
+}
+function subjectsFor(course,semester){
+  let list=[];
+  if(course&&defaultCourses[course]){
+    list=defaultCourses[course]
+      .filter(item=>!semester||String(item.semester)===String(semester))
+      .flatMap(item=>item.subjects);
+  }else if(!course){
+    list=Object.values(defaultCourses).flatMap(items=>items.flatMap(item=>item.subjects));
+  }
+  list.push(...allQuestions
+    .filter(q=>(!course||normalize(courseOf(q))===normalize(course))&&(!semester||semesterOf(q)===String(semester)))
+    .map(q=>q.subject));
+  return unique(list).sort((a,b)=>a.localeCompare(b));
+}
+function fillSelect(id,values,firstLabel,oldValue){
+  const select=$(id);
+  const old=oldValue!==undefined?oldValue:select.value;
+  select.replaceChildren();
+  const first=document.createElement("option");
+  first.value="";
+  first.textContent=firstLabel;
+  select.appendChild(first);
+  unique(values).forEach(value=>{
+    const option=document.createElement("option");
+    option.value=value;
+    option.textContent=value;
+    select.appendChild(option);
+  });
+  if([...select.options].some(o=>o.value===old))select.value=old;
+}
+function fillCourses() {
+  const select = $("generateCourse");
 
+  const existingValues = new Set(
+    [...select.options].map(option => option.value)
+  );
 
-/* --------------------------------
-   SUBJECT DROPDOWN
--------------------------------- */
+  const courses = unique([
+    ...Object.keys(defaultCourses),
+    ...allQuestions.map(courseOf)
+  ]).sort((a, b) => a.localeCompare(b));
 
-function populateSubjectDropdown() {
+  courses.forEach(course => {
+    if (!existingValues.has(course)) {
+      const option = document.createElement("option");
+      option.value = course;
+      option.textContent = course;
 
-    const select =
-        document.getElementById(
-            "generateSubject"
-        );
+      const customOption = [...select.options].find(
+        option => option.value === "__custom__"
+      );
 
-    select.innerHTML =
-        `<option value="">All Subjects</option>`;
+      select.insertBefore(option, customOption || null);
+      existingValues.add(course);
+    }
+  });
 
-    subjects.forEach(
-        function (subject) {
+  if (!existingValues.has("__custom__")) {
+    const option = document.createElement("option");
+    option.value = "__custom__";
+    option.textContent = "+ Enter Custom Course";
+    select.appendChild(option);
+  }
+}
+function fillSemesters(course, semesterId) {
+  const selectedCourse = String(course || "").trim();
+  let semesters = [];
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+  const matchedCourse = Object.keys(defaultCourses).find(
+    name => normalize(name) === normalize(selectedCourse)
+  );
 
-            option.value = subject;
-            option.textContent = subject;
-
-            select.appendChild(option);
-
-        }
+  if (selectedCourse && matchedCourse) {
+    semesters.push(
+      ...(defaultCourses[matchedCourse] || []).map(
+        item => String(item.semester)
+      )
     );
-
-}
-
-
-/* --------------------------------
-   DISPLAY QUESTIONS
--------------------------------- */
-
-function displayQuestions(questions) {
-
-    const tbody =
-        document.getElementById(
-            "questionTableBody"
-        );
-
-    tbody.innerHTML = "";
-
-    document.getElementById(
-        "questionCount"
-    ).textContent =
-        `${questions.length} Questions`;
-
-
-    if (questions.length === 0) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="9"
-                    style="text-align:center;padding:30px;">
-                    No questions found.
-                </td>
-            </tr>
-        `;
-
-        return;
-
-    }
-
-
-    questions.forEach(
-        function (question, index) {
-
-            const row =
-                document.createElement("tr");
-
-
-            row.innerHTML = `
-
-                <td>
-                    ${index + 1}
-                </td>
-
-                <td class="question-cell">
-                    ${escapeHtml(
-                        question.question || ""
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        question.subject || ""
-                    )}
-                </td>
-
-                <td>
-                    <span class="type-badge">
-                        ${escapeHtml(
-                            question.questionType || ""
-                        )}
-                    </span>
-                </td>
-
-                <td>
-                    ${escapeHtml(
-                        question.unit || ""
-                    )}
-                </td>
-
-                <td>
-                    <span class="difficulty-badge">
-                        ${escapeHtml(
-                            question.difficulty || ""
-                        )}
-                    </span>
-                </td>
-
-                <td>
-                    ${question.marks || ""}
-                </td>
-
-                <td>
-                    ${
-                        question.answer &&
-                        question.answer.trim()
-                            ? "Available"
-                            : "Missing"
-                    }
-                </td>
-
-                <td>
-
-                    <div class="action-buttons">
-
-                        <button
-                            class="small-btn view-btn"
-                            onclick="viewQuestion('${question._id}')">
-
-                            View
-
-                        </button>
-
-                        <button
-                            class="small-btn edit-btn"
-                            onclick="editQuestion('${question._id}')">
-
-                            Edit
-
-                        </button>
-
-                        <button
-                            class="small-btn delete-btn"
-                            onclick="deleteQuestion('${question._id}')">
-
-                            Delete
-
-                        </button>
-
-                    </div>
-
-                </td>
-
-            `;
-
-
-            tbody.appendChild(row);
-
-        }
+  } else if (!selectedCourse) {
+    semesters.push(
+      ...Object.values(defaultCourses)
+        .flatMap(items => items.map(item => String(item.semester)))
     );
+  }
 
+  semesters.push(
+    ...allQuestions
+      .filter(q =>
+        !selectedCourse ||
+        normalize(courseOf(q)) === normalize(selectedCourse)
+      )
+      .map(semesterOf)
+      .filter(Boolean)
+  );
+
+  semesters = unique(semesters).sort(
+    (a, b) => Number(a) - Number(b)
+  );
+
+  fillSelect(semesterId, semesters, "All Semesters");
+}
+function fillSemesters(course,semesterId){
+  const semesters=unique([
+    ...((defaultCourses[course]||[]).map(x=>String(x.semester))),
+    ...allQuestions.filter(q=>!course||normalize(courseOf(q))===normalize(course)).map(semesterOf)
+  ]).sort((a,b)=>Number(a)-Number(b));
+  fillSelect(semesterId,semesters,"All Semesters");
+}
+function refreshSubjectSelects(){
+  const gc=$("generateCourse").value,gs=$("generateSemester").value;
+  const fc=$("filterCourse").value,fs=$("filterSemester").value;
+  fillSelect("generateSubject",subjectsFor(gc,gs),"All Subjects");
+  fillSelect("filterSubject",subjectsFor(fc,fs),"All Subjects");
+}
+// Custom Course input
+const generateCourseSelect = document.getElementById("generateCourse");
+const customCourseField = document.getElementById("customCourseField");
+const customCourseInput = document.getElementById("customCourse");
+
+generateCourseSelect.addEventListener("change", function () {
+  const isCustom = this.value === "__custom__";
+
+  customCourseField.hidden = !isCustom;
+
+  if (isCustom) {
+    customCourseInput.focus();
+  } else {
+    customCourseInput.value = "";
+  }
+});
+// Custom Subject input
+const generateSubjectSelect =
+  document.getElementById("generateSubject");
+
+const customSubjectField =
+  document.getElementById("customSubjectField");
+
+const customSubjectInput =
+  document.getElementById("customSubject");
+
+generateSubjectSelect.addEventListener("change", function () {
+  
+  if (this.value === "__custom__") {
+    customSubjectField.hidden = false;
+    customSubjectInput.focus();
+  } else {
+    customSubjectField.hidden = true;
+    customSubjectInput.value = "";
+  }
+  
+});
+function escapeHTML(value){
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
 }
 
-
-/* --------------------------------
-   VIEW QUESTION
--------------------------------- */
-
-function viewQuestion(id) {
-
-    const question =
-        allQuestions.find(
-            function (item) {
-
-                return String(item._id) ===
-                    String(id);
-
-            }
-        );
-
-
-    if (!question) {
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "modalBody"
-    ).innerHTML = `
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Question
-            </div>
-
-            <div class="detail-value">
-                ${escapeHtml(
-                    question.question || ""
-                )}
-            </div>
-
-        </div>
-
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Detailed Answer
-            </div>
-
-            <div class="detail-value">
-                ${escapeHtml(
-                    question.answer ||
-                    "Detailed answer is not available."
-                )}
-            </div>
-
-        </div>
-
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Subject
-            </div>
-
-            <div class="detail-value">
-                ${escapeHtml(
-                    question.subject || ""
-                )}
-            </div>
-
-        </div>
-
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Topic / Unit
-            </div>
-
-            <div class="detail-value">
-                ${escapeHtml(
-                    (question.topic || "") +
-                    " / " +
-                    (question.unit || "")
-                )}
-            </div>
-
-        </div>
-
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Type / Difficulty / Marks
-            </div>
-
-            <div class="detail-value">
-                ${escapeHtml(
-                    question.questionType || ""
-                )}
-                |
-                ${escapeHtml(
-                    question.difficulty || ""
-                )}
-                |
-                ${question.marks || 0} Marks
-            </div>
-
-        </div>
-
-    `;
-
-
-    document.getElementById(
-        "viewModal"
-    ).style.display = "flex";
-
+async function loadQuestions(){
+  $("refreshBtn").disabled=true;
+  try{
+    const response=await fetch("/api/questions",{credentials:"include"});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||data.success===false)throw new Error(data.message||"Unable to load questions.");
+    const list=Array.isArray(data)?data:Array.isArray(data.questions)?data.questions:Array.isArray(data.data)?data.data:Array.isArray(data.data?.questions)?data.data.questions:null;
+    if(!list)throw new Error("Questions API returned an unexpected response format.");
+    allQuestions=list;
+    fillCourses();
+    fillSemesters($("generateCourse").value,"generateSemester");
+    fillSemesters($("filterCourse").value,"filterSemester");
+    refreshSubjectSelects();
+    updateStats();
+    applyFilters();
+    showStatus("Loaded "+allQuestions.length+" question(s).","success");
+  }catch(error){
+    console.error("Question Bank load error:",error);
+    showStatus(error.message||"Unable to load questions.","error");
+    $("questionTableBody").innerHTML='<tr><td colspan="9" class="empty">Could not load questions. Check the server and API route.</td></tr>';
+  }finally{$("refreshBtn").disabled=false;}
 }
-
-
-/* --------------------------------
-   CLOSE MODAL
--------------------------------- */
-
-function closeModal() {
-
-    document.getElementById(
-        "viewModal"
-    ).style.display = "none";
-
+function updateStats(){
+  $("statTotal").textContent=allQuestions.length.toLocaleString();
+  $("statSubjects").textContent=new Set(allQuestions.map(q=>q.subject).filter(Boolean)).size;
+  $("statAnswers").textContent=allQuestions.filter(hasAnswer).length.toLocaleString();
 }
-
-
-/* --------------------------------
-   EDIT
--------------------------------- */
-
-function editQuestion(id) {
-
-    window.location.href =
-        `edit-question.html?id=${id}`;
-
+function getFilteredQuestions(){
+  const search=normalize($("searchQuestions").value);
+  const course=$("filterCourse").value,semester=$("filterSemester").value,subject=$("filterSubject").value;
+  const unit=$("filterUnit").value,type=$("filterType").value,difficulty=$("filterDifficulty").value,answers=$("filterAnswers").value;
+  return allQuestions.filter(q=>{
+    const text=[courseOf(q),q.semester,q.question,q.answer,q.solution,q.subject,q.topic,q.subjectCode,q.unit].map(normalize).join(" ");
+    if(search&&!text.includes(search))return false;
+    if(course&&normalize(courseOf(q))!==normalize(course))return false;
+    if(semester&&semesterOf(q)!==semester)return false;
+    if(subject&&q.subject!==subject)return false;
+    if(unit&&q.unit!==unit)return false;
+    if(type&&q.questionType!==type)return false;
+    if(difficulty&&q.difficulty!==difficulty)return false;
+    if(answers==="yes"&&!hasAnswer(q))return false;
+    if(answers==="no"&&hasAnswer(q))return false;
+    return true;
+  });
 }
-
-
-/* --------------------------------
-   DELETE
--------------------------------- */
-
-async function deleteQuestion(id) {
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this question?"
-        );
-
-
-    if (!confirmed) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `/api/questions/${id}`,
-                {
-                    method: "DELETE",
-                    credentials: "include"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok || !data.success) {
-
-            throw new Error(
-                data.message ||
-                "Unable to delete question."
-            );
-
-        }
-
-
-        showStatus(
-            "Question deleted successfully.",
-            "success"
-        );
-
-
-        await loadQuestions();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        showStatus(
-            error.message ||
-            "Unable to delete question.",
-            "error"
-        );
-
-    }
-
+function applyFilters(){
+  const filtered=getFilteredQuestions();
+  $("questionCount").textContent=filtered.length+" / "+allQuestions.length+" questions";
+  renderTable(filtered);
 }
-
-
-/* --------------------------------
-   GENERATE QUESTION BANK
--------------------------------- */
-
-function generateQuestionBank() {
-
-    const semester =
-        document.getElementById(
-            "generateSemester"
-        ).value;
-
-    const subject =
-        document.getElementById(
-            "generateSubject"
-        ).value;
-
-    const subjectCode =
-        document.getElementById(
-            "generateSubjectCode"
-        ).value.trim();
-
-    const unit =
-        document.getElementById(
-            "generateUnit"
-        ).value;
-
-    const difficulty =
-        document.getElementById(
-            "generateDifficulty"
-        ).value;
-
-    const type =
-        document.getElementById(
-            "generateType"
-        ).value;
-
-    const pages =
-        Number(
-            document.getElementById(
-                "pageCount"
-            ).value
-        );
-
-
-    let filtered =
-        [...allQuestions];
-
-
-    /* SEMESTER */
-
-    if (semester) {
-
-        filtered =
-            filtered.filter(
-                function (question) {
-
-                    return String(
-                        question.semester
-                    ).replace(
-                        "Semester ",
-                        ""
-                    ) === semester;
-
-                }
-            );
-
-    }
-
-
-    /* SUBJECT */
-
-    if (subject) {
-
-        filtered =
-            filtered.filter(
-                function (question) {
-
-                    return question.subject ===
-                        subject;
-
-                }
-            );
-
-    }
-
-
-    /* SUBJECT CODE */
-
-    if (subjectCode) {
-
-        filtered =
-            filtered.filter(
-                function (question) {
-
-                    return String(
-                        question.subjectCode || ""
-                    ).toLowerCase() ===
-                    subjectCode.toLowerCase();
-
-                }
-            );
-
-    }
-
-
-    /* UNIT */
-
-    if (unit) {
-
-        filtered =
-            filtered.filter(
-                function (question) {
-
-                    return question.unit ===
-                        unit;
-
-                }
-            );
-
-    }
-
-
-    /* DIFFICULTY */
-
-    if (difficulty) {
-
-        filtered =
-            filtered.filter(
-                function (question) {
-
-                    return question.difficulty ===
-                        difficulty;
-
-                }
-            );
-
-    }
-
-
-    /* TYPE */
-
-    if (type) {
-
-        filtered =
-            filtered.filter(
-                function (question) {
-
-                    return question.questionType ===
-                        type;
-
-                }
-            );
-
-    }
-
-
-    /* DETAILED ANSWER REQUIRED */
-
-    filtered =
-        filtered.filter(
-            function (question) {
-
-                return (
-                    question.question &&
-                    String(
-                        question.question
-                    ).trim() !== "" &&
-
-                    question.answer &&
-                    String(
-                        question.answer
-                    ).trim() !== ""
-                );
-
-            }
-        );
-
-
-    if (filtered.length === 0) {
-
-        showStatus(
-            "No questions with detailed answers match your selected filters.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    /*
-        RANDOMIZE QUESTIONS
-        WITHOUT DUPLICATING THEM
-    */
-
-    filtered =
-        shuffleArray(filtered);
-
-
-    generatedQuestions =
-        filtered;
-
-
-    /*
-        Calculate approximate questions
-        required for the requested pages.
-
-        We do not duplicate questions.
-        Pages will be filled according
-        to available detailed-answer questions.
-    */
-
-    const questionsPerPage =
-        Math.max(
-            1,
-            Math.ceil(
-                generatedQuestions.length /
-                pages
-            )
-        );
-
-
-    renderGeneratedBank(
-        generatedQuestions,
-        pages,
-        questionsPerPage,
-        subject
-    );
-
-
-    showStatus(
-        `${generatedQuestions.length} questions generated with detailed answers.`,
-        "success"
-    );
-
-}
-
-
-/* --------------------------------
-   RENDER GENERATED BANK
--------------------------------- */
-
-function renderGeneratedBank(
-    questions,
-    requestedPages,
-    questionsPerPage,
-    selectedSubject
-) {
-
-    const section =
-        document.getElementById(
-            "generatedSection"
-        );
-
-    const pagesContainer =
-        document.getElementById(
-            "generatedPages"
-        );
-
-
-    pagesContainer.innerHTML = "";
-
-
-    /*
-        Create pages from available questions.
-    */
-
-    let pageNumber = 1;
-
-    let questionIndex = 0;
-
-
-    while (
-        questionIndex < questions.length
-    ) {
-
-        const pageQuestions =
-            questions.slice(
-                questionIndex,
-                questionIndex +
-                    questionsPerPage
-            );
-
-
-        const page =
-            document.createElement(
-                "div"
-            );
-
-        page.className =
-            "question-bank-page";
-
-
-        const title =
-            selectedSubject ||
-            "Question Bank";
-
-
-        page.innerHTML = `
-
-            <div class="bank-page-header">
-
-                <h1>
-                    Galgotias University
-                </h1>
-
-                <h2>
-                    Question Bank
-                </h2>
-
-                <p>
-                    ${escapeHtml(title)}
-                </p>
-
-            </div>
-
-        `;
-
-
-        pageQuestions.forEach(
-            function (question, localIndex) {
-
-                const actualNumber =
-                    questionIndex +
-                    localIndex +
-                    1;
-
-
-                const block =
-                    document.createElement(
-                        "div"
-                    );
-
-                block.className =
-                    "bank-question";
-
-
-                block.innerHTML = `
-
-                    <div>
-
-                        <span class="bank-question-number">
-                            Q${actualNumber}.
-                        </span>
-
-                        <span class="bank-question-text">
-                            ${escapeHtml(
-                                question.question || ""
-                            )}
-                        </span>
-
-                    </div>
-
-
-                    <div class="bank-meta">
-
-                        ${escapeHtml(
-                            question.questionType || ""
-                        )}
-                        |
-                        ${escapeHtml(
-                            question.difficulty || ""
-                        )}
-                        |
-                        ${escapeHtml(
-                            question.unit || ""
-                        )}
-                        |
-                        ${question.marks || 0} Marks
-
-                    </div>
-
-
-                    <div class="bank-answer">
-
-                        <div class="bank-answer-title">
-                            Detailed Answer
-                        </div>
-
-                        ${escapeHtml(
-                            question.answer || ""
-                        )}
-
-                    </div>
-
-                `;
-
-
-                page.appendChild(block);
-
-            }
-        );
-
-
-        const pageNumberElement =
-            document.createElement(
-                "div"
-            );
-
-        pageNumberElement.className =
-            "page-number";
-
-        pageNumberElement.textContent =
-            `Page ${pageNumber}`;
-
-        page.appendChild(
-            pageNumberElement
-        );
-
-
-        pagesContainer.appendChild(page);
-
-
-        questionIndex +=
-            questionsPerPage;
-
-        pageNumber++;
-
-    }
-
-
-    document.getElementById(
-        "generatedSummary"
-    ).textContent =
-        `${questions.length} questions generated. Requested document size: ${requestedPages} pages. Questions are not repeated.`;
-
-
-    section.style.display = "block";
-
-
-    section.scrollIntoView({
-        behavior: "smooth"
+function renderTable(questions){
+  const tbody=$("questionTableBody");
+  tbody.replaceChildren();
+  if(!questions.length){
+    tbody.innerHTML='<tr><td colspan="9" class="empty">No questions match these filters.</td></tr>';
+    return;
+  }
+  questions.forEach((q,index)=>{
+    const tr=document.createElement("tr");
+    const cells=[
+      String(index+1),q.question||"",
+      [courseOf(q),q.subject||"",q.topic||""].filter(Boolean).join(" / "),
+      q.questionType||"",q.unit||"",q.difficulty||"",q.marks??"",hasAnswer(q)?"Available":"Missing"
+    ];
+    cells.forEach((value,i)=>{
+      const td=document.createElement("td");
+      if(i===1)td.className="qcell";
+      if(i===3||i===5){
+        const badge=document.createElement("span");
+        badge.className="badge"+(i===5?" difficulty":"");
+        badge.textContent=value||"—";
+        td.appendChild(badge);
+      }else td.textContent=value||"—";
+      tr.appendChild(td);
     });
-
+    const actionCell=document.createElement("td");
+    const actions=document.createElement("div");
+    actions.className="actions";
+    [["View",()=>viewQuestion(idOf(q)),"btn small"],["Edit",()=>editQuestion(idOf(q)),"btn small"],["Delete",()=>deleteQuestion(idOf(q)),"btn small red"]].forEach(([label,fn,cls])=>{
+      const button=document.createElement("button");
+      button.className=cls;button.textContent=label;button.addEventListener("click",fn);actions.appendChild(button);
+    });
+    actionCell.appendChild(actions);tr.appendChild(actionCell);tbody.appendChild(tr);
+  });
+}
+function viewQuestion(id){
+  const q=allQuestions.find(item=>idOf(item)===String(id));
+  if(!q)return showStatus("Question not found in the current list.","error");
+  const fields=[
+    ["Question",q.question],["Detailed Answer",answerOf(q)||"Answer not available."],
+    ["Course",courseOf(q)],["Subject",q.subject],["Subject Code",q.subjectCode],
+    ["Semester",q.semester],["Topic",q.topic],["Unit",q.unit],
+    ["Type / Difficulty / Marks",[q.questionType,q.difficulty,(q.marks??0)+" marks"].filter(Boolean).join(" · ")]
+  ];
+  $("modalBody").replaceChildren();
+  fields.forEach(([label,value])=>{
+    if(value===undefined||value===null||value==="")return;
+    const row=document.createElement("div");row.className="detail";
+    const title=document.createElement("label");title.textContent=label;
+    const content=document.createElement("div");content.className="detail-value";content.textContent=String(value);
+    row.append(title,content);$("modalBody").appendChild(row);
+  });
+  $("viewModal").style.display="flex";
+}
+function closeModal(){$("viewModal").style.display="none";}
+function editQuestion(id){
+  if(!id)return showStatus("This question has no usable ID. It cannot be opened for editing.","error");
+  window.location.href="edit-question.html?id="+encodeURIComponent(id);
+}
+async function deleteQuestion(id){
+  if(!id)return showStatus("This question has no usable ID; deletion was cancelled.","error");
+  const q=allQuestions.find(item=>idOf(item)===String(id));
+  if(!confirm("Delete this question permanently?\n\n"+String(q?.question||"").slice(0,180)))return;
+  try{
+    const response=await fetch("/api/questions/"+encodeURIComponent(id),{method:"DELETE",credentials:"include"});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||data.success===false)throw new Error(data.message||"Unable to delete question. Verify the backend route.");
+    showStatus("Question deleted. Refreshing the question list…","success");
+    await loadQuestions();
+  }catch(error){console.error(error);showStatus(error.message||"Unable to delete question.","error");}
+}
+function shuffle(array){
+  const copy=[...array];
+  for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}
+  return copy;
+}
+function generateQuestionBank(event){
+  event?.preventDefault();
+  const course=$("generateCourse").value,semester=$("generateSemester").value,subject=$("generateSubject").value;
+  const code=normalize($("generateSubjectCode").value),unit=$("generateUnit").value;
+  const difficulty=$("generateDifficulty").value,type=$("generateType").value;
+  const requestedPages=Number($("pageCount").value)||20;
+  const questions=allQuestions.filter(q=>{
+    if(course&&normalize(courseOf(q))!==normalize(course))return false;
+    if(semester&&semesterOf(q)!==semester)return false;
+    if(subject&&q.subject!==subject)return false;
+    if(code&&normalize(q.subjectCode)!==code)return false;
+    if(unit&&q.unit!==unit)return false;
+    if(difficulty&&q.difficulty!==difficulty)return false;
+    if(type&&q.questionType!==type)return false;
+    return Boolean(String(q.question||"").trim()&&answerOf(q));
+  });
+  if(!questions.length){
+    generatedQuestions=[];
+    $("generatedPages").innerHTML='<div class="empty">No questions with answers match these filters. Check that your database questions have the correct course and semester fields.</div>';
+    $("generatedSummary").textContent="No matching questions.";
+    showStatus("No questions with answers match your selected filters.","error");
+    return;
+  }
+  generatedQuestions=shuffle(questions);
+  renderGeneratedBank(generatedQuestions,requestedPages,course,semester,subject);
+  showStatus("Generated a bank containing "+generatedQuestions.length+" non-repeated question(s).","success");
+}
+function renderGeneratedBank(questions,requestedPages,course,semester,subject){
+  const container=$("generatedPages");container.replaceChildren();
+  const perPage=Math.max(1,Math.ceil(questions.length/requestedPages));
+  const totalPages=Math.ceil(questions.length/perPage);
+  for(let pageIndex=0;pageIndex<totalPages;pageIndex++){
+    const pageQuestions=questions.slice(pageIndex*perPage,(pageIndex+1)*perPage);
+    const page=document.createElement("article");page.className="bank-page";
+    const header=document.createElement("header");header.className="bank-head";
+    header.innerHTML="<h1>Galgotias University</h1><h2>PaperForge — Question Bank</h2><p></p>";
+    header.querySelector("p").textContent=[course,semester?"Semester "+semester:"",subject].filter(Boolean).join(" · ")||"All Courses / Subjects";
+    page.appendChild(header);
+    pageQuestions.forEach((q,localIndex)=>{
+      const block=document.createElement("section");block.className="bank-question";
+      const question=document.createElement("div");
+      const strong=document.createElement("strong");strong.textContent="Q"+(pageIndex*perPage+localIndex+1)+". ";
+      question.append(strong,document.createTextNode(String(q.question||"")));
+      const meta=document.createElement("div");meta.className="bank-meta";
+      meta.textContent=[courseOf(q),q.subject,q.questionType,q.difficulty,q.unit,(q.marks??0)+" Marks"].filter(Boolean).join(" · ");
+      const answer=document.createElement("div");answer.className="bank-answer";answer.textContent="Detailed Answer\n"+answerOf(q);
+      block.append(question,meta,answer);page.appendChild(block);
+    });
+    const number=document.createElement("div");number.className="bank-meta";number.style.textAlign="center";
+    number.textContent="Document section "+(pageIndex+1)+" of "+totalPages;page.appendChild(number);container.appendChild(page);
+  }
+  $("generatedSummary").textContent=questions.length+" questions · "+totalPages+" preview sections · target "+requestedPages+" pages.";
+  $("generatedSection").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function clearGenerator(){
+  $("generatorForm").reset();generatedQuestions=[];
+  $("generatedPages").innerHTML='<div class="empty">Select your filters and generate a question bank.</div>';
+  $("generatedSummary").textContent="Your generated document will appear here.";
+  clearStatus();refreshSubjectSelects();
+}
+function resetFilters(){
+  ["searchQuestions","filterCourse","filterSemester","filterSubject","filterUnit","filterType","filterDifficulty","filterAnswers"].forEach(id=>$(id).value="");
+  fillSemesters("","filterSemester");refreshSubjectSelects();applyFilters();
 }
 
-
-/* --------------------------------
-   PRINT
--------------------------------- */
-
-function printGeneratedBank() {
-
-    if (
-        generatedQuestions.length === 0
-    ) {
-
-        alert(
-            "Please generate the Question Bank first."
-        );
-
-        return;
-
-    }
-
-
-    window.print();
-
-}
-
-
-/* --------------------------------
-   DOWNLOAD PDF
--------------------------------- */
-
-function downloadAsPDF() {
-
-    if (
-        generatedQuestions.length === 0
-    ) {
-
-        alert(
-            "Please generate the Question Bank first."
-        );
-
-        return;
-
-    }
-
-
-    /*
-        Browser PDF dialog.
-        Select:
-        Destination → Save as PDF
-    */
-
-    window.print();
-
-}
-
-
-/* --------------------------------
-   CLEAR
--------------------------------- */
-
-function clearGenerator() {
-
-    document.getElementById(
-        "generateSemester"
-    ).value = "";
-
-    document.getElementById(
-        "generateSubject"
-    ).value = "";
-
-    document.getElementById(
-        "generateSubjectCode"
-    ).value = "";
-
-    document.getElementById(
-        "generateUnit"
-    ).value = "";
-
-    document.getElementById(
-        "generateDifficulty"
-    ).value = "";
-
-    document.getElementById(
-        "generateType"
-    ).value = "";
-
-    document.getElementById(
-        "pageCount"
-    ).value = "20";
-
-
-    generatedQuestions = [];
-
-
-    document.getElementById(
-        "generatedSection"
-    ).style.display = "none";
-
-
-    document.getElementById(
-        "generatedPages"
-    ).innerHTML = "";
-
-
-    document.getElementById(
-        "status"
-    ).style.display = "none";
-
-}
-
-
-/* --------------------------------
-   STATUS
--------------------------------- */
-
-function showStatus(
-    message,
-    type
-) {
-
-    const status =
-        document.getElementById(
-            "status"
-        );
-
-
-    status.textContent =
-        message;
-
-
-    status.className =
-        type === "success"
-            ? "status-success"
-            : "status-error";
-
-
-    status.style.display =
-        "block";
-
-}
-
-
-/* --------------------------------
-   SHUFFLE
--------------------------------- */
-
-function shuffleArray(array) {
-
-    const result =
-        [...array];
-
-
-    for (
-        let i = result.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        const j =
-            Math.floor(
-                Math.random() *
-                (i + 1)
-            );
-
-
-        [
-            result[i],
-            result[j]
-        ] =
-        [
-            result[j],
-            result[i]
-        ];
-
-    }
-
-
-    return result;
-
-}
-
-
-/* --------------------------------
-   HTML ESCAPE
--------------------------------- */
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-/* --------------------------------
-   CLOSE MODAL ON BACKDROP
--------------------------------- */
-
-document.getElementById(
-    "viewModal"
-).addEventListener(
-    "click",
-    function (event) {
-
-        if (
-            event.target ===
-            this
-        ) {
-
-            closeModal();
-
-        }
-
-    }
-);
-
-
-/* --------------------------------
-   START
--------------------------------- */
-
+$("generatorForm").addEventListener("submit",generateQuestionBank);
+$("clearGeneratorBtn").addEventListener("click",clearGenerator);
+$("printBtn").addEventListener("click",()=>{
+  if(!generatedQuestions.length)return showStatus("Generate the Question Bank before printing.","error");
+  window.print();
+});
+$("refreshBtn").addEventListener("click",loadQuestions);
+$("resetFiltersBtn").addEventListener("click",resetFilters);
+$("searchQuestions").addEventListener("input",applyFilters);
+$("filterCourse").addEventListener("change",()=>{
+  fillSemesters($("filterCourse").value,"filterSemester");
+  refreshSubjectSelects();applyFilters();
+});
+$("filterSemester").addEventListener("change",()=>{refreshSubjectSelects();applyFilters();});
+["filterSubject","filterUnit","filterType","filterDifficulty","filterAnswers"].forEach(id=>$(id).addEventListener("change",applyFilters));
+$("generateCourse").addEventListener("change",()=>{
+  fillSemesters($("generateCourse").value,"generateSemester");
+  refreshSubjectSelects();
+});
+$("generateSemester").addEventListener("change",refreshSubjectSelects);
+$("closeModalBtn").addEventListener("click",closeModal);
+$("viewModal").addEventListener("click",event=>{if(event.target===$("viewModal"))closeModal();});
+document.addEventListener("keydown",event=>{if(event.key==="Escape")closeModal();});
+
+fillCourses();
+fillSemesters("","generateSemester");
+fillSemesters("","filterSemester");
+refreshSubjectSelects();
 loadQuestions();
 
+async function saveGeneratedPaper() {
+  try {
+    // Find the generated paper data from the page.
+    const paper =
+      window.generatedPaper ||
+      window.currentPaper ||
+      window.lastGeneratedPaper;
 
+    if (!paper) {
+      alert("Please generate a question paper before saving.");
+      return;
+    }
+
+    const response = await fetch("/api/save-paper", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify(paper)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || result.success === false) {
+      throw new Error(result.message || "Could not save the paper.");
+    }
+
+    alert("Question paper saved successfully!");
+  } catch (error) {
+    console.error("Save Paper Error:", error);
+    alert("Paper save failed: " + error.message);
+  }
+}
 </script>
 
-
 </body>
-
 </html>

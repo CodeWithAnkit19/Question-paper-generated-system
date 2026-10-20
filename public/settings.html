@@ -1,1102 +1,697 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Settings - Question Paper Generator System</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            min-height: 100vh;
-            background:
-                radial-gradient(
-                    circle at top left,
-                    rgba(61, 174, 233, 0.12),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at bottom right,
-                    rgba(245, 166, 35, 0.12),
-                    transparent 35%
-                ),
-                #f5f7fb;
-            color: #172033;
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        .header {
-            width: 100%;
-            background:
-                linear-gradient(
-                    135deg,
-                    #142b63,
-                    #1f4fa3,
-                    #168bd1
-                );
-            color: white;
-            padding: 22px 45px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .header-left h1 {
-            font-size: 26px;
-            margin-bottom: 6px;
-        }
-
-        .header-left p {
-            font-size: 14px;
-            opacity: 0.88;
-        }
-
-        .back-btn {
-            border: none;
-            background: white;
-            color: #17458f;
-
-            padding: 11px 20px;
-
-            border-radius: 10px;
-
-            font-size: 14px;
-            font-weight: bold;
-
-            cursor: pointer;
-
-            transition: 0.25s;
-        }
-
-        .back-btn:hover {
-            transform: translateY(-2px);
-            box-shadow:
-                0 7px 18px rgba(0, 0, 0, 0.18);
-        }
-
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .container {
-            width: 100%;
-            max-width: 1400px;
-
-            margin: auto;
-
-            padding:
-                45px
-                45px
-                20px;
-        }
-
-        .page-title {
-            margin-bottom: 30px;
-        }
-
-        .page-title h2 {
-            font-size: 34px;
-            color: #173d82;
-            margin-bottom: 8px;
-        }
-
-        .page-title p {
-            color: #657089;
-            font-size: 15px;
-        }
-
-
-        /* =========================
-           SETTINGS GRID
-        ========================= */
-
-        .settings-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
-            gap: 24px;
-        }
-
-
-        /* =========================
-           CARD
-        ========================= */
-
-        .setting-card {
-            position: relative;
-
-            background: rgba(255, 255, 255, 0.96);
-
-            border-radius: 18px;
-
-            padding: 30px;
-
-            min-height: 275px;
-
-            border:
-                1px solid rgba(30, 70, 130, 0.08);
-
-            box-shadow:
-                0 10px 30px
-                rgba(26, 55, 100, 0.09);
-
-            display: flex;
-            flex-direction: column;
-
-            overflow: hidden;
-
-            transition:
-                transform 0.25s,
-                box-shadow 0.25s;
-        }
-
-        .setting-card::before {
-            content: "";
-
-            position: absolute;
-
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 5px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #1f4fa3,
-                    #3daee9,
-                    #f5a623
-                );
-        }
-
-        .setting-card:hover {
-            transform: translateY(-6px);
-
-            box-shadow:
-                0 18px 40px
-                rgba(26, 55, 100, 0.15);
-        }
-
-
-        /* =========================
-           ICON
-        ========================= */
-
-        .icon {
-            width: 62px;
-            height: 62px;
-
-            border-radius: 16px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 30px;
-
-            margin-bottom: 20px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #eaf4ff,
-                    #dceeff
-                );
-
-            box-shadow:
-                inset 0 0 0 1px
-                rgba(31, 79, 163, 0.06);
-        }
-
-
-        /* =========================
-           CARD TEXT
-        ========================= */
-
-        .setting-card h3 {
-            color: #173d82;
-
-            font-size: 21px;
-
-            margin-bottom: 10px;
-        }
-
-        .setting-card p {
-            color: #657089;
-
-            font-size: 14px;
-
-            line-height: 1.65;
-
-            flex: 1;
-        }
-
-
-        /* =========================
-           BUTTON
-        ========================= */
-
-        .setting-btn {
-            border: none;
-
-            margin-top: 22px;
-
-            padding: 12px 18px;
-
-            border-radius: 10px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #1f4fa3,
-                    #197bc4
-                );
-
-            color: white;
-
-            font-size: 14px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-
-            transition: 0.25s;
-
-            box-shadow:
-                0 6px 15px
-                rgba(31, 79, 163, 0.20);
-        }
-
-        .setting-btn:hover {
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 9px 20px
-                rgba(31, 79, 163, 0.28);
-        }
-
-        .setting-btn:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-
-        /* =========================
-           DANGER BUTTON
-        ========================= */
-
-        .danger-btn {
-            background:
-                linear-gradient(
-                    135deg,
-                    #d62828,
-                    #ef4444
-                );
-
-            box-shadow:
-                0 6px 15px
-                rgba(214, 40, 40, 0.20);
-        }
-
-        .danger-btn:hover {
-            box-shadow:
-                0 9px 20px
-                rgba(214, 40, 40, 0.28);
-        }
-
-
-        /* =========================
-           BACKUP BUTTONS
-        ========================= */
-
-        .backup-buttons {
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 10px;
-
-            margin-top: 22px;
-        }
-
-        .backup-buttons .setting-btn {
-            margin-top: 0;
-            width: 100%;
-            padding: 11px 10px;
-        }
-
-
-        /* =========================
-           FOOTER
-        ========================= */
-
-        .footer {
-            width: 100%;
-
-            text-align: center;
-
-            padding:
-                35px
-                20px;
-
-            color: #7a8497;
-
-            font-size: 13px;
-        }
-
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 1050px) {
-
-            .settings-grid {
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
-            }
-
-            .container {
-                padding-left: 30px;
-                padding-right: 30px;
-            }
-
-        }
-
-
-        @media (max-width: 650px) {
-
-            .header {
-                padding: 18px 20px;
-
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 16px;
-            }
-
-            .header-left h1 {
-                font-size: 22px;
-            }
-
-            .back-btn {
-                width: 100%;
-            }
-
-            .container {
-                padding:
-                    30px
-                    18px
-                    10px;
-            }
-
-            .page-title h2 {
-                font-size: 28px;
-            }
-
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .setting-card {
-                min-height: 250px;
-            }
-
-        }
-
-
-        @media (max-width: 430px) {
-
-            .backup-buttons {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings | Galgotias University PaperForge</title>
+
+<style>
+:root {
+    --bg: #07111f;
+    --panel: #101d30;
+    --panel2: #14243a;
+    --text: #edf5ff;
+    --muted: #9aacc5;
+    --border: rgba(145,180,225,.16);
+    --blue: #3988ff;
+    --cyan: #32d5e8;
+    --danger: #ff5268;
+    --green: #36d399;
+    --shadow: 0 16px 40px rgba(0,0,0,.22);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(ellipse at 10% 0%, rgba(35,110,220,.17), transparent 35%),
+        radial-gradient(ellipse at 90% 10%, rgba(27,210,220,.09), transparent 30%),
+        var(--bg);
+    min-height: 100vh;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+a { color: inherit; text-decoration: none; }
+
+.topbar {
+    min-height: 82px;
+    padding: 16px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(7,17,31,.88);
+}
+.brand { display: flex; align-items: center; gap: 13px; }
+.brand-logo {
+    width: 48px; height: 48px; border-radius: 15px;
+    display: grid; place-items: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    box-shadow: 0 8px 25px rgba(57,136,255,.22);
+}
+.brand h1 { font-size: 18px; }
+.brand p { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: var(--text);
+    background: var(--panel2);
+    transition: .2s;
+}
+.btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
+.btn-primary {
+    background: linear-gradient(135deg, #286de0, #278dd8);
+    border-color: transparent;
+}
+.btn-danger {
+    background: rgba(255,82,104,.13);
+    border-color: rgba(255,82,104,.35);
+    color: #ff9baa;
+}
+.btn-small { padding: 8px 11px; font-size: 12px; }
+
+.container { max-width: 1450px; margin: auto; padding: 32px 5%; }
+.hero {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 32px;
+    margin-bottom: 26px;
+    background:
+        linear-gradient(100deg, rgba(7,17,31,.98), rgba(14,54,94,.88)),
+        url("ai-banner.png") center/cover;
+    box-shadow: var(--shadow);
+}
+.hero::after {
+    content: "⚙";
+    position: absolute;
+    right: 5%; top: -40px;
+    font-size: 180px;
+    color: rgba(67,180,255,.08);
+    pointer-events: none;
+}
+.eyebrow {
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.hero h2 { font-size: clamp(25px, 4vw, 36px); margin: 12px 0; }
+.hero p { max-width: 720px; color: #b6c9e1; line-height: 1.7; }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin: 28px 0 16px;
+}
+.section-heading h2 { font-size: 20px; }
+.section-heading p { color: var(--muted); font-size: 12px; margin-top: 5px; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+.card {
+    min-width: 0;
+    padding: 23px;
+    background: linear-gradient(145deg, rgba(20,36,58,.97), rgba(12,25,43,.97));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+}
+.card-head { display: flex; align-items: center; gap: 13px; margin-bottom: 19px; }
+.card-icon {
+    flex-shrink: 0;
+    width: 44px; height: 44px; border-radius: 13px;
+    display: grid; place-items: center; font-size: 21px;
+    background: rgba(57,136,255,.14);
+    border: 1px solid rgba(57,136,255,.2);
+}
+.card h3 { font-size: 16px; }
+.card-head p { color: var(--muted); font-size: 12px; margin-top: 5px; line-height: 1.5; }
+.field { margin: 15px 0; }
+.field label { display: block; font-size: 13px; margin-bottom: 8px; color: #d6e4f6; }
+.field small { display: block; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.control {
+    width: 100%;
+    min-height: 43px;
+    color: var(--text);
+    background: #091729;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none;
+}
+.control:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(57,136,255,.12); }
+select.control option { background: #101d30; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.row + .row { margin-top: 16px; }
+.row-text { min-width: 0; }
+.row-text strong { display: block; font-size: 13px; }
+.row-text small { display: block; font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 4px; }
+.switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; inset: 0; cursor: pointer;
+    border-radius: 30px; background: #35445a; transition: .2s;
+}
+.slider::before {
+    content: ""; position: absolute; width: 18px; height: 18px;
+    left: 4px; top: 4px; border-radius: 50%; background: white; transition: .2s;
+}
+.switch input:checked + .slider { background: var(--blue); }
+.switch input:checked + .slider::before { transform: translateX(20px); }
+
+.range-row { display: grid; grid-template-columns: 1fr 54px; gap: 12px; align-items: center; }
+input[type="range"] { width: 100%; accent-color: var(--cyan); }
+.range-value { text-align: center; padding: 7px; background: #091729; border-radius: 8px; font-size: 13px; }
+.divider { border: 0; border-top: 1px solid var(--border); margin: 17px 0; }
+.button-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 17px; }
+.status-list { display: grid; gap: 12px; }
+.status-item {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+}
+.status-item span:first-child { font-size: 13px; }
+.status { color: var(--muted); font-size: 12px; }
+.status.ok { color: var(--green); }
+.status.warn { color: #ffc66d; }
+.note { color: var(--muted); font-size: 12px; line-height: 1.7; margin-top: 12px; }
+.footer { text-align: center; padding: 26px 15px; color: var(--muted); font-size: 12px; }
+#toast {
+    position: fixed; right: 20px; bottom: 20px; z-index: 10;
+    max-width: calc(100vw - 40px);
+    padding: 14px 18px; border-radius: 12px;
+    color: white; background: #15395b; border: 1px solid var(--border);
+    box-shadow: var(--shadow); display: none;
+}
+body.compact .card { padding: 15px; }
+body.no-animations *, body.no-animations *::before, body.no-animations *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+}
+body.light-mode {
+    --bg: #eef3fa; --panel: #fff; --panel2: #e4edf9;
+    --text: #17243a; --muted: #60718a; --border: rgba(35,70,120,.18);
+}
+body.light-mode .topbar { background: rgba(245,249,255,.95); }
+body.light-mode .hero { background: linear-gradient(100deg, #17355e, #176ba1); }
+body.light-mode .card { background: #fff; }
+body.light-mode .control, body.light-mode .range-value { background: #f4f7fc; color: #17243a; }
+body.light-mode .field label { color: #263d5d; }
+body.light-mode select.control option { background: #fff; color: #17243a; }
+
+@media (max-width: 850px) {
+    .grid { grid-template-columns: 1fr; }
+    .container { padding: 22px 4%; }
+    .hero { padding: 25px; }
+}
+@media (max-width: 550px) {
+    .topbar { align-items: flex-start; flex-direction: column; }
+    .top-actions { width: 100%; }
+    .top-actions .btn { flex: 1; }
+    .card { padding: 18px; }
+    .row { align-items: flex-start; }
+    .hero-actions .btn { flex: 1; }
+}
+</style>
 </head>
 
-
 <body>
-
-
-<!-- =========================
-     HEADER
-========================= -->
-
-<header class="header">
-
-    <div class="header-left">
-
-        <h1>
-            Galgotias University
-        </h1>
-
-        <p>
-            Question Paper Generator System
-        </p>
-
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-logo">✦</div>
+        <div>
+            <h1>Galgotias University</h1>
+            <p>PaperForge · AI Question Paper Generator</p>
+        </div>
     </div>
-
-
-    <button
-        class="back-btn"
-        onclick="window.location.href='dashboard.html'"
-    >
-        ← Dashboard
-    </button>
-
+    <div class="top-actions">
+        <button class="btn" id="themeQuickBtn" type="button">☀ Light Mode</button>
+        <button class="btn" type="button" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+        <button class="btn btn-danger" id="lockTopBtn" type="button">🔒 Lock Website</button>
+    </div>
 </header>
 
-
-
-<!-- =========================
-     MAIN
-========================= -->
-
 <main class="container">
+    <section class="hero">
+        <div class="eyebrow">PAPERFORGE CONTROL CENTER</div>
+        <h2>System Settings</h2>
+        <p>Manage the appearance, paper-generation preferences, difficulty distribution, security, question bank, backup and application controls from one place.</p>
+        <div class="hero-actions">
+            <button class="btn btn-primary" id="saveTopBtn" type="button">✓ Save Settings</button>
+            <button class="btn" id="discardTopBtn" type="button">↶ Discard Changes</button>
+            <button class="btn" id="resetTopBtn" type="button">↻ Reset Defaults</button>
+        </div>
+    </section>
 
-
-    <div class="page-title">
-
-        <h2>
-            System Settings
-        </h2>
-
-        <p>
-            Manage security, question bank, backup and system controls.
-        </p>
-
+    <div class="section-heading">
+        <div><h2>Appearance & Experience</h2><p>Customize the way PaperForge looks and behaves.</p></div>
     </div>
 
+    <section class="grid">
+        <article class="card">
+            <div class="card-head"><div class="card-icon">🎨</div><div><h3>Appearance</h3><p>Theme and display preferences</p></div></div>
 
-
-    <div class="settings-grid">
-
-
-        <!-- =========================
-             SECURITY
-        ========================= -->
-
-        <div class="setting-card">
-
-            <div class="icon">
-                🔐
+            <div class="field">
+                <label for="themeSelect">Color Theme</label>
+                <select id="themeSelect" class="control">
+                    <option value="dark">Dark AI Theme</option>
+                    <option value="light">Light Theme</option>
+                </select>
             </div>
 
-            <h3>
-                Security
-            </h3>
-
-            <p>
-                Change the password used to access the
-                Question Paper Generator System.
-                Your account uses password-based security
-                with a recovery PIN.
-            </p>
-
-            <button
-                class="setting-btn"
-                onclick="window.location.href='change-password.html'"
-            >
-                Change Password
-            </button>
-
-        </div>
-
-
-
-        <!-- =========================
-             QUESTION BANK
-        ========================= -->
-
-        <div class="setting-card">
-
-            <div class="icon">
-                📚
+            <div class="row">
+                <div class="row-text"><strong>Compact Layout</strong><small>Reduce spacing between settings cards.</small></div>
+                <label class="switch"><input id="compactMode" type="checkbox"><span class="slider"></span></label>
             </div>
-
-            <h3>
-                Question Bank
-            </h3>
-
-            <p>
-                View, search, edit and manage questions
-                stored in the Question Paper Generator
-                System database.
-            </p>
-
-            <button
-                class="setting-btn"
-                onclick="window.location.href='question-bank.html'"
-            >
-                Open Question Bank
-            </button>
-
-        </div>
-
-
-
-        <!-- =========================
-             BACKUP & RESTORE
-        ========================= -->
-
-        <div class="setting-card">
-
-            <div class="icon">
-                💾
+            <hr class="divider">
+            <div class="row">
+                <div class="row-text"><strong>Animations</strong><small>Enable hover transitions and interface effects.</small></div>
+                <label class="switch"><input id="animations" type="checkbox" checked><span class="slider"></span></label>
             </div>
+        </article>
 
-            <h3>
-                Backup & Restore
-            </h3>
+        <article class="card">
+            <div class="card-head"><div class="card-icon">📝</div><div><h3>Paper Preferences</h3><p>Default values for generated papers</p></div></div>
 
-            <p>
-                Create a backup of your Question Bank
-                and Previous Papers or restore data
-                from an existing JSON backup file.
-            </p>
-
-            <div class="backup-buttons">
-
-                <button
-                    class="setting-btn"
-                    id="backupBtn"
-                >
-                    Download Backup
-                </button>
-
-                <button
-                    class="setting-btn"
-                    id="restoreBtn"
-                >
-                    Restore Backup
-                </button>
-
+            <div class="field"><label for="paperDuration">Exam Duration</label>
+                <select id="paperDuration" class="control">
+                    <option value="1">1 Hour</option><option value="2">2 Hours</option>
+                    <option value="3" selected>3 Hours</option><option value="4">4 Hours</option>
+                </select>
             </div>
-
-            <input
-                type="file"
-                id="restoreFileInput"
-                accept=".json"
-                style="display:none;"
-            >
-
-        </div>
-
-
-
-        <!-- =========================
-             SYSTEM INFORMATION
-        ========================= -->
-
-        <div class="setting-card">
-
-            <div class="icon">
-                ℹ️
+            <div class="field"><label for="maxMarks">Default Maximum Marks</label>
+                <select id="maxMarks" class="control">
+                    <option value="50">50 Marks</option><option value="60">60 Marks</option>
+                    <option value="70">70 Marks</option><option value="80">80 Marks</option>
+                    <option value="100" selected>100 Marks</option>
+                </select>
             </div>
-
-            <h3>
-                System Information
-            </h3>
-
-            <p>
-                View information about the application,
-                backend technology, database and
-                current security system.
-            </p>
-
-            <button
-                class="setting-btn"
-                onclick="showSystemInfo()"
-            >
-                View Information
-            </button>
-
-        </div>
-
-
-
-        <!-- =========================
-             LOCK WEBSITE
-        ========================= -->
-
-        <div class="setting-card">
-
-            <div class="icon">
-                🔒
+            <div class="field"><label for="defaultDifficulty">Default Difficulty</label>
+                <select id="defaultDifficulty" class="control">
+                    <option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Mixed">Mixed</option>
+                </select>
             </div>
+            <div class="field"><label for="paperLanguage">Question Paper Language</label>
+                <select id="paperLanguage" class="control">
+                    <option value="English" selected>English</option>
+                </select>
+                <small>English is the currently configured language.</small>
+            </div>
+            <div class="field"><label for="paperInstructions">Default Instructions</label>
+                <input id="paperInstructions" class="control" type="text" maxlength="500" value="Attempt all questions as instructed.">
+            </div>
+        </article>
 
-            <h3>
-                Lock Website
-            </h3>
+        <article class="card">
+            <div class="card-head"><div class="card-icon">⚖️</div><div><h3>Difficulty Distribution</h3><p>Default target percentages for mixed papers</p></div></div>
 
-            <p>
-                Immediately end the current session
-                and return to the secure password
-                screen of the application.
-            </p>
+            <div class="field"><label for="easyPercent">Easy Questions</label><div class="range-row"><input id="easyPercent" type="range" min="0" max="100" value="30"><div class="range-value" id="easyValue">30%</div></div></div>
+            <div class="field"><label for="mediumPercent">Medium Questions</label><div class="range-row"><input id="mediumPercent" type="range" min="0" max="100" value="50"><div class="range-value" id="mediumValue">50%</div></div></div>
+            <div class="field"><label for="hardPercent">Hard Questions</label><div class="range-row"><input id="hardPercent" type="range" min="0" max="100" value="20"><div class="range-value" id="hardValue">20%</div></div></div>
+            <div class="status-item"><span>Total Distribution</span><strong id="distributionTotal">100%</strong></div>
+            <p class="note">These values are saved as preferences on this page. The paper generator must read these settings to apply them automatically.</p>
+        </article>
 
-            <button
-                class="setting-btn danger-btn"
-                id="lockWebsiteBtn"
-            >
-                Lock Website
-            </button>
+        <article class="card">
+            <div class="card-head"><div class="card-icon">🔐</div><div><h3>Security & Access</h3><p>Manage access to the application</p></div></div>
+            <p class="note">Use the existing password and recovery PIN screen to protect access to the system.</p>
+            <div class="button-row">
+                <button class="btn btn-primary" id="changePasswordBtn" type="button">Change Password</button>
+                <button class="btn btn-danger" id="lockSecurityBtn" type="button">Lock Website</button>
+            </div>
+        </article>
 
-        </div>
+        <article class="card">
+            <div class="card-head"><div class="card-icon">📚</div><div><h3>Question Bank</h3><p>Open and manage saved questions</p></div></div>
+            <p class="note">View, search, edit and manage questions stored in the application database.</p>
+            <div class="button-row">
+                <button class="btn btn-primary" type="button" onclick="window.location.href='question-bank.html'">Open Question Bank</button>
+                <button class="btn" type="button" onclick="window.location.href='create-question.html'">Create Question</button>
+            </div>
+        </article>
 
+        <article class="card">
+            <div class="card-head"><div class="card-icon">💾</div><div><h3>Backup & Restore</h3><p>Protect question and paper data</p></div></div>
+            <p class="note">Download a JSON backup or restore data from a backup file. Restore can replace existing data, so confirm carefully.</p>
+            <div class="button-row">
+                <button class="btn btn-primary" id="backupBtn" type="button">Download Backup</button>
+                <button class="btn" id="restoreBtn" type="button">Restore Backup</button>
+            </div>
+            <input type="file" id="restoreFileInput" accept=".json,application/json" hidden>
+        </article>
 
+        <article class="card">
+            <div class="card-head"><div class="card-icon">ℹ️</div><div><h3>System Information</h3><p>Application and technology details</p></div></div>
+            <p class="note">View the configured application details and backend technology.</p>
+            <button class="btn btn-primary" id="systemInfoBtn" type="button" style="margin-top:16px">View Information</button>
+        </article>
 
+        <article class="card">
+            <div class="card-head"><div class="card-icon">🖥️</div><div><h3>System Status</h3><p>Basic connection checks</p></div></div>
+            <div class="status-list">
+                <div class="status-item"><span>Settings storage</span><span class="status ok" id="storageStatus">Checking...</span></div>
+                <div class="status-item"><span>Question API</span><span class="status" id="questionApiStatus">Checking...</span></div>
+                <div class="status-item"><span>Paper API</span><span class="status" id="paperApiStatus">Checking...</span></div>
+                <div class="status-item"><span>Local AI service</span><span class="status" id="aiApiStatus">Checking...</span></div>
+            </div>
+            <button class="btn" id="refreshStatusBtn" type="button" style="margin-top:16px">Refresh Status</button>
+        </article>
+    </section>
+
+    <div class="section-heading">
+        <div><h2>Apply Changes</h2><p>Save your preferences or return to the last saved values.</p></div>
     </div>
-
+    <section class="card">
+        <div class="row">
+            <div class="row-text"><strong>Save and apply preferences</strong><small>Settings are stored in this browser. These preferences do not automatically change the paper generator until that page is connected to them.</small></div>
+            <span class="status" id="saveStatus">No unsaved changes</span>
+        </div>
+        <div class="button-row">
+            <button class="btn btn-primary" id="saveBottomBtn" type="button">✓ Save Settings</button>
+            <button class="btn" id="discardBottomBtn" type="button">↶ Discard Changes</button>
+            <button class="btn btn-danger" id="resetBottomBtn" type="button">↻ Reset Defaults</button>
+        </div>
+    </section>
 </main>
 
-
-
-<!-- =========================
-     FOOTER
-========================= -->
-
-<footer class="footer">
-
-    © 2026 Galgotias University -
-    Question Paper Generator System
-
-</footer>
-
-
+<footer class="footer">© 2026 Galgotias University · PaperForge Question Paper Generator System</footer>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
+"use strict";
 
+const SETTINGS_KEY = "paperforge_settings_v1";
 
-// =========================================
-// DOWNLOAD BACKUP
-// =========================================
+const defaults = {
+    theme: "dark",
+    compact: false,
+    animations: true,
+    paperDuration: "3",
+    maxMarks: "100",
+    defaultDifficulty: "Medium",
+    paperLanguage: "English",
+    paperInstructions: "Attempt all questions as instructed.",
+    easyPercent: 30,
+    mediumPercent: 50,
+    hardPercent: 20
+};
 
-const backupBtn =
-    document.getElementById("backupBtn");
+const $ = id => document.getElementById(id);
+let savedSettings = { ...defaults };
+let toastTimer;
 
-
-if (backupBtn) {
-
-    backupBtn.addEventListener(
-        "click",
-        async function () {
-
-            try {
-
-                backupBtn.disabled = true;
-
-                backupBtn.textContent =
-                    "Creating Backup...";
-
-
-                const response =
-                    await fetch(
-                        "/api/backup",
-                        {
-                            method: "GET",
-                            credentials: "include"
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    const errorData =
-                        await response
-                            .json()
-                            .catch(
-                                function () {
-                                    return {};
-                                }
-                            );
-
-
-                    throw new Error(
-                        errorData.message ||
-                        "Unable to create backup."
-                    );
-
-                }
-
-
-                const blob =
-                    await response.blob();
-
-
-                const downloadURL =
-                    window.URL.createObjectURL(
-                        blob
-                    );
-
-
-                const downloadLink =
-                    document.createElement("a");
-
-
-                downloadLink.href =
-                    downloadURL;
-
-
-                downloadLink.download =
-                    "question-paper-generator-backup.json";
-
-
-                document.body.appendChild(
-                    downloadLink
-                );
-
-
-                downloadLink.click();
-
-
-                downloadLink.remove();
-
-
-                window.URL.revokeObjectURL(
-                    downloadURL
-                );
-
-
-                alert(
-                    "Backup downloaded successfully."
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Backup Error:",
-                    error
-                );
-
-
-                alert(
-                    error.message ||
-                    "Unable to create backup."
-                );
-
-
-            } finally {
-
-                backupBtn.disabled = false;
-
-                backupBtn.textContent =
-                    "Download Backup";
-
-            }
-
-        }
-    );
-
+function notify(message) {
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.style.display = "none", 3500);
 }
 
-
-
-// =========================================
-// RESTORE BACKUP
-// =========================================
-
-const restoreBtn =
-    document.getElementById("restoreBtn");
-
-
-const restoreFileInput =
-    document.getElementById(
-        "restoreFileInput"
-    );
-
-
-if (
-    restoreBtn &&
-    restoreFileInput
-) {
-
-
-    restoreBtn.addEventListener(
-        "click",
-        function () {
-
-            restoreFileInput.click();
-
-        }
-    );
-
-
-    restoreFileInput.addEventListener(
-        "change",
-        async function () {
-
-            const file =
-                restoreFileInput.files[0];
-
-
-            if (!file) {
-                return;
-            }
-
-
-            const confirmed =
-                confirm(
-
-                    "WARNING!\n\n" +
-
-                    "Restoring this backup will replace the current Question Bank and Previous Papers data.\n\n" +
-
-                    "Do you want to continue?"
-
-                );
-
-
-            if (!confirmed) {
-
-                restoreFileInput.value = "";
-
-                return;
-
-            }
-
-
-            try {
-
-                restoreBtn.disabled = true;
-
-                restoreBtn.textContent =
-                    "Restoring...";
-
-
-                const fileText =
-                    await file.text();
-
-
-                let backupData;
-
-
-                try {
-
-                    backupData =
-                        JSON.parse(
-                            fileText
-                        );
-
-                } catch (error) {
-
-                    throw new Error(
-                        "Selected file is not a valid JSON backup."
-                    );
-
-                }
-
-
-                const response =
-                    await fetch(
-                        "/api/restore",
-                        {
-
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            credentials:
-                                "include",
-
-                            body:
-                                JSON.stringify(
-                                    backupData
-                                )
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to restore backup."
-                    );
-
-                }
-
-
-                alert(
-
-                    "Backup restored successfully.\n\n" +
-
-                    "Questions restored: " +
-                    data.questionsRestored +
-
-                    "\n" +
-
-                    "Previous papers restored: " +
-                    data.papersRestored
-
-                );
-
-
-                window.location.reload();
-
-
-            } catch (error) {
-
-                console.error(
-                    "Restore Error:",
-                    error
-                );
-
-
-                alert(
-                    error.message ||
-                    "Unable to restore backup."
-                );
-
-
-            } finally {
-
-                restoreBtn.disabled = false;
-
-                restoreBtn.textContent =
-                    "Restore Backup";
-
-                restoreFileInput.value = "";
-
-            }
-
-        }
-    );
-
+function readForm() {
+    return {
+        theme: $("themeSelect").value,
+        compact: $("compactMode").checked,
+        animations: $("animations").checked,
+        paperDuration: $("paperDuration").value,
+        maxMarks: $("maxMarks").value,
+        defaultDifficulty: $("defaultDifficulty").value,
+        paperLanguage: $("paperLanguage").value,
+        paperInstructions: $("paperInstructions").value,
+        easyPercent: Number($("easyPercent").value),
+        mediumPercent: Number($("mediumPercent").value),
+        hardPercent: Number($("hardPercent").value)
+    };
 }
 
-
-
-// =========================================
-// LOCK WEBSITE
-// =========================================
-
-const lockWebsiteBtn =
-    document.getElementById(
-        "lockWebsiteBtn"
-    );
-
-
-if (lockWebsiteBtn) {
-
-    lockWebsiteBtn.addEventListener(
-        "click",
-        async function () {
-
-            const confirmed =
-                confirm(
-                    "Do you want to lock the website?"
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            try {
-
-                await fetch(
-                    "/api/auth/logout",
-                    {
-                        method: "POST",
-                        credentials: "include"
-                    }
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Lock Error:",
-                    error
-                );
-
-            }
-
-
-            window.location.href =
-                "index.html";
-
-        }
-    );
-
+function writeForm(settings) {
+    $("themeSelect").value = settings.theme;
+    $("compactMode").checked = Boolean(settings.compact);
+    $("animations").checked = settings.animations !== false;
+    $("paperDuration").value = String(settings.paperDuration);
+    $("maxMarks").value = String(settings.maxMarks);
+    $("defaultDifficulty").value = settings.defaultDifficulty;
+    $("paperLanguage").value = settings.paperLanguage || "English";
+    $("paperInstructions").value = settings.paperInstructions || "";
+    $("easyPercent").value = settings.easyPercent;
+    $("mediumPercent").value = settings.mediumPercent;
+    $("hardPercent").value = settings.hardPercent;
+    applyAppearance(settings);
+    updateDistribution();
 }
 
+function applyAppearance(settings) {
+    document.body.classList.toggle("light-mode", settings.theme === "light");
+    document.body.classList.toggle("compact", Boolean(settings.compact));
+    document.body.classList.toggle("no-animations", settings.animations === false);
+    $("themeQuickBtn").textContent = settings.theme === "dark" ? "☀ Light Mode" : "🌙 Dark Mode";
+}
 
+function updateDistribution() {
+    const easy = Number($("easyPercent").value);
+    const medium = Number($("mediumPercent").value);
+    const hard = Number($("hardPercent").value);
+    $("easyValue").textContent = easy + "%";
+    $("mediumValue").textContent = medium + "%";
+    $("hardValue").textContent = hard + "%";
+    const total = easy + medium + hard;
+    $("distributionTotal").textContent = total + "%";
+    $("distributionTotal").style.color = total === 100 ? "var(--green)" : "#ffc66d";
+}
 
-// =========================================
-// SYSTEM INFORMATION
-// =========================================
+function updateDirtyState() {
+    const current = JSON.stringify(readForm());
+    const saved = JSON.stringify(savedSettings);
+    $("saveStatus").textContent = current === saved ? "No unsaved changes" : "Unsaved changes";
+}
+
+function loadSettings() {
+    try {
+        const stored = localStorage.getItem(SETTINGS_KEY);
+        savedSettings = stored ? { ...defaults, ...JSON.parse(stored) } : { ...defaults };
+    } catch (error) {
+        console.error("Could not read saved settings:", error);
+        savedSettings = { ...defaults };
+        notify("Could not read saved preferences. Defaults loaded.");
+    }
+    writeForm(savedSettings);
+    updateDirtyState();
+    $("storageStatus").textContent = "Available";
+    $("storageStatus").className = "status ok";
+}
+
+function saveSettings() {
+    const settings = readForm();
+    try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        savedSettings = { ...settings };
+        applyAppearance(settings);
+        updateDirtyState();
+        notify("Settings saved in this browser.");
+    } catch (error) {
+        console.error("Could not save settings:", error);
+        notify("Unable to save settings in this browser.");
+    }
+}
+
+function discardChanges() {
+    writeForm(savedSettings);
+    updateDirtyState();
+    notify("Unsaved changes discarded.");
+}
+
+function resetSettings() {
+    if (!confirm("Reset all settings to their default values? Save afterwards to keep these defaults.")) return;
+    writeForm({ ...defaults });
+    updateDirtyState();
+    notify("Default values loaded. Click Save Settings to keep them.");
+}
 
 function showSystemInfo() {
-
     alert(
-
         "QUESTION PAPER GENERATOR SYSTEM\n\n" +
-
         "University: Galgotias University\n" +
-
+        "Application: PaperForge\n" +
         "Backend: Node.js + Express.js\n" +
-
         "Database: MongoDB\n" +
-
-        "Security: Password + Recovery PIN\n" +
-
-        "Backup: Question Bank + Previous Papers\n" +
-
-        "Application: Web Based System\n" +
-
+        "Security: Password + Recovery PIN (as configured)\n" +
+        "Backup: Question Bank + Previous Papers (if API routes are available)\n" +
+        "Application Type: Web Based System\n" +
         "Version: 1.0"
-
     );
-
 }
 
+async function lockWebsite() {
+    if (!confirm("Do you want to lock the website and return to the secure screen?")) return;
+    try {
+        await fetch("/api/auth/logout", {
+            method: "POST",
+            credentials: "include"
+        });
+    } catch (error) {
+        console.error("Logout request failed:", error);
+    }
+    window.location.href = "index.html";
+}
+
+async function downloadBackup() {
+    const button = $("backupBtn");
+    button.disabled = true;
+    button.textContent = "Creating Backup...";
+    try {
+        const response = await fetch("/api/backup", {
+            method: "GET",
+            credentials: "include"
+        });
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.message || "Unable to create backup. Check that the backup API is available.");
+        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "question-paper-generator-backup.json";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        notify("Backup download started.");
+    } catch (error) {
+        console.error("Backup error:", error);
+        notify(error.message || "Unable to create backup.");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Download Backup";
+    }
+}
+
+async function restoreBackup() {
+    const input = $("restoreFileInput");
+    const button = $("restoreBtn");
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    if (!confirm("WARNING: Restoring this backup may replace current Question Bank and Previous Papers data. Continue only if you trust this file. Do you want to continue?")) {
+        input.value = "";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Restoring...";
+    try {
+        const text = await file.text();
+        let backupData;
+        try {
+            backupData = JSON.parse(text);
+        } catch {
+            throw new Error("The selected file is not valid JSON.");
+        }
+
+        const response = await fetch("/api/restore", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(backupData)
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Restore failed. Check that the restore API is available and the backup format is supported.");
+        }
+
+        alert(
+            "Backup restored successfully.\n\n" +
+            "Questions restored: " + (data.questionsRestored ?? "Not reported") + "\n" +
+            "Previous papers restored: " + (data.papersRestored ?? "Not reported")
+        );
+        window.location.reload();
+    } catch (error) {
+        console.error("Restore error:", error);
+        notify(error.message || "Unable to restore backup.");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Restore Backup";
+        input.value = "";
+    }
+}
+
+async function checkEndpoint(url, targetId) {
+    const target = $(targetId);
+    target.textContent = "Checking...";
+    target.className = "status";
+    try {
+        const response = await fetch(url, { method: "GET", credentials: "include" });
+        if (response.ok) {
+            target.textContent = "Responding";
+            target.className = "status ok";
+        } else {
+            target.textContent = "HTTP " + response.status;
+            target.className = "status warn";
+        }
+    } catch {
+        target.textContent = "Unavailable";
+        target.className = "status warn";
+    }
+}
+
+async function refreshStatus() {
+    await Promise.all([
+        checkEndpoint("/api/questions", "questionApiStatus"),
+        checkEndpoint("/api/papers", "paperApiStatus"),
+        checkEndpoint("http://127.0.0.1:11434/api/tags", "aiApiStatus")
+    ]);
+}
+
+$("themeSelect").addEventListener("change", () => {
+    applyAppearance(readForm());
+    updateDirtyState();
+});
+$("themeQuickBtn").addEventListener("click", () => {
+    $("themeSelect").value = $("themeSelect").value === "dark" ? "light" : "dark";
+    applyAppearance(readForm());
+    updateDirtyState();
+});
+["compactMode", "animations", "paperDuration", "maxMarks", "defaultDifficulty", "paperLanguage", "paperInstructions", "easyPercent", "mediumPercent", "hardPercent"].forEach(id => {
+    $(id).addEventListener("input", () => {
+        applyAppearance(readForm());
+        updateDistribution();
+        updateDirtyState();
+    });
+    $(id).addEventListener("change", () => {
+        applyAppearance(readForm());
+        updateDistribution();
+        updateDirtyState();
+    });
+});
+
+["saveTopBtn", "saveBottomBtn"].forEach(id => $(id).addEventListener("click", saveSettings));
+["discardTopBtn", "discardBottomBtn"].forEach(id => $(id).addEventListener("click", discardChanges));
+["resetTopBtn", "resetBottomBtn"].forEach(id => $(id).addEventListener("click", resetSettings));
+
+$("changePasswordBtn").addEventListener("click", () => {
+    window.location.href = "change-password.html";
+});
+$("lockSecurityBtn").addEventListener("click", lockWebsite);
+$("lockTopBtn").addEventListener("click", lockWebsite);
+$("backupBtn").addEventListener("click", downloadBackup);
+$("restoreBtn").addEventListener("click", () => $("restoreFileInput").click());
+$("restoreFileInput").addEventListener("change", restoreBackup);
+$("systemInfoBtn").addEventListener("click", showSystemInfo);
+$("refreshStatusBtn").addEventListener("click", refreshStatus);
+
+loadSettings();
+refreshStatus();
 </script>
-
-
 </body>
-
 </html>

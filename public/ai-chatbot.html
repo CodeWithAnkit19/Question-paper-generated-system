@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaperForge AI Assistant</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f3f5fb;color:#172033}
+.app{max-width:1000px;height:100vh;max-height:900px;margin:auto;padding:18px;display:flex;flex-direction:column}
+header{background:#172554;color:white;padding:18px;border-radius:18px 18px 0 0;display:flex;align-items:center;gap:12px}
+.logo{background:#60a5fa;color:#102044;font-weight:800;padding:12px;border-radius:12px}
+header h2{margin:0;font-size:21px}
+header p{margin:5px 0 0;color:#cbd5e1;font-size:13px}
+.status{margin-left:auto;font-size:12px;color:#bbf7d0}
+.toolbar{display:flex;gap:8px;background:#fff;padding:10px;border:1px solid #e2e8f0;border-bottom:0}
+.toolbar button{padding:10px 14px}
+.workspace{display:flex;flex:1;min-height:0;background:white;border:1px solid #e2e8f0}
+.sidebar{width:220px;flex-shrink:0;border-right:1px solid #e2e8f0;padding:12px;overflow-y:auto}
+.sidebar h3{font-size:13px;color:#64748b;margin:4px 0 12px}
+.history-item{display:block;width:100%;text-align:left;padding:10px;margin-bottom:7px;background:#f1f5f9;color:#172033;border-radius:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-item.active{background:#dbeafe;color:#1d4ed8}
+.main-chat{display:flex;flex:1;min-width:0;flex-direction:column}
+.chat{flex:1;overflow-y:auto;padding:22px}
+.msg{padding:13px 16px;border-radius:14px;margin:0 0 14px;max-width:90%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
+.bot{background:#eef2ff;border:1px solid #e0e7ff}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+}
+
+.typing-indicator span {
+    width: 7px;
+    height: 7px;
+    background: #64748b;
+    border-radius: 50%;
+    animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.45;
+    }
+
+    30% {
+        transform: translateY(-5px);
+        opacity: 1;
+    }
+}
+
+.user{background:#1d4ed8;color:white;margin-left:auto}
+form{display:flex;gap:10px;padding:15px;background:white;border:1px solid #e2e8f0;border-radius:0 0 18px 18px}
+textarea{flex:1;resize:none;min-height:48px;max-height:120px;padding:13px;border:1px solid #cbd5e1;border-radius:12px;font:inherit}
+button{border:0;background:#2563eb;color:white;font-weight:600;padding:0 20px;border-radius:10px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.note{text-align:center;color:#64748b;font-size:12px;padding:10px}
+.empty{text-align:center;color:#64748b;padding:25px 8px;font-size:13px}
+@media(max-width:650px){
+ .app{padding:5px;height:100dvh}
+ header{padding:12px}
+ header h2{font-size:17px}
+ .sidebar{width:125px;padding:7px}
+ .history-item{font-size:12px;padding:8px}
+ .chat{padding:12px}
+ form{padding:9px}
+ .msg{max-width:96%;padding:11px}
+ button{padding:0 12px}
+ .toolbar button{font-size:12px;padding:9px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <div class="logo">PF</div>
+  <div>
+    <h2>PaperForge AI</h2>
+    <p>Your academic assistant</p>
+  </div>
+  <div class="status">● Local AI</div>
+</header>
+
+<div class="toolbar">
+  <button id="newChat" type="button">+ New Chat</button>
+  <button id="clearHistory" type="button">Clear History</button>
+</div>
+
+<div class="workspace">
+  <aside class="sidebar">
+    <h3>CHAT HISTORY</h3>
+    <div id="historyList"></div>
+  </aside>
+
+  <section class="main-chat">
+    <div class="chat" id="chat" aria-live="polite"></div>
+
+    <div style="padding:10px 15px;background:#f8fafc;border:1px solid #e2e8f0;">
+  <label for="mode" style="font-weight:600;margin-right:10px;">
+    AI Mode:
+  </label>
+  <select id="mode" style="padding:9px;border:1px solid #cbd5e1;border-radius:8px;">
+    <option value="study">Study Mode</option>
+    <option value="practice">Practice Mode</option>
+  </select>
+</div>
+    <form id="form">
+      <textarea id="message" placeholder="Ask PaperForge AI..." maxlength="2000" required></textarea>
+      <button id="send" type="submit">Send</button>
+    </form>
+  </section>
+</div>
+
+<div class="note">Powered by local Ollama AI · Verify important answers.</div>
+</div>
+
+<script>
+const chat = document.getElementById("chat");
+const form = document.getElementById("form");
+const input = document.getElementById("message");
+const send = document.getElementById("send");
+const modeSelect = document.getElementById("mode");
+const historyList = document.getElementById("historyList");
+const newChatButton = document.getElementById("newChat");
+const clearHistoryButton = document.getElementById("clearHistory");
+
+const STORAGE_KEY = "paperforge_ai_chats_v1";
+
+let conversations = loadConversations();
+let activeChatId = null;
+let busy = false;
+
+function loadConversations() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveConversations() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversations));
+  } catch (error) {
+    console.error("Could not save chat history:", error);
+  }
+}
+
+function createConversation() {
+  const conversation = {
+    id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
+    title: "New Chat",
+    messages: [
+      {
+        role: "bot",
+        text: "Hello! I'm PaperForge AI. Ask me about your subjects, practice questions, or question-paper preparation."
+      }
+    ],
+    updatedAt: Date.now()
+  };
+
+  conversations.unshift(conversation);
+  activeChatId = conversation.id;
+  saveConversations();
+  renderChat();
+  renderHistory();
+  input.focus();
+}
+
+function getActiveConversation() {
+  return conversations.find(item => item.id === activeChatId);
+}
+
+function renderChat() {
+  chat.replaceChildren();
+  const conversation = getActiveConversation();
+
+  if (!conversation) {
+    chat.innerHTML = '<div class="empty">Select a chat or start a new one.</div>';
+    return;
+  }
+
+  conversation.messages.forEach(message => {
+    const div = document.createElement("div");
+    div.className = "msg " + message.role;
+    div.textContent = message.text;
+    chat.appendChild(div);
+  });
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+
+function renderHistory() {
+    historyList.replaceChildren();
+
+    if (conversations.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No chats yet";
+        historyList.appendChild(empty);
+        return;
+    }
+
+    conversations.forEach(conversation => {
+        const wrapper = document.createElement("div");
+        wrapper.style.display = "flex";
+        wrapper.style.gap = "5px";
+        wrapper.style.marginBottom = "7px";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "history-item" +
+            (conversation.id === activeChatId ? " active" : "");
+        button.style.flex = "1";
+        button.style.minWidth = "0";
+        button.style.marginBottom = "0";
+        button.textContent = conversation.title || "New Chat";
+        button.title = conversation.title || "New Chat";
+
+        button.addEventListener("click", () => {
+            if (busy) return;
+            activeChatId = conversation.id;
+            renderChat();
+            renderHistory();
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.textContent = "×";
+        deleteButton.title = "Delete this chat";
+        deleteButton.style.padding = "0 10px";
+        deleteButton.style.background = "#fee2e2";
+        deleteButton.style.color = "#b91c1c";
+
+        deleteButton.addEventListener("click", () => {
+            if (busy) return;
+
+            if (!confirm("Delete this conversation?")) return;
+
+            conversations = conversations.filter(
+                item => item.id !== conversation.id
+            );
+
+            if (activeChatId === conversation.id) {
+                activeChatId = conversations.length
+                    ? conversations[0].id
+                    : null;
+            }
+
+            saveConversations();
+
+            if (!activeChatId) {
+                createConversation();
+            } else {
+                renderChat();
+                renderHistory();
+            }
+        });
+
+        wrapper.appendChild(button);
+        wrapper.appendChild(deleteButton);
+        historyList.appendChild(wrapper);
+    });
+}
+
+
+function addMessage(text, role) {
+  const conversation = getActiveConversation();
+  if (!conversation) return;
+
+  conversation.messages.push({ role, text });
+  conversation.updatedAt = Date.now();
+
+  if (role === "user" && conversation.title === "New Chat") {
+    conversation.title = text.slice(0, 35) +
+      (text.length > 35 ? "..." : "");
+  }
+
+  saveConversations();
+  renderChat();
+  renderHistory();
+}
+
+newChatButton.addEventListener("click", () => {
+  if (busy) return;
+  createConversation();
+});
+
+clearHistoryButton.addEventListener("click", () => {
+  if (busy) return;
+
+  if (!confirm("Delete all saved conversations?")) return;
+
+  conversations = [];
+  activeChatId = null;
+  saveConversations();
+  createConversation();
+});
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const message = input.value.trim();
+  if (!message || busy) return;
+
+  if (!getActiveConversation()) {
+    createConversation();
+  }
+
+  const conversationId = activeChatId;
+
+  addMessage(message, "user");
+  input.value = "";
+  busy = true;
+  send.disabled = true;
+  send.textContent = "Thinking...";
+
+  
+const loading = document.createElement("div");
+loading.className = "msg bot typing-indicator";
+loading.setAttribute("aria-label", "PaperForge AI is thinking");
+
+for (let i = 0; i < 3; i++) {
+    const dot = document.createElement("span");
+    dot.setAttribute("aria-hidden", "true");
+    loading.appendChild(dot);
+}
+
+chat.appendChild(loading);
+chat.scrollTop = chat.scrollHeight;
+
+  try {
+    const response = await fetch("/api/chat/ollama", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+  message: message,
+  mode: modeSelect.value
+})
+    });
+
+    const data = await response.json();
+
+    loading.remove();
+
+    if (response.status === 401) {
+      if (activeChatId === conversationId) {
+        addMessage("Please unlock or log in to PaperForge, then try again.", "bot");
+      }
+    } else if (!response.ok || !data.success) {
+      if (activeChatId === conversationId) {
+        addMessage(data.message || "Sorry, the AI could not respond.", "bot");
+      }
+    } else {
+      const conversation = conversations.find(item => item.id === conversationId);
+      if (conversation) {
+        conversation.messages.push({
+          role: "bot",
+          text: (data.reply || "No response received.")
+    .replace(/```[\w-]*\s*/g, "")
+    .replace(/```/g, "")
+    .trim()
+        });
+        conversation.updatedAt = Date.now();
+        saveConversations();
+      }
+
+      if (activeChatId === conversationId) {
+        renderChat();
+      }
+    }
+
+  } catch (error) {
+    loading.remove();
+    const conversation = conversations.find(item => item.id === conversationId);
+
+    if (conversation) {
+      conversation.messages.push({
+        role: "bot",
+        text: "Could not connect. Please check that PaperForge and Ollama are running."
+      });
+      saveConversations();
+    }
+
+    if (activeChatId === conversationId) {
+      renderChat();
+    }
+  } finally {
+    busy = false;
+    send.disabled = false;
+    send.textContent = "Send";
+    input.focus();
+    renderHistory();
+  }
+});
+
+input.addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
+});
+
+if (conversations.length > 0) {
+  activeChatId = conversations[0].id;
+  renderChat();
+  renderHistory();
+} else {
+  createConversation();
+}
+</script>
+</body>
+</html>

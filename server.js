@@ -10,7 +10,9 @@ const app = express();
 
 const PORT = 3000;
 
-const MONGODB_URL = process.env.MONGODB_URL;const DATABASE_NAME =
+ const MONGODB_URL = "mongodb://127.0.0.1:27017";
+
+ const DATABASE_NAME =
     "PaperForge";
 
 const COLLECTION_NAME =
@@ -252,17 +254,15 @@ CONNECT MONGODB
 let mongoClient = null;
 
 
-async function connectDatabase() {
+ async function connectDatabase() {
 
     mongoClient =
         new MongoClient(
-            MONGODB_URL,
-            {
-                tls: true
-            }
+            MONGODB_URL
         );
 
     await mongoClient.connect();
+
     console.log(
         "MongoDB Connected Successfully!"
     );
@@ -1703,6 +1703,334 @@ app.post(
 
 /*
 =========================================================
+PAPERFORGE AI QUESTION GENERATOR - OLLAMA
+=========================================================
+*/
+
+app.post(
+    "/api/generate-ai-questions",
+    requireAuthentication,
+    async function (req, res) {
+        try {
+            const database = req.app.locals.database;
+            const questionsCollection =
+                database.collection(COLLECTION_NAME);
+
+            const course = String(req.body.course || "").trim();
+            const semester = String(req.body.semester || "").trim();
+            const subject = String(req.body.subject || "").trim();
+            const subjectCode = String(req.body.subjectCode || "").trim();
+            const unit = String(req.body.unit || "").trim();
+            const topic = String(req.body.topic || "").trim();
+const questionType = String(req.body.questionType || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+            console.log("Received questionType:", JSON.stringify(questionType));
+            const difficulty = String(req.body.difficulty || "").trim();
+            const quantity = Number(req.body.quantity);
+            const marks = Number(req.body.marks || 2);
+
+
+            const allowedDifficulties = [
+                "Easy",
+                "Medium",
+                "Hard"
+            ];
+
+            if (!semester || !subject || !questionType || !difficulty) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Semester, subject, question type and difficulty are required."
+                });
+            }
+            console.log("Received questionType:", JSON.stringify(questionType));
+            const normalizedQuestionType = questionType
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+
+const allowedTypeMap = {
+    "short answer": "Short Answer",
+    "long answer": "Long Answer",
+    "numerical": "Numerical",
+    "programming / code based": "Programming / Code Based",
+    "case study": "Case Study",
+    "case study / application based": "Case Study / Application Based",
+    "mcq": "MCQ",
+    "mcq questions": "MCQ",
+    "subjective questions": "Subjective Questions",
+    "subjective": "Subjective Questions",
+    "combined questions": "Combined Questions",
+    "combined": "Combined Questions",
+    "mixed": "Combined Questions"
+};
+
+const normalizedType =
+    allowedTypeMap[normalizedQuestionType];
+    console.log("QUESTION TYPE:", JSON.stringify(questionType));
+console.log("NORMALIZED TYPE:", normalizedType);
+
+if (!normalizedType) {
+    return res.status(400).json({
+        success: false,
+        message: "Unsupported question type: " + questionType
+    });
+}
+            if (!allowedDifficulties.includes(difficulty)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Difficulty must be Easy, Medium or Hard."
+                });
+            }
+
+            if (
+                !Number.isInteger(quantity) ||
+                quantity < 1 ||
+                quantity > 10
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Generate between 1 and 10 questions per request."
+                });
+            }
+
+            if (!Number.isFinite(marks) || marks <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Marks must be a positive number."
+                });
+            }
+
+            const systemPrompt = `
+You are PaperForge AI, an expert BCA question-paper creator.
+Generate original academic questions in simple, correct English.
+
+Return ONLY a valid JSON object in this exact structure:
+{
+  "questions": [
+    {
+      "question": "Question text",
+      "answer": "Correct answer or solution"
+    }
+  ]
+}
+
+Generate exactly the requested number of questions.
+Questions must match the given subject, unit, topic, type and difficulty.
+Do not repeat questions within your response.
+Do not include Markdown or text outside the JSON object.
+Answers must be accurate and suitable for BCA students.
+For programming questions, provide a clear coding problem and an appropriate answer.
+For numerical questions, include the correct solution.
+`;
+
+const userPrompt = `
+Course: ${course || "Not specified"}
+Semester: ${semester}
+Subject: ${subject}
+Subject code: ${subjectCode || "Not specified"}
+Unit: ${unit || "Any relevant unit"}
+Topic: ${topic || "Any relevant topic"}
+Question type: ${normalizedType}
+Difficulty: ${difficulty}
+Marks per question: ${marks}
+Number of questions: ${quantity}
+Language: English
+`;
+
+            
+const ollamaUrl = "http://127.0.0.1:11434/api/chat";
+const maxAttempts = 3;
+let response;
+let lastError;
+
+for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
+
+    try {
+        response = await fetch(ollamaUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+                model: "qwen2.5:3b",
+                format: "json",
+                messages: [
+                    {
+                        role: "system",
+                        content: systemPrompt
+                    },
+                    {
+                        role: "user",
+                        content: userPrompt
+                    }
+                ],
+                stream: false
+            })
+        });
+
+        if (!response.ok) {
+            const details = await response.text();
+            throw new Error(
+                `Ollama HTTP ${response.status}: ${details.slice(0, 300)}`
+            );
+        }
+
+        lastError = null;
+        break;
+    } catch (error) {
+        lastError = error;
+        console.error(
+            `PaperForge Ollama attempt ${attempt}/${maxAttempts} failed:`,
+            error.message
+        );
+
+        if (attempt < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+        }
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+if (lastError) {
+    throw new Error(
+        `Ollama unavailable after ${maxAttempts} attempts: ${lastError.message}`
+    );
+}
+
+if (lastError) {
+    throw new Error(
+        `Ollama unavailable after ${maxAttempts} attempts: ${lastError.message}`
+    );
+}
+
+const data = await response.json();
+const rawReply = data.message?.content || "{}";
+
+let parsedReply;
+
+try {
+    parsedReply = JSON.parse(rawReply);
+} catch {
+    throw new Error("Ollama returned invalid JSON.");
+}
+
+if (!Array.isArray(parsedReply.questions)) {
+    throw new Error("AI response did not contain a questions array.");
+}
+
+const generatedQuestions = parsedReply.questions.slice(0, quantity);
+
+const existingQuestions = await questionsCollection.find({
+    semester: semester,
+    subject: subject
+}).toArray();
+
+function normalizeQuestion(value) {
+    return String(value || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+}
+
+const existingTexts = new Set(
+    existingQuestions.map(item => normalizeQuestion(item.question))
+);
+
+const newQuestions = [];
+const seenInResponse = new Set();
+
+for (const item of generatedQuestions) {
+    const questionText = String(item.question || "").trim();
+    const answerText = String(item.answer || "").trim();
+    const normalizedText = normalizeQuestion(questionText);
+
+    if (
+        !questionText ||
+        !answerText ||
+        existingTexts.has(normalizedText) ||
+        seenInResponse.has(normalizedText)
+    ) {
+        continue;
+    }
+
+    seenInResponse.add(normalizedText);
+
+newQuestions.push({
+    source: "AI",
+    course,
+    semester,
+    subject,
+        subjectCode,
+        unit,
+        topic,
+        questionType,
+        difficulty,
+        marks,
+        question: questionText,
+        answer: answerText,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        usedInPapers: []
+    });
+}
+
+if (newQuestions.length === 0) {
+    return res.status(200).json({
+        success: true,
+        message: "AI generated no new unique questions. Try another topic or difficulty.",
+        requested: quantity,
+        saved: 0,
+        questions: []
+    });
+}
+
+const result = await questionsCollection.insertMany(newQuestions);
+
+res.status(201).json({
+    success: true,
+    message: "AI questions generated and saved successfully.",
+    requested: quantity,
+    saved: result.insertedCount,
+    questions: newQuestions
+});
+
+} catch (error) {
+    console.error("PaperForge AI Question Generator Error:", error);
+
+    const isTimeout = error.name === "AbortError";
+    const isConnectionError =
+        error.cause?.code === "ECONNREFUSED" ||
+        error.cause?.code === "ECONNRESET" ||
+        error.message.includes("Ollama unavailable");
+
+    let message = "AI question generation failed. Check the server terminal for details.";
+
+    if (isTimeout) {
+        message = "Ollama took too long to respond. Please try again.";
+    } else if (isConnectionError) {
+        message = "Ollama is not reachable. Please wait a few seconds and try again.";
+    } else if (error.message.includes("invalid JSON")) {
+        message = "AI returned an invalid response. Please try generating again.";
+    }
+
+           if (!res.headersSent) {
+        res.status(502).json({
+            success: false,
+            message
+        });
+    }
+}
+}
+);
+
+/*
+=========================================================
 GET ALL QUESTIONS
 =========================================================
 */
@@ -2197,23 +2525,15 @@ if (
 
             }
 
-
-            const allowedTypes = [
-
-                "Short Answer",
-
-                "Long Answer",
-
-                "Numerical",
-
-                "Programming / Code Based",
-
-                "Case Study",
-
-                "Case Study / Application Based"
-
-            ];
-
+const allowedTypes = [
+    "MCQ",
+    "Short Answer",
+    "Long Answer",
+    "Numerical",
+    "Programming / Code Based",
+    "Case Study",
+    "Case Study / Application Based"
+];
 
             const availableQuestions =
                 await questionsCollection
@@ -2787,6 +3107,56 @@ app.get(
     }
 );
 
+// SAVE GENERATED QUESTION PAPER
+app.post(
+    "/api/papers",
+    requireAuthentication,
+    async function (req, res) {
+        try {
+            const papersCollection =
+                req.app.locals.database.collection(
+                    PAPERS_COLLECTION
+                );
+
+            const data = req.body.paper || req.body;
+
+            if (
+                !data ||
+                typeof data !== "object" ||
+                Object.keys(data).length === 0
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "No question paper data received."
+                });
+            }
+
+            const paper = {
+                ...data,
+                createdAt: new Date()
+            };
+
+            const result =
+                await papersCollection.insertOne(paper);
+
+            res.status(201).json({
+                success: true,
+                message: "Question paper saved successfully.",
+                paper: {
+                    ...paper,
+                    _id: result.insertedId
+                }
+            });
+        } catch (error) {
+            console.error("Save paper error:", error);
+
+            res.status(500).json({
+                success: false,
+                message: "Failed to save question paper."
+            });
+        }
+    }
+); 
 
 /*
 =========================================================
@@ -3183,7 +3553,513 @@ app.delete(
 
     }
 );
+// ===============================
+// COURSE MANAGEMENT API
+// ===============================
 
+function requireAdmin(req, res, next) {
+    if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({
+            success: false,
+            message: "Admin access required."
+        });
+    }
+
+    next();
+}
+
+// Get all courses
+console.log("REGISTERING COURSE ROUTES");
+ 
+app.get(
+    "/api/admin/courses",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            const courses = req.app.locals.database
+                .collection("courses");
+
+            const result = await courses
+                .find({})
+                .sort({ name: 1 })
+                .toArray();
+
+            res.json({
+                success: true,
+                courses: result
+            });
+        } catch (error) {
+            console.error("Get courses error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not load courses."
+            });
+        }
+    }
+);
+
+// Add a course
+app.post(
+    "/api/admin/courses",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            const courses = req.app.locals.database
+                .collection("courses");
+
+            const code = String(req.body.code || "")
+                .trim()
+                .toUpperCase();
+
+            const name = String(req.body.name || "").trim();
+            const description = String(req.body.description || "").trim();
+
+            if (!code || !name) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Course code and name are required."
+                });
+            }
+
+            const existing = await courses.findOne({ code });
+
+            if (existing) {
+                return res.status(409).json({
+                    success: false,
+                    message: "This course code already exists."
+                });
+            }
+
+            const course = {
+                code,
+                name,
+                description,
+                isActive: true,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+
+            const result = await courses.insertOne(course);
+
+            res.status(201).json({
+                success: true,
+                message: "Course added successfully.",
+                course: {
+                    ...course,
+                    _id: result.insertedId
+                }
+            });
+        } catch (error) {
+            console.error("Add course error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not add course."
+            });
+        }
+    }
+);
+
+// Edit a course
+app.put(
+    "/api/admin/courses/:id",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            if (!ObjectId.isValid(req.params.id)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid course ID."
+                });
+            }
+
+            const courses = req.app.locals.database
+                .collection("courses");
+
+            const id = new ObjectId(req.params.id);
+            const code = String(req.body.code || "")
+                .trim()
+                .toUpperCase();
+            const name = String(req.body.name || "").trim();
+            const description = String(req.body.description || "").trim();
+
+            if (!code || !name) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Course code and name are required."
+                });
+            }
+
+            const duplicate = await courses.findOne({
+                code,
+                _id: { $ne: id }
+            });
+
+            if (duplicate) {
+                return res.status(409).json({
+                    success: false,
+                    message: "Another course uses this code."
+                });
+            }
+
+            const result = await courses.updateOne(
+                { _id: id },
+                {
+                    $set: {
+                        code,
+                        name,
+                        description,
+                        updatedAt: new Date()
+                    }
+                }
+            );
+
+            if (!result.matchedCount) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Course not found."
+                });
+            }
+
+            res.json({
+                success: true,
+                message: "Course updated successfully."
+            });
+        } catch (error) {
+            console.error("Edit course error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not update course."
+            });
+        }
+    }
+);
+
+// Activate or deactivate a course
+app.patch(
+    "/api/admin/courses/:id/status",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            if (!ObjectId.isValid(req.params.id)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid course ID."
+                });
+            }
+
+            if (typeof req.body.isActive !== "boolean") {
+                return res.status(400).json({
+                    success: false,
+                    message: "isActive must be true or false."
+                });
+            }
+
+            const courses = req.app.locals.database
+                .collection("courses");
+
+            const result = await courses.updateOne(
+                { _id: new ObjectId(req.params.id) },
+                {
+                    $set: {
+                        isActive: req.body.isActive,
+                        updatedAt: new Date()
+                    }
+                }
+            );
+
+            if (!result.matchedCount) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Course not found."
+                });
+            }
+
+            res.json({
+                success: true,
+                message: req.body.isActive
+                    ? "Course activated."
+                    : "Course deactivated."
+            });
+        } catch (error) {
+            console.error("Course status error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not change course status."
+            });
+        }
+    }
+);
+
+/* ===============================
+   SEMESTER MANAGEMENT API
+================================ */
+
+// Get semesters for a course
+app.get(
+    "/api/admin/semesters",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            const courseId = String(req.query.courseId || "").trim();
+
+            if (!ObjectId.isValid(courseId)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Valid courseId is required."
+                });
+            }
+
+            const database = req.app.locals.database;
+            const course = await database.collection("courses").findOne({
+                _id: new ObjectId(courseId)
+            });
+
+            if (!course) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Course not found."
+                });
+            }
+
+            const semesters = await database
+                .collection("semesters")
+                .find({ courseId: new ObjectId(courseId) })
+                .sort({ semesterNumber: 1 })
+                .toArray();
+
+            res.json({ success: true, semesters });
+        } catch (error) {
+            console.error("Get semesters error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not load semesters."
+            });
+        }
+    }
+);
+
+// Add a semester
+app.post(
+    "/api/admin/semesters",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            const database = req.app.locals.database;
+            const courseId = String(req.body.courseId || "").trim();
+            const semesterNumber = Number(req.body.semesterNumber);
+            const name = String(req.body.name || "").trim();
+
+            if (
+                !ObjectId.isValid(courseId) ||
+                !Number.isInteger(semesterNumber) ||
+                semesterNumber < 1 ||
+                !name
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Valid course, semester number and name are required."
+                });
+            }
+
+            const courseObjectId = new ObjectId(courseId);
+            const course = await database.collection("courses").findOne({
+                _id: courseObjectId
+            });
+
+            if (!course) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Course not found."
+                });
+            }
+
+            const semesters = database.collection("semesters");
+            const existing = await semesters.findOne({
+                courseId: courseObjectId,
+                semesterNumber
+            });
+
+            if (existing) {
+                return res.status(409).json({
+                    success: false,
+                    message: "This semester already exists for the course."
+                });
+            }
+
+            const semester = {
+                courseId: courseObjectId,
+                courseCode: course.code,
+                semesterNumber,
+                name,
+                isActive: true,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+
+            const result = await semesters.insertOne(semester);
+
+            res.status(201).json({
+                success: true,
+                message: "Semester added successfully.",
+                semester: { ...semester, _id: result.insertedId }
+            });
+        } catch (error) {
+            console.error("Add semester error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not add semester."
+            });
+        }
+    }
+);
+
+// Activate or deactivate a semester
+app.patch(
+    "/api/admin/semesters/:id/status",
+    requireAuthentication,
+    requireAdmin,
+    async function (req, res) {
+        try {
+            const semesterId = req.params.id;
+
+            if (!ObjectId.isValid(semesterId)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid semester ID."
+                });
+            }
+
+            if (typeof req.body.isActive !== "boolean") {
+                return res.status(400).json({
+                    success: false,
+                    message: "isActive must be true or false."
+                });
+            }
+
+            const result = await req.app.locals.database
+                .collection("semesters")
+                .updateOne(
+                    { _id: new ObjectId(semesterId) },
+                    {
+                        $set: {
+                            isActive: req.body.isActive,
+                            updatedAt: new Date()
+                        }
+                    }
+                );
+
+            if (!result.matchedCount) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Semester not found."
+                });
+            }
+
+            res.json({
+                success: true,
+                message: req.body.isActive
+                    ? "Semester activated."
+                    : "Semester deactivated."
+            });
+        } catch (error) {
+            console.error("Semester status error:", error);
+            res.status(500).json({
+                success: false,
+                message: "Could not update semester status."
+            });
+        }
+    }
+);
+
+
+/* =========================================
+   PAPERFORGE LOCAL AI CHATBOT - OLLAMA
+========================================= */
+
+app.post(
+    "/api/chat/ollama",
+    requireAuthentication,
+    async function (req, res) {
+        try {
+            const message = String(req.body.message || "").trim();
+            const mode = req.body.mode === "practice" ? "practice" : "study";
+
+const systemPrompt = mode === "practice"
+    ? "You are PaperForge AI, a BCA exam practice assistant. Give practice questions on the user's requested topic in simple English. Number each question clearly. Include the correct answer and a brief explanation after each question. If the user specifies a number of questions, follow it; otherwise give 5 questions. Do not use Markdown asterisks."
+    : "You are PaperForge AI, a BCA study assistant. Explain academic topics in simple English with clear headings and numbered points when useful. Give examples relevant to BCA students. Keep answers accurate and exam-friendly. Do not use Markdown asterisks.";
+
+            if (!message) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Please enter a message."
+                });
+            }
+
+            if (message.length > 2000) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Message is too long."
+                });
+            }
+
+            const response = await fetch(
+                "http://127.0.0.1:11434/api/chat",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "qwen2.5:3b",
+                       messages: [
+    {
+        role: "system",
+        content: systemPrompt
+    },
+                            {
+                                role: "user",
+                                content: message
+                            }
+                        ],
+                        stream: false
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Ollama HTTP " + response.status);
+            }
+
+         const data = await response.json();
+const rawReply = data.message?.content || "No response received.";
+
+const cleanReply = rawReply
+    .replace(/^\s{0,3}#{1,6}\s+/gm, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/__(.*?)__/g, "$1")
+    .replace(/^\s*[*+-]\s+/gm, "")
+    .trim();
+
+res.json({
+    success: true,
+    reply: cleanReply
+});
+        } catch (error) {
+            console.error("PaperForge AI Error:", error);
+
+            res.status(502).json({
+                success: false,
+                message: "AI could not respond. Check that Ollama is running."
+            });
+        }
+    }
+);
 
 /*
 =========================================================
@@ -3228,6 +4104,17 @@ async function startServer() {
 
 
         const server =
+        console.log("REGISTERED ROUTES CHECK");
+        console.log(
+    "CHATBOT ROUTE CHECK:",
+    app.router.stack
+        .filter(layer => layer.route)
+        .map(layer => ({
+            path: layer.route.path,
+            methods: layer.route.methods
+        }))
+        .filter(route => String(route.path).includes("/api/chat/ollama"))
+);
     app.listen(
         PORT,
         "0.0.0.0",
@@ -3237,11 +4124,7 @@ async function startServer() {
                         PORT
                     );
 
-                    console.log(
-                        "SERVER ADDRESS:",
-                        server.address()
-                    );
-
+                    
                 }
             );
 
@@ -3261,5 +4144,17 @@ async function startServer() {
 
 }
 
-
+console.log("COURSE API BLOCK LOADED");
+console.log(
+    "COURSE ROUTE CHECK:",
+    app.router.stack
+        .filter(layer => layer.route)
+        .map(layer => ({
+            path: layer.route.path,
+            methods: layer.route.methods
+        }))
+        .filter(route =>
+            String(route.path).includes("/api/admin/courses")
+        )
+);
 startServer();
