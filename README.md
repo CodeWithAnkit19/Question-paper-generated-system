@@ -133,7 +133,7 @@ Before running PaperForge, make sure the following are available:
 If the project is hosted on GitHub:
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone-https://github.com/CodeWithAnkit19/Question-paper-generated-system
 ```
 
 Open the project directory:
