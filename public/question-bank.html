@@ -144,12 +144,14 @@ input,select{width:100%;min-width:0;color:var(--text);background:#091326;border:
 
   <div class="field">
     <label for="generateUnit">Unit</label>
-    <select id="generateUnit">
-      <option value="">All Units</option>
-      <option>Unit 1</option><option>Unit 2</option>
-      <option>Unit 3</option><option>Unit 4</option>
-      <option>Unit 5</option>
-    </select>
+   <select id="generateUnit">
+  <option value="">All Units</option>
+  <option value="Unit 1">Unit 1</option>
+  <option value="Unit 2">Unit 2</option>
+  <option value="Unit 3">Unit 3</option>
+  <option value="Unit 4">Unit 4</option>
+  <option value="Unit 5">Unit 5</option>
+</select>
   </div>
 
   <div class="field">
@@ -198,53 +200,82 @@ input,select{width:100%;min-width:0;color:var(--text);background:#091326;border:
 <div class="panel-heading"><div><h2 class="panel-title">04 / Stored Questions</h2><div class="panel-description">Search and manage questions already in the database.</div></div><span class="count" id="questionCount">0 questions</span></div>
 <input class="search" id="searchQuestions" type="search" placeholder="Search question, answer, course, subject or topic...">
 
+
 <div class="form-grid">
   <div class="field">
-    <label for="generateCourse">Course</label>
-    <select id="generateCourse">
+    <label for="filterCourse">Course</label>
+    <select id="filterCourse">
       <option value="">All Courses</option>
-      <optgroup label="Undergraduate Courses">
-        <option>BCA</option>
-        <option>B.Sc</option>
-        <option>B.Com</option>
-        <option>B.A.</option>
-        <option>BBA</option>
-        <option>B.Tech</option>
-        <option>B.E.</option>
-        <option>B.Pharm</option>
-        <option>B.Des</option>
-        <option>B.Ed</option>
-        <option>BCA (Hons.)</option>
-        <option>B.Sc (Hons.)</option>
-        <option>B.Com (Hons.)</option>
-        <option>B.Voc</option>
-        <option>LLB</option>
-        <option>MBBS</option>
-        <option>BDS</option>
-      </optgroup>
-      <optgroup label="Postgraduate Courses">
-        <option>MCA</option>
-        <option>M.Sc</option>
-        <option>M.Com</option>
-        <option>M.A.</option>
-        <option>MBA</option>
-        <option>M.Tech</option>
-        <option>M.E.</option>
-        <option>M.Pharm</option>
-        <option>M.Des</option>
-        <option>M.Ed</option>
-        <option>LLM</option>
-        <option>MD</option>
-        <option>MS</option>
-      </optgroup>
-      <optgroup label="Diploma Courses">
-        <option>Diploma</option>
-        <option>Polytechnic</option>
-        <option>PG Diploma</option>
-      </optgroup>
-      <option value="__custom__">Enter Custom Course</option>
     </select>
   </div>
+
+  <div class="field">
+    <label for="filterSemester">Semester</label>
+    <select id="filterSemester">
+      <option value="">All Semesters</option>
+      <option value="1">Semester 1</option>
+      <option value="2">Semester 2</option>
+      <option value="3">Semester 3</option>
+      <option value="4">Semester 4</option>
+      <option value="5">Semester 5</option>
+      <option value="6">Semester 6</option>
+      <option value="7">Semester 7</option>
+      <option value="8">Semester 8</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="filterSubject">Subject</label>
+    <select id="filterSubject">
+      <option value="">All Subjects</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="filterUnit">Unit</label>
+    <select id="filterUnit">
+      <option value="">All Units</option>
+      <option value="Unit 1">Unit 1</option>
+      <option value="Unit 2">Unit 2</option>
+      <option value="Unit 3">Unit 3</option>
+      <option value="Unit 4">Unit 4</option>
+      <option value="Unit 5">Unit 5</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="filterType">Question Type</label>
+    <select id="filterType">
+      <option value="">All Types</option>
+      <option value="MCQ">MCQ</option>
+      <option value="Short Answer">Short Answer</option>
+      <option value="Long Answer">Long Answer</option>
+      <option value="Numerical">Numerical</option>
+      <option value="Programming / Code Based">Programming / Code Based</option>
+      <option value="Case Study">Case Study</option>
+      <option value="Case Study / Application Based">Case Study / Application Based</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="filterDifficulty">Difficulty</label>
+    <select id="filterDifficulty">
+      <option value="">All Difficulties</option>
+      <option value="Easy">Easy</option>
+      <option value="Medium">Medium</option>
+      <option value="Hard">Hard</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="filterAnswers">Answers</label>
+    <select id="filterAnswers">
+      <option value="">All Questions</option>
+      <option value="yes">With Answers</option>
+      <option value="no">Without Answers</option>
+    </select>
+  </div>
+</div>
 
   <div class="field" id="customCourseField" hidden>
     <label for="customCourse">Enter Course Name</label>
@@ -387,54 +418,85 @@ function subjectsFor(course,semester){
     .map(q=>q.subject));
   return unique(list).sort((a,b)=>a.localeCompare(b));
 }
-function fillSelect(id,values,firstLabel,oldValue){
-  const select=$(id);
-  const old=oldValue!==undefined?oldValue:select.value;
+
+function fillSelect(id, values, firstLabel, oldValue) {
+  const select = $(id);
+
+  // Skip safely if this dropdown is not present in the HTML.
+  if (!select) {
+    console.warn("Question Bank dropdown not found:", id);
+    return;
+  }
+
+  const old = oldValue !== undefined ? oldValue : select.value;
+
   select.replaceChildren();
-  const first=document.createElement("option");
-  first.value="";
-  first.textContent=firstLabel;
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = firstLabel;
   select.appendChild(first);
-  unique(values).forEach(value=>{
-    const option=document.createElement("option");
-    option.value=value;
-    option.textContent=value;
+
+  unique(values).forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
     select.appendChild(option);
   });
-  if([...select.options].some(o=>o.value===old))select.value=old;
+
+  if ([...select.options].some(option => option.value === old)) {
+    select.value = old;
+  }
 }
 function fillCourses() {
-  const select = $("generateCourse");
-
-  const existingValues = new Set(
-    [...select.options].map(option => option.value)
-  );
-
   const courses = unique([
     ...Object.keys(defaultCourses),
     ...allQuestions.map(courseOf)
   ]).sort((a, b) => a.localeCompare(b));
 
-  courses.forEach(course => {
-    if (!existingValues.has(course)) {
-      const option = document.createElement("option");
-      option.value = course;
-      option.textContent = course;
+  const select = $("generateCourse");
 
-      const customOption = [...select.options].find(
-        option => option.value === "__custom__"
+  if (select) {
+    const oldValue = select.value;
+
+    courses.forEach(course => {
+      const exists = [...select.options].some(
+        option => normalize(option.value) === normalize(course)
       );
 
-      select.insertBefore(option, customOption || null);
-      existingValues.add(course);
-    }
-  });
+      if (!exists) {
+        const option = document.createElement("option");
+        option.value = course;
+        option.textContent = course;
 
-  if (!existingValues.has("__custom__")) {
-    const option = document.createElement("option");
-    option.value = "__custom__";
-    option.textContent = "+ Enter Custom Course";
-    select.appendChild(option);
+        const customOption = [...select.options].find(
+          option => option.value === "__custom__"
+        );
+
+        select.insertBefore(option, customOption || null);
+      }
+    });
+
+    if (
+      oldValue &&
+      [...select.options].some(option => option.value === oldValue)
+    ) {
+      select.value = oldValue;
+    }
+
+    if (![...select.options].some(option => option.value === "__custom__")) {
+      const option = document.createElement("option");
+      option.value = "__custom__";
+      option.textContent = "+ Enter Custom Course";
+      select.appendChild(option);
+    }
+  }
+
+  const filterSelect = $("filterCourse");
+
+  if (filterSelect) {
+    const oldFilter = filterSelect.value;
+    fillSelect("filterCourse", courses, "All Courses", oldFilter);
   }
 }
 function fillSemesters(course, semesterId) {
@@ -473,20 +535,52 @@ function fillSemesters(course, semesterId) {
   );
 
   fillSelect(semesterId, semesters, "All Semesters");
+}function fillSemesters(course, semesterId) {
+  const semesters = ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+  fillSelect(
+    semesterId,
+    semesters,
+    "All Semesters"
+  );
 }
-function fillSemesters(course,semesterId){
-  const semesters=unique([
-    ...((defaultCourses[course]||[]).map(x=>String(x.semester))),
-    ...allQuestions.filter(q=>!course||normalize(courseOf(q))===normalize(course)).map(semesterOf)
-  ]).sort((a,b)=>Number(a)-Number(b));
-  fillSelect(semesterId,semesters,"All Semesters");
+
+function refreshSubjectSelects() {
+  const gc = $("generateCourse")?.value || "";
+  const gs = $("generateSemester")?.value || "";
+  const fc = $("filterCourse")?.value || "";
+  const fs = $("filterSemester")?.value || "";
+
+  if ($("generateSubject")) {
+    fillSelect(
+      "generateSubject",
+      subjectsFor(gc, gs),
+      "All Subjects"
+    );
+    const subjectSelect = $("generateSubject");
+
+if (
+  subjectSelect &&
+  ![...subjectSelect.options].some(
+    option => option.value === "__custom__"
+  )
+) {
+  const customOption = document.createElement("option");
+  customOption.value = "__custom__";
+  customOption.textContent = "Enter Custom Subject";
+  subjectSelect.appendChild(customOption);
 }
-function refreshSubjectSelects(){
-  const gc=$("generateCourse").value,gs=$("generateSemester").value;
-  const fc=$("filterCourse").value,fs=$("filterSemester").value;
-  fillSelect("generateSubject",subjectsFor(gc,gs),"All Subjects");
-  fillSelect("filterSubject",subjectsFor(fc,fs),"All Subjects");
+  }
+
+  if ($("filterSubject")) {
+    fillSelect(
+      "filterSubject",
+      subjectsFor(fc, fs),
+      "All Subjects"
+    );
+  }
 }
+
 // Custom Course input
 const generateCourseSelect = document.getElementById("generateCourse");
 const customCourseField = document.getElementById("customCourseField");
@@ -538,8 +632,11 @@ async function loadQuestions(){
     if(!list)throw new Error("Questions API returned an unexpected response format.");
     allQuestions=list;
     fillCourses();
-    fillSemesters($("generateCourse").value,"generateSemester");
-    fillSemesters($("filterCourse").value,"filterSemester");
+fillSemesters($("generateCourse")?.value || "", "generateSemester");
+
+if ($("filterSemester") && $("filterCourse")) {
+  fillSemesters($("filterCourse").value || "", "filterSemester");
+}
     refreshSubjectSelects();
     updateStats();
     applyFilters();
@@ -654,32 +751,189 @@ function shuffle(array){
   for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}
   return copy;
 }
-function generateQuestionBank(event){
+
+async function generateQuestionBank(event) {
   event?.preventDefault();
-  const course=$("generateCourse").value,semester=$("generateSemester").value,subject=$("generateSubject").value;
-  const code=normalize($("generateSubjectCode").value),unit=$("generateUnit").value;
-  const difficulty=$("generateDifficulty").value,type=$("generateType").value;
-  const requestedPages=Number($("pageCount").value)||20;
-  const questions=allQuestions.filter(q=>{
-    if(course&&normalize(courseOf(q))!==normalize(course))return false;
-    if(semester&&semesterOf(q)!==semester)return false;
-    if(subject&&q.subject!==subject)return false;
-    if(code&&normalize(q.subjectCode)!==code)return false;
-    if(unit&&q.unit!==unit)return false;
-    if(difficulty&&q.difficulty!==difficulty)return false;
-    if(type&&q.questionType!==type)return false;
-    return Boolean(String(q.question||"").trim()&&answerOf(q));
-  });
-  if(!questions.length){
-    generatedQuestions=[];
-    $("generatedPages").innerHTML='<div class="empty">No questions with answers match these filters. Check that your database questions have the correct course and semester fields.</div>';
-    $("generatedSummary").textContent="No matching questions.";
-    showStatus("No questions with answers match your selected filters.","error");
+
+  const course = $("generateCourse").value;
+  const semester = $("generateSemester").value;
+  const subject = $("generateSubject").value;
+  const code = normalize($("generateSubjectCode").value);
+  const unit = $("generateUnit").value;
+  const difficulty = $("generateDifficulty").value;
+  const type = $("generateType").value;
+  const requestedPages = Number($("pageCount").value) || 20;
+
+  const matchesFilters = (q) => {
+    if (course && normalize(courseOf(q)) !== normalize(course)) return false;
+    if (semester && semesterOf(q) !== semester) return false;
+    if (subject && q.subject !== subject) return false;
+    if (code && normalize(q.subjectCode) !== code) return false;
+    if (unit && q.unit !== unit) return false;
+    if (difficulty && normalize(q.difficulty) !== normalize(difficulty)) return false;
+
+    if (type) {
+      const savedType = normalize(q.questionType);
+      const selectedType = normalize(type);
+      const aliases = {
+        "short": "short answer",
+        "long": "long answer",
+        "programming": "programming / code based"
+      };
+      if (
+        savedType !== selectedType &&
+        savedType !== (aliases[selectedType] || selectedType)
+      ) return false;
+    }
+
+    return Boolean(
+      String(q.question || "").trim() &&
+      String(answerOf(q) || "").trim()
+    );
+  };
+
+  let questions = allQuestions.filter(matchesFilters);
+
+  if (!questions.length) {
+    if (!subject || normalize(subject).includes("all subjects")) {
+      generatedQuestions = [];
+      $("generatedPages").innerHTML =
+        '<div class="empty">Please select a specific subject before generating an AI question bank.</div>';
+      $("generatedSummary").textContent = "Select a subject to continue.";
+      showStatus("Please select a subject first.", "error");
+      return;
+    }
+
+    if (!semester || normalize(semester).includes("all semesters")) {
+      generatedQuestions = [];
+      $("generatedPages").innerHTML =
+        '<div class="empty">Please select a specific semester for AI generation.</div>';
+      $("generatedSummary").textContent = "Select a semester to continue.";
+      showStatus("Please select a semester first.", "error");
+      return;
+    }
+
+    const aiTypeMap = {
+      "short": "Short Answer",
+      "long": "Long Answer",
+      "programming": "Programming / Code Based"
+    };
+
+    const aiType = type
+      ? (aiTypeMap[normalize(type)] || type)
+      : "Short Answer";
+
+    const aiDifficulty = difficulty || "Medium";
+
+    // Estimate questions needed for the selected document length.
+    // Keep each API request within the backend limit of 100.
+    const quantity = Math.min(requestedPages * 5, 100);
+
+    const generateButton = $("generatorForm").querySelector(
+      'button[type="submit"], button:not([type])'
+    );
+
+    if (generateButton) {
+      generateButton.disabled = true;
+      generateButton.dataset.originalText = generateButton.textContent;
+      generateButton.textContent = "Generating with AI...";
+    }
+
+    showStatus("No matching questions found. AI is generating questions and answers...", "info");
+    $("generatedSummary").textContent = "Generating AI questions...";
+
+    try {
+      const response = await fetch("/api/generate-ai-questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          course,
+          semester,
+          subject,
+          subjectCode: code,
+          unit,
+          topic: "",
+          questionType: aiType,
+          difficulty: aiDifficulty,
+          quantity,
+          marks: 2
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "AI question generation failed.");
+      }
+
+      if (!data.success || !Array.isArray(data.questions) || !data.questions.length) {
+        throw new Error(data.message || "AI could not generate matching questions.");
+      }
+
+      const generated = data.questions.filter(q =>
+        String(q.question || "").trim() &&
+        String(answerOf(q) || q.answer || "").trim()
+      );
+
+      if (!generated.length) {
+        throw new Error("AI returned questions without usable answers.");
+      }
+
+      // Keep generated questions in this document preview.
+      questions = generated;
+      generatedQuestions = shuffle(questions);
+
+      renderGeneratedBank(
+        generatedQuestions,
+        requestedPages,
+        course,
+        semester,
+        subject
+      );
+
+      showStatus(
+        "AI generated " + generated.length +
+        " question(s). " + (data.saved || 0) +
+        " saved to the database.",
+        "success"
+      );
+
+      // Refresh the stored question list for future use.
+loadQuestions().catch(error => {
+  console.warn("Question list refresh failed:", error);
+});
+      generatedQuestions = [];
+      $("generatedPages").innerHTML =
+        '<div class="empty"></div>';
+      $("generatedPages").firstElementChild.textContent = error.message;
+      $("generatedSummary").textContent = "AI generation failed.";
+      showStatus(error.message, "error");
+    } finally {
+      if (generateButton) {
+        generateButton.disabled = false;
+        generateButton.textContent =
+          generateButton.dataset.originalText || "✦ Generate Question Bank";
+      }
+    }
+
     return;
   }
-  generatedQuestions=shuffle(questions);
-  renderGeneratedBank(generatedQuestions,requestedPages,course,semester,subject);
-  showStatus("Generated a bank containing "+generatedQuestions.length+" non-repeated question(s).","success");
+
+  generatedQuestions = shuffle(questions);
+  renderGeneratedBank(
+    generatedQuestions,
+    requestedPages,
+    course,
+    semester,
+    subject
+  );
+  showStatus(
+    "Generated a bank containing " +
+    generatedQuestions.length +
+    " non-repeated question(s).",
+    "success"
+  );
 }
 function renderGeneratedBank(questions,requestedPages,course,semester,subject){
   const container=$("generatedPages");container.replaceChildren();
@@ -722,19 +976,16 @@ function resetFilters(){
 $("generatorForm").addEventListener("submit",generateQuestionBank);
 $("clearGeneratorBtn").addEventListener("click",clearGenerator);
 $("printBtn").addEventListener("click",()=>{
-  if(!generatedQuestions.length)return showStatus("Generate the Question Bank before printing.","error");
+    if(!generatedQuestions.length)return showStatus("Generate the Question Bank before printing.","error");
   window.print();
 });
-$("refreshBtn").addEventListener("click",loadQuestions);
-$("resetFiltersBtn").addEventListener("click",resetFilters);
-$("searchQuestions").addEventListener("input",applyFilters);
-$("filterCourse").addEventListener("change",()=>{
-  fillSemesters($("filterCourse").value,"filterSemester");
-  refreshSubjectSelects();applyFilters();
-});
-$("filterSemester").addEventListener("change",()=>{refreshSubjectSelects();applyFilters();});
-["filterSubject","filterUnit","filterType","filterDifficulty","filterAnswers"].forEach(id=>$(id).addEventListener("change",applyFilters));
-$("generateCourse").addEventListener("change",()=>{
+["filterSubject", "filterUnit", "filterType", "filterDifficulty", "filterAnswers"]
+  .forEach(id => {
+    const element = $(id);
+    if (element) {
+      element.addEventListener("change", applyFilters);
+    }
+  });(id=>$(id).addEventListener("change",applyFilters));$("generateCourse").addEventListener("change",()=>{
   fillSemesters($("generateCourse").value,"generateSemester");
   refreshSubjectSelects();
 });

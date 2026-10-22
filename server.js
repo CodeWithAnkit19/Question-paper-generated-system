@@ -1783,17 +1783,16 @@ if (!normalizedType) {
                     message: "Difficulty must be Easy, Medium or Hard."
                 });
             }
-
-            if (
-                !Number.isInteger(quantity) ||
-                quantity < 1 ||
-                quantity > 10
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Generate between 1 and 10 questions per request."
-                });
-            }
+if (
+    !Number.isInteger(quantity) ||
+    quantity < 1 ||
+    quantity > 100
+) {
+    return res.status(400).json({
+        success: false,
+        message: "Generate between 1 and 100 questions per request."
+    });
+}
 
             if (!Number.isFinite(marks) || marks <= 0) {
                 return res.status(400).json({
@@ -1801,7 +1800,22 @@ if (!normalizedType) {
                     message: "Marks must be a positive number."
                 });
             }
+const existingQuestions = await questionsCollection.find({
+    semester: semester,
+    subject: subject
+}).project({
+    question: 1,
+    _id: 0
+}).toArray();
 
+const existingQuestionTexts = existingQuestions
+    .map(item => String(item.question || "").trim())
+    .filter(Boolean);
+
+const recentQuestionsToAvoid = existingQuestionTexts
+    .slice(-40)
+    .map(question => "- " + question)
+    .join("\n");
             const systemPrompt = `
 You are PaperForge AI, an expert BCA question-paper creator.
 Generate original academic questions in simple, correct English.
@@ -1819,6 +1833,12 @@ Return ONLY a valid JSON object in this exact structure:
 Generate exactly the requested number of questions.
 Questions must match the given subject, unit, topic, type and difficulty.
 Do not repeat questions within your response.
+Never reproduce any question listed in the user's
+previously used questions.
+Create genuinely different questions, not just
+minor wording changes.
+If a topic has many possibilities, explore different
+concepts, examples, and applications.
 Do not include Markdown or text outside the JSON object.
 Answers must be accurate and suitable for BCA students.
 For programming questions, provide a clear coding problem and an appropriate answer.
@@ -1836,21 +1856,69 @@ Question type: ${normalizedType}
 Difficulty: ${difficulty}
 Marks per question: ${marks}
 Number of questions: ${quantity}
+Previously used questions to avoid:
+${recentQuestionsToAvoid || "No previous questions provided."}
 Language: English
 `;
 
-            
-const ollamaUrl = "http://127.0.0.1:11434/api/chat";
-const maxAttempts = 3;
-let response;
-let lastError;
+            const ollamaUrl = "http://127.0.0.1:11434/api/chat";
 
-for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+function normalizeQuestion(value) {
+    return String(value || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+}
+
+const existingTexts = new Set(
+    existingQuestions.map(item => normalizeQuestion(item.question))
+);
+
+const newQuestions = [];
+const maxGenerationAttempts = 12;
+let generationAttempts = 0;
+
+while (
+    newQuestions.length < quantity &&
+    generationAttempts < maxGenerationAttempts
+) {
+    generationAttempts++;
+
+    const batchQuantity = Math.min(
+        10,
+        quantity - newQuestions.length
+    );
+
+    const excludedQuestions = [
+        ...existingQuestions.map(item => item.question),
+        ...newQuestions.map(item => item.question)
+    ].filter(Boolean).slice(-100);
+
+    const retryPrompt = `
+${userPrompt.replace(
+    `Number of questions: ${quantity}`,
+    `Number of questions: ${batchQuantity}`
+)}
+
+Generate exactly ${batchQuantity} NEW questions.
+
+Do not repeat or rephrase these existing questions:
+${excludedQuestions.length
+    ? excludedQuestions.map(q => "- " + q).join("\n")
+    : "No existing questions provided."}
+
+Explore different concepts, examples and applications.
+Return only the required JSON object.
+`;
+
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 120000);
+    const timeoutId = setTimeout(
+        () => controller.abort(),
+        120000
+    );
 
     try {
-        response = await fetch(ollamaUrl, {
+        const response = await fetch(ollamaUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1866,7 +1934,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
                     },
                     {
                         role: "user",
-                        content: userPrompt
+                        content: retryPrompt
                     }
                 ],
                 stream: false
@@ -1880,105 +1948,89 @@ for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             );
         }
 
-        lastError = null;
-        break;
+        const data = await response.json();
+        const rawReply = data.message?.content || "{}";
+        const parsedReply = JSON.parse(rawReply);
+
+        if (!Array.isArray(parsedReply.questions)) {
+            throw new Error(
+                "AI response did not contain a questions array."
+            );
+        }
+
+        let addedThisAttempt = 0;
+
+        for (const item of parsedReply.questions) {
+            if (newQuestions.length >= quantity) break;
+
+            const questionText = String(
+                item.question || ""
+            ).trim();
+
+            const answerText = String(
+                item.answer || ""
+            ).trim();
+
+            const normalizedText =
+                normalizeQuestion(questionText);
+
+            if (
+                !questionText ||
+                !answerText ||
+                existingTexts.has(normalizedText)
+            ) {
+                continue;
+            }
+
+            existingTexts.add(normalizedText);
+
+            newQuestions.push({
+                source: "AI",
+                course,
+                semester,
+                subject,
+                subjectCode,
+                unit,
+                topic,
+                questionType,
+                difficulty,
+                marks,
+                question: questionText,
+                answer: answerText,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                usedInPapers: []
+            });
+
+            addedThisAttempt++;
+        }
+
+        console.log(
+            `PaperForge attempt ${generationAttempts}: ` +
+            `${addedThisAttempt} new questions; ` +
+            `${newQuestions.length}/${quantity} collected.`
+        );
+
     } catch (error) {
-        lastError = error;
         console.error(
-            `PaperForge Ollama attempt ${attempt}/${maxAttempts} failed:`,
+            `PaperForge generation attempt ${generationAttempts}:`,
             error.message
         );
 
-        if (attempt < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+        if (
+            error.name === "AbortError" ||
+            error.message.includes("Ollama HTTP")
+        ) {
+            throw error;
         }
     } finally {
         clearTimeout(timeoutId);
     }
 }
 
-if (lastError) {
-    throw new Error(
-        `Ollama unavailable after ${maxAttempts} attempts: ${lastError.message}`
-    );
-}
-
-if (lastError) {
-    throw new Error(
-        `Ollama unavailable after ${maxAttempts} attempts: ${lastError.message}`
-    );
-}
-
-const data = await response.json();
-const rawReply = data.message?.content || "{}";
-
-let parsedReply;
-
-try {
-    parsedReply = JSON.parse(rawReply);
-} catch {
-    throw new Error("Ollama returned invalid JSON.");
-}
-
-if (!Array.isArray(parsedReply.questions)) {
-    throw new Error("AI response did not contain a questions array.");
-}
-
-const generatedQuestions = parsedReply.questions.slice(0, quantity);
-
-const existingQuestions = await questionsCollection.find({
-    semester: semester,
-    subject: subject
-}).toArray();
-
-function normalizeQuestion(value) {
-    return String(value || "")
-        .trim()
-        .replace(/\s+/g, " ")
-        .toLowerCase();
-}
-
-const existingTexts = new Set(
-    existingQuestions.map(item => normalizeQuestion(item.question))
+console.log(
+    `PaperForge final result: ${newQuestions.length}/${quantity} unique questions`
 );
-
-const newQuestions = [];
-const seenInResponse = new Set();
-
-for (const item of generatedQuestions) {
-    const questionText = String(item.question || "").trim();
-    const answerText = String(item.answer || "").trim();
-    const normalizedText = normalizeQuestion(questionText);
-
-    if (
-        !questionText ||
-        !answerText ||
-        existingTexts.has(normalizedText) ||
-        seenInResponse.has(normalizedText)
-    ) {
-        continue;
-    }
-
-    seenInResponse.add(normalizedText);
-
-newQuestions.push({
-    source: "AI",
-    course,
-    semester,
-    subject,
-        subjectCode,
-        unit,
-        topic,
-        questionType,
-        difficulty,
-        marks,
-        question: questionText,
-        answer: answerText,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        usedInPapers: []
-    });
-}
 
 if (newQuestions.length === 0) {
     return res.status(200).json({
@@ -2025,10 +2077,9 @@ res.status(201).json({
             message
         });
     }
-}
-}
+    }
+    }
 );
-
 /*
 =========================================================
 GET ALL QUESTIONS
@@ -4027,7 +4078,12 @@ const systemPrompt = mode === "practice"
                                 content: message
                             }
                         ],
-                        stream: false
+                       stream: false,
+options: {
+    temperature: 0.4,
+    repeat_penalty: 1.15,
+    num_predict: 2048
+}
                     })
                 }
             );

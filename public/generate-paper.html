@@ -522,7 +522,6 @@ button:disabled { opacity: .6; cursor: not-allowed; }
 
                 <div class="actions">
                     <button class="btn btn-primary btn-ai" id="generateBtn" type="button">✦ Generate Paper with AI</button>
-                    <button class="btn" id="addTypeBtn" type="button">＋ Add Question Type</button>
                     <button class="btn btn-danger" id="clearPatternBtn" type="button">♲ Clear Pattern</button>
                     <button class="btn" id="previewBtn" type="button">◉ Preview Paper</button>
                     
@@ -1312,7 +1311,10 @@ function changeZoom(amount) {
 
 $("generateBtn").addEventListener("click", generatePaper);
 $("clearPatternBtn").addEventListener("click", clearPattern);
-$("addTypeBtn").addEventListener("click", addQuestionType);
+const addTypeButton = $("addTypeBtn");
+if (addTypeButton) {
+    addTypeButton.addEventListener("click", addQuestionType);
+}
 $("previewBtn").addEventListener("click", () => {
     updatePaperMetadata();
     renderPaper();

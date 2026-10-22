@@ -164,63 +164,165 @@ button {cursor:pointer;color:inherit}
 
 .page {max-width:1900px;margin:auto;padding:22px 23px 30px}
 
+
 /* FULL WIDTH AI BANNER */
 .hero {
-  position:relative;isolation:isolate;
-  min-height:315px;
-  overflow:hidden;
-  display:flex;align-items:center;
-  padding:32px 35px;
-  border:1px solid #087ec1;
-  border-radius:18px;
-  background:
-    linear-gradient(90deg,#020d23 0%,#03132bed 34%,#06172b9c 58%,#020d2340 100%),
-    url("ai-banner.png") center 44%/cover no-repeat,
-    linear-gradient(110deg,#09214b,#07539a);
-  box-shadow:0 0 28px #008fff13,inset 0 0 30px #0d83ff0c;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 315px;
+  margin-top: 12px;
+  padding: 32px 35px;
+  overflow: hidden;
+  border: 1px solid #087ec1;
+  border-radius: 18px;
+  background: #06172b;
+  box-shadow: 0 0 28px #008fff13, inset 0 0 30px #0d83ff0c;
 }
-.hero:before {
-  content:"";position:absolute;z-index:-1;
-  right:-7%;bottom:-65%;width:70%;height:110%;
-  border:1px solid #00aaff65;border-radius:50%;
-  transform:rotate(-17deg);
-  box-shadow:0 0 20px #007dff24;
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: -10%;
+  bottom: -65%;
+  width: 70%;
+  height: 120%;
+  border: 1px solid #00aaff55;
+  border-radius: 50%;
+  transform: rotate(-17deg);
+  pointer-events: none;
 }
-.hero:after {
-  content:"";position:absolute;z-index:-1;
-  right:-15%;bottom:-78%;width:77%;height:125%;
-  border:1px solid #7048ff7a;border-radius:50%;
-  transform:rotate(-13deg);
+
+.hero::after {
+  right: -15%;
+  bottom: -78%;
+  width: 77%;
+  border-color: #7048ff66;
+  transform: rotate(-13deg);
 }
-.hero-copy {max-width:610px}
+
+.hero-bg {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: -1;
+  width: 62%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 560px;
+  min-width: 0;
+}
+
 .eyebrow {
-  display:inline-flex;align-items:center;gap:9px;
-  padding:8px 13px;margin-bottom:17px;
-  border:1px solid #187dc7;border-radius:30px;
-  background:#06478d;
-  color:#e9f9ff;font-size:11px;font-weight:800;
-  letter-spacing:.8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 13px;
+  margin-bottom: 17px;
+  border: 1px solid #187dc7;
+  border-radius: 30px;
+  background: #06478d;
+  color: #e9f9ff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
 }
-.eyebrow i {color:#7ce7ff}
+
+.eyebrow i {
+  color: #7ce7ff;
+}
+
 .hero h2 {
-  margin:0 0 11px;
-  font-size:clamp(32px,3.1vw,48px);
-  font-weight:900;line-height:1.1;letter-spacing:-1.7px;
+  margin: 0 0 12px;
+  font-size: clamp(30px, 3vw, 46px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -1px;
 }
+
 .hero h2 span {
-  background:linear-gradient(90deg,#00d8ff,#9b91ff);
-  color:transparent;background-clip:text;-webkit-background-clip:text;
+  background: linear-gradient(90deg, #00d8ff, #9b91ff);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 }
-.hero h3 {font-size:18px;margin:0 0 12px;font-weight:700}
-.hero p {max-width:465px;color:#c5dafa;font-size:13px;line-height:1.8;margin:0 0 20px}
-.hero-actions {display:flex;flex-wrap:wrap;gap:10px}
+
+.hero h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.hero p {
+  max-width: 440px;
+  margin: 0 0 20px;
+  color: #d0e2ff;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .hero-link {
-  display:inline-flex;align-items:center;gap:10px;
-  padding:11px 15px;border:1px solid #1263a8;border-radius:9px;
-  background:#07377a;color:white;font-size:11px;font-weight:800;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 15px;
+  border: 1px solid #1263a8;
+  border-radius: 9px;
+  background: #07377a;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
 }
-.hero-link.primary {background:linear-gradient(110deg,#1269ed,#5a3de8);border-color:#8275ff}
-.hero-link:hover {filter:brightness(1.18)}
+
+.hero-link.primary {
+  background: linear-gradient(110deg, #1269ed, #5a3de8);
+  border-color: #8275ff;
+}
+
+.hero-link:hover {
+  filter: brightness(1.18);
+}
+
+@media (max-width: 700px) {
+  .hero {
+    min-height: 360px;
+    padding: 25px 20px;
+  }
+
+  .hero-bg {
+    width: 100%;
+    opacity: 0.25;
+    object-position: 62% center;
+  }
+
+  .hero-copy {
+    max-width: 100%;
+  }
+
+  .hero h2 {
+    font-size: 30px;
+    letter-spacing: -0.5px;
+  }
+}
 
 /* SIX STAT CARDS */
 .section-heading {
@@ -369,6 +471,7 @@ body.light-mode .stat-label {color:#254368}
   .stat-number {font-size:24px}
 }
 </style>
+<link rel="stylesheet" href="campus-slideshow.css">
 </head>
 
 <body>
@@ -394,60 +497,114 @@ body.light-mode .stat-label {color:#254368}
     <a class="nav-link" href="settings.html"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
   </nav>
 
-  <div class="sidebar-spacer"></div>
+<section class="campus-card">
+  <div class="campus-photo-wrap">
+    <img
+      id="campusPhoto"
+      class="campus-photo"
+      src="campus%20photo1.jpeg"
+      alt="Galgotias University campus"
+    >
 
-  <section class="campus-card">
-    <div class="campus-photo-wrap">
-      <img id="campusPhoto" class="campus-photo" src="university-1.jpg" alt="Galgotias University campus">
-      <div class="photo-tag"><i class="fa-solid fa-location-dot"></i> Greater Noida, UP</div>
+    <video
+      id="campusVideo"
+      class="campus-photo"
+      muted
+      playsinline
+      preload="metadata"
+      hidden
+    ></video>
+
+    <div class="photo-tag">
+      <i class="fa-solid fa-location-dot"></i>
+      Greater Noida, UP
     </div>
-    <div class="campus-details">
-      <h2>Galgotias University</h2>
-      <p>Learning, Innovation & Technology</p>
-      <div class="campus-bottom">
-        <div class="photo-dots" id="photoDots">
-          <span class="photo-dot active"></span><span class="photo-dot"></span>
-          <span class="photo-dot"></span><span class="photo-dot"></span>
-        </div>
-        <a href="university.html" class="campus-link">Explore <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+
+  <div class="campus-details">
+    <h2>Galgotias University</h2>
+    <p>Learning, Innovation &amp; Technology</p>
+
+    <div class="campus-bottom">
+      <div class="photo-dots" id="photoDots">
+        <span class="photo-dot active"></span>
+        <span class="photo-dot"></span>
+        <span class="photo-dot"></span>
+        <span class="photo-dot"></span>
       </div>
+
+      <a href="university.html" class="campus-link">
+        Explore <i class="fa-solid fa-arrow-right"></i>
+      </a>
     </div>
-  </section>
+  </div>
+</section>
 </aside>
 
 <main class="main">
-  <header class="topbar">
-    <label class="search">
+  <div class="topbar">
+    <div class="search">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input id="searchInput" type="search" placeholder="Search dashboard pages..." autocomplete="off">
-    </label>
+      <input id="searchInput" type="search" placeholder="Search dashboard..." autocomplete="off">
+    </div>
+
     <div class="topbar-spacer"></div>
-    <button class="icon-button" id="themeButton" title="Change theme" aria-label="Change theme"><i class="fa-regular fa-sun"></i></button>
-    <button class="icon-button" id="notificationButton" title="Notifications" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="bell-dot"></span></button>
-    <button class="lock-button" id="lockButton"><i class="fa-solid fa-lock"></i> Lock Website</button>
-  </header>
+
+    <button class="icon-button" id="themeButton" type="button" title="Toggle theme">
+      <i class="fa-regular fa-sun"></i>
+    </button>
+
+    <button class="icon-button" id="notificationButton" type="button" title="Notifications">
+      <i class="fa-regular fa-bell"></i>
+      <span class="bell-dot"></span>
+    </button>
+
+    <button class="lock-button" id="lockButton" type="button">
+      <i class="fa-solid fa-lock"></i>
+      <span>Lock System</span>
+    </button>
+  </div>
 
   <div class="page">
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> SMART EXAMINATION PLATFORM</div>
-        <h2>Galgotias <span>University</span></h2>
-        <h3>AI-Powered Question Paper Generator</h3>
-        <p>Create, organize and generate structured question papers with your PaperForge examination management system.</p>
-        <div class="hero-actions">
-          <a href="generate-paper.html" class="hero-link primary"><i class="fa-solid fa-file-circle-check"></i> Generate Paper</a>
-          <a href="question-bank.html" class="hero-link"><i class="fa-solid fa-database"></i> Explore Question Bank</a>
-        </div>
-      </div>
-    </section>
-
-    <div class="section-heading">
-      <div>
-        <h2>System Overview</h2>
-        <p>Your question bank and examination statistics</p>
-      </div>
-      <div class="live-label"><span class="live-dot"></span> LIVE DATABASE</div>
+  <div class="section-heading">
+    <div>
+      <h2>System Overview</h2>
+      <p>Your question bank and examination statistics</p>
     </div>
+    <div class="live-label"><span class="live-dot"></span> LIVE DATABASE</div>
+  </div>
+
+<section class="hero">
+  <img class="hero-bg" src="/ai-banner.png" alt="">
+  <div class="hero-copy">
+    <div class="eyebrow">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      SMART EXAMINATION SYSTEM
+    </div>
+
+    <h2>Welcome to <span>PaperForge</span></h2>
+
+    <h3>AI-Powered Question Paper Generator</h3>
+
+    <p>
+      Create, organize and generate question papers with ease.
+      Manage your question bank and build examination papers
+      for Galgotias University.
+    </p>
+
+    <div class="hero-actions">
+      <a class="hero-link primary" href="create-question.html">
+        <i class="fa-solid fa-plus"></i>
+        Create Questions
+      </a>
+
+      <a class="hero-link" href="generate-paper.html">
+        <i class="fa-solid fa-file-circle-check"></i>
+        Generate Paper
+      </a>
+    </div>
+  </div>
+</section>
 
     <section class="stats">
       <article class="stat stat-blue">
@@ -488,34 +645,7 @@ body.light-mode .stat-label {color:#254368}
 </main>
 
 <script>
-/* Campus slideshow. Put four campus images in the public folder. */
-const campusImages = [
-  "university-1.jpg",
-  "university-2.jpg",
-  "university-3.jpg",
-  "university-4.jpg"
-];
-
-let campusIndex = 0;
-const campusPhoto = document.getElementById("campusPhoto");
-const dots = Array.from(document.querySelectorAll(".photo-dot"));
-
-function showCampusImage(index) {
-  const testImage = new Image();
-  testImage.onload = () => {
-    campusPhoto.style.opacity = "0";
-    setTimeout(() => {
-      campusPhoto.src = campusImages[index];
-      campusPhoto.style.opacity = "1";
-      campusIndex = index;
-      dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
-    }, 250);
-  };
-  testImage.onerror = () => console.warn("Campus image missing:", campusImages[index]);
-  testImage.src = campusImages[index];
-}
-setInterval(() => showCampusImage((campusIndex + 1) % campusImages.length), 5000);
-
+ 
 /* Load existing API data without modifying the backend. */
 async function fetchJSON(url) {
   const response = await fetch(url, { credentials: "same-origin" });
@@ -575,44 +705,72 @@ async function loadStatistics() {
 }
 loadStatistics();
 
+
 /* Theme toggle */
-document.getElementById("themeButton").addEventListener("click", function () {
-  document.body.classList.toggle("light-mode");
-  this.innerHTML = document.body.classList.contains("light-mode")
-    ? '<i class="fa-solid fa-moon"></i>'
-    : '<i class="fa-regular fa-sun"></i>';
-});
+const themeButton = document.getElementById("themeButton");
+
+if (themeButton) {
+  themeButton.addEventListener("click", function () {
+    document.body.classList.toggle("light-mode");
+
+    this.innerHTML = document.body.classList.contains("light-mode")
+      ? '<i class="fa-solid fa-moon"></i>'
+      : '<i class="fa-regular fa-sun"></i>';
+  });
+}
 
 /* Search: Enter opens the matching existing page. */
 const pages = [
-  {terms:["dashboard","home"],url:"dashboard.html"},
-  {terms:["question bank","database","stored questions"],url:"question-bank.html"},
-  {terms:["create questions","create question","add question"],url:"create-question.html"},
-  {terms:["generate paper","question paper","generator"],url:"generate-paper.html"},
-  {terms:["combined questions","combined"],url:"combined-questions.html"},
-  {terms:["previous papers","saved papers","archive"],url:"previous-papers.html"},
-  {terms:["university","campus","galgotias"],url:"university.html"},
-  {terms:["settings","configuration"],url:"settings.html"}
+  { terms: ["dashboard", "home"], url: "dashboard.html" },
+  { terms: ["question bank", "database", "stored questions"], url: "question-bank.html" },
+  { terms: ["create questions", "create question", "add question"], url: "create-question.html" },
+  { terms: ["generate paper", "question paper", "generator"], url: "generate-paper.html" },
+  { terms: ["combined questions", "combined"], url: "combined-questions.html" },
+  { terms: ["previous papers", "saved papers", "archive"], url: "previous-papers.html" },
+  { terms: ["university", "campus", "galgotias"], url: "university.html" },
+  { terms: ["settings", "configuration"], url: "settings.html" }
 ];
 
-document.getElementById("searchInput").addEventListener("keydown", function (event) {
-  if (event.key !== "Enter") return;
-  const query = this.value.trim().toLowerCase();
-  if (!query) return;
-  const match = pages.find(page => page.terms.some(term => term.includes(query) || query.includes(term)));
-  if (match) location.href = match.url;
-  else alert("No matching page found. Try: Question Bank, Generate Paper or Settings.");
-});
+const searchInput = document.getElementById("searchInput");
+
+if (searchInput) {
+  searchInput.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter") return;
+
+    const query = this.value.trim().toLowerCase();
+    if (!query) return;
+
+    const match = pages.find(page =>
+      page.terms.some(term => term.includes(query) || query.includes(term))
+    );
+
+    if (match) {
+      location.href = match.url;
+    } else {
+      alert("No matching page found. Try: Question Bank, Generate Paper or Settings.");
+    }
+  });
+}
 
 /* Existing website lock screen */
-document.getElementById("lockButton").addEventListener("click", () => {
-  location.href = "index.html";
-});
+const lockButton = document.getElementById("lockButton");
+
+if (lockButton) {
+  lockButton.addEventListener("click", function () {
+    location.href = "index.html";
+  });
+}
 
 /* Notifications button */
-document.getElementById("notificationButton").addEventListener("click", () => {
-  alert("PaperForge dashboard is ready. Check your question bank and saved papers.");
-});
+const notificationButton = document.getElementById("notificationButton");
+
+if (notificationButton) {
+  notificationButton.addEventListener("click", function () {
+    alert("PaperForge dashboard is ready. Check your question bank and saved papers.");
+  });
+}
 </script>
+
+<script src="campus-slideshow.js"></script>
 </body>
 </html>
