@@ -4159,31 +4159,30 @@ async function startServer() {
         );
 
 
-        const server =
-        console.log("REGISTERED ROUTES CHECK");
+                console.log("REGISTERED ROUTES CHECK");
+
         console.log(
-    "CHATBOT ROUTE CHECK:",
-    app.router.stack
-        .filter(layer => layer.route)
-        .map(layer => ({
-            path: layer.route.path,
-            methods: layer.route.methods
-        }))
-        .filter(route => String(route.path).includes("/api/chat/ollama"))
-);
-    app.listen(
-        PORT,
-        "0.0.0.0",
-        function () {
-                    console.log(
-                        "Server is running at http://localhost:" +
-                        PORT
-                    );
+            "CHATBOT ROUTE CHECK:",
+            app.router.stack
+                .filter(layer => layer.route)
+                .map(layer => ({
+                    path: layer.route.path,
+                    methods: layer.route.methods
+                }))
+                .filter(route =>
+                    String(route.path).includes("/api/chat/ollama")
+                )
+        );
 
-                    
-                }
-            );
-
+        app.listen(
+            PORT,
+            "0.0.0.0",
+            function () {
+                console.log(
+                    "Server is running at http://localhost:" + PORT
+                );
+            }
+        );
 
     } catch (error) {
 
