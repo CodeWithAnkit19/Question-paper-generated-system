@@ -1,12 +1,18 @@
+
 {
   "name": "question-paper-generator",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "PaperForge - AI-Based Automated Question Paper Generation System",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "PaperForge",
+    "question-paper-generator",
+    "BCA-project"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
